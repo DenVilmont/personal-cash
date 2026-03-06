@@ -35,6 +35,13 @@ jobs:
       - name: Publish
         run: dotnet publish ./PersonalCash.csproj -c Release -o ./artifacts/publish -p:BaseHref=/${{ github.event.repository.name }}/
         
+      - name: Inject Supabase config
+        shell: bash
+        run: |
+          file="./artifacts/publish/wwwroot/appsettings.json"
+          sed -i "s|__SUPABASE_URL__|${{https://xkfhgahmnvkdvdikfrbm.supabase.co}}|g" "$file"
+          sed -i "s|__SUPABASE_ANON_KEY__|${{sb_publishable_SfICZCe37ScdygysU_5Gww_yQUIrbyg}}|g" "$file"
+        
       - name: Rewrite base href
         uses: SteveSandersonMS/ghaction-rewrite-base-href@5b54862a8831e012d4f1a8b2660894415fdde8ec # v1.1.0
         with:
