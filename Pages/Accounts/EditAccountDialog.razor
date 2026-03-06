@@ -1,0 +1,50 @@
+﻿@inherits PersonalCash.Shared.UiComponentBase
+
+@using Domain.Contracts
+@using Domain.Enums
+@using System.Globalization
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="2">
+
+            <MudTextField Label="Name" @bind-Value="_name" Variant="Variant.Outlined" Required="true" />
+
+            <MudTextField Label="Currency" @bind-Value="_currency" Variant="Variant.Outlined" Disabled="true" />
+
+            <MudSelect T="AccountIcon" Label="Icon"
+                       @bind-Value="_icon"
+                       Variant="Variant.Outlined" Margin="Margin.Dense">
+                @foreach (var key in Enum.GetValues<AccountIcon>())
+                {
+                    <MudSelectItem Value="@key">
+                        <div class="icon-option">
+                            <MudIcon Icon="@key.GetIcon()" />
+                        </div>
+                    </MudSelectItem>
+                }
+            </MudSelect>
+            <MudSwitch T="bool"
+                       Color="Color.Primary"
+                       @bind-Value="_showBalance"
+                       Label="Show balance" />
+            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_isArchived">Archived</MudSwitch>
+
+            <MudNumericField T="decimal"
+                             Label="Balance Actual"
+                             @bind-Value="_balanceActual"
+                             Variant="Variant.Outlined"
+                             HideSpinButtons="true"
+                             Immediate="true"
+                             Culture="CultureInfo.CurrentCulture"
+                             Format="0.00"
+                             Adornment="Adornment.Start"
+                             AdornmentText="@_currency" />
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveAsync">Save</MudButton>
+    </DialogActions>
+</MudDialog>

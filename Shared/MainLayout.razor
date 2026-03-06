@@ -1,54 +1,96 @@
 ﻿@inherits LayoutComponentBase
 
-@inject AuthService AuthService
-@inject NavigationManager NavigationManager
-@inject ISnackbar Snackbar
 
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<MudPopoverProvider />
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
-            OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       OnClick="@(_ => DrawerToggle())" />
+
         <MudSpacer />
-        
-        <MudLink Href="https://github.com/supabase-community/supabase-csharp">
-            <MudImage Src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" Alt="Github icon"
-                Elevation="25" Class="rounded-lg" Width="30" Height="30" />
-        </MudLink>
 
         <AuthorizeView>
             <Authorized>
-                <MudChip Color="Color.Primary" OnClick="OnClickLogout">Logout</MudChip>
+                <MudMenu AnchorOrigin="Origin.BottomRight"
+                         TransformOrigin="Origin.TopRight"
+                         Dense="true">
+
+                    <ActivatorContent Context="menuCtx">
+                        <MudButton Variant="Variant.Text" 
+                                   Color="Color.Inherit" 
+                                   OnClick="@menuCtx.ToggleAsync">
+                            <MudAvatar Size="Size.Medium" Class="mr-2">
+                                @if (!string.IsNullOrWhiteSpace(AvatarSrc))
+                                {
+                                    <MudImage Src="@AvatarSrc"></MudImage>
+                                }
+                                else
+                                {
+                                    <MudIcon Color="Color.Dark" Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" />
+                                }
+                            </MudAvatar>
+
+                            <MudText Typo="Typo.body2" Class="mr-1">@DisplayName</MudText>
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowDropDown" />
+                        </MudButton>
+                    </ActivatorContent>
+
+                    <ChildContent>
+                        <MudMenuItem Href="/settings" Icon="@Icons.Material.Filled.Settings">
+                            @L["Settings"]
+                        </MudMenuItem>
+
+                        <MudMenuItem OnClick="OnClickLogout" Icon="@Icons.Material.Filled.Logout">
+                            @L["Logout"]
+                        </MudMenuItem>
+                    </ChildContent>
+
+                </MudMenu>
             </Authorized>
+
             <NotAuthorized>
-                <MudChip Color="Color.Primary" Link="/login">Login</MudChip>
+                <MudButton Color="Color.Tertiary" Href="/login">@L["Login"]</MudButton>
             </NotAuthorized>
         </AuthorizeView>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h5" Class="mt-1">Blazor WASM Supabase Demo</MudText>
-        </MudDrawerHeader>
+    <AuthorizeView>
+        <MudDrawer @bind-Open="_drawerOpen"
+                   Variant="DrawerVariant.Temporary"
+                   Overlay="true"
+                   Elevation="2">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h5" Class="mt-1">PersonalCash</MudText>
+            </MudDrawerHeader>
 
-        @* ********************************** MENU ********************************** *@
-
-        <MudNavMenu Color="Color.Secondary">
-            <MudNavLink Href="/crud" Match="NavLinkMatch.All" Icon="@Icons.Filled.Storage">
-                Crud table
-            </MudNavLink>
-            <MudNavLink Href="/crud-private" Match="NavLinkMatch.All" Icon="@Icons.Filled.Storage">
-                Crud table private RLS
-            </MudNavLink>
-        </MudNavMenu>
-
-
-        @* ********************************** MENU ********************************** *@
-
-    </MudDrawer>
-    <MudMainContent Class="d-flex flex-column" Style="height:100vh !important">
-        @Body
-    </MudMainContent>
+            <MudNavMenu Color="Color.Secondary">
+                <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
+                    Home
+                </MudNavLink>
+                <MudNavLink Href="/transactions" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Storage">
+                    Transactions
+                </MudNavLink>
+                <MudNavLink Href="/reports" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.QueryStats">
+                    Reports
+                </MudNavLink>
+                <MudNavLink Href="/debts" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.RequestQuote">
+                    Debts
+                </MudNavLink>
+                <MudNavLink Href="/accounts" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Storage">
+                    Accounts
+                </MudNavLink>
+                <MudNavLink Href="/categories" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Storage">
+                    Categories
+                </MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+    </AuthorizeView>
+        <MudMainContent Class="d-flex flex-column" Style="height:100vh !important">
+            @Body
+        </MudMainContent>
 </MudLayout>

@@ -273,3 +273,5 @@ tempkey.jwk
 !**/packages/*Theme*
 
 .history
+/wwwroot/appsettings.Development.json
+/wwwroot/appsettings.Production.json

@@ -1,6 +1,8 @@
+@inherits PersonalCash.Shared.UiComponentBase
+
+@using Infrastructure.Auth
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
-@inject ISnackbar Snackbar
 
 <MudContainer Class="d-flex justify-center align-center" Style="height:100vh !important">
     <MudPaper Elevation="5" Class="pa-10" style="text-align:center">
@@ -11,7 +13,11 @@
             <MudTextField Label="Password" @bind-Value="password" Variant="Variant.Outlined" InputType="InputType.Password"></MudTextField>
             <br>
             <MudButton Variant="Variant.Filled" FullWidth Color="Color.Primary"
-                OnClick="OnClickLogin">Login</MudButton>
+                       OnClick="OnClickLogin">Login</MudButton>
+
+            <MudText Class="mt-4" Typo="Typo.body2">
+                <MudLink Href="/register">Create an account</MudLink>
+            </MudText>
         </MudContainer>
     </MudPaper>
 </MudContainer>

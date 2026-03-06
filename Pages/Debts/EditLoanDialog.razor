@@ -1,0 +1,90 @@
+﻿@inherits PersonalCash.Shared.UiComponentBase
+
+@using MudBlazor
+@using Domain.Contracts
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="2">
+
+            <MudTextField Label="@L["Name"]"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Required="true"
+                          @bind-Value="_name" />
+
+            <MudNumericField T="decimal"
+                             Label="@L["Amount"]"
+                             Variant="Variant.Outlined"
+                             Margin="Margin.Dense"
+                             @bind-Value="_amount"
+                             @bind-Value:after="RebuildPreview"
+                             HideSpinButtons="true"
+                             Immediate="true"
+                             Culture="CultureInfo.CurrentCulture"
+                             Adornment="Adornment.Start"
+                             AdornmentText="@_currency"
+                             Disabled="@_amountLocked" />
+
+            <MudNumericField T="int"
+                             Label="@L["Payments"]"
+                             Variant="Variant.Outlined"
+                             Margin="Margin.Dense"
+                             @bind-Value="_paymentsCount"
+                             @bind-Value:after="RebuildPreview"
+                             Immediate="true"
+                             Disabled="@_amountLocked" />
+
+            <MudDatePicker Label="@L[" First payment date"]"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="w-100"
+                           @bind-Date="StartDatePicker"
+                           @bind-Date:after="RebuildPreview"
+                           Clearable="false"
+                           Disabled="@_amountLocked" />
+
+            <MudSwitch T="bool"
+                       Color="Color.Primary"
+                       Label="@L["Has interest"]"
+                       @bind-Value="_hasInterest"
+                       Disabled="@_amountLocked" />
+
+            <MudTextField Label="@L[" Comment"]"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Lines="2"
+                          @bind-Value="_note" />
+
+            @if (_amountLocked)
+            {
+                <MudAlert Severity="Severity.Info" Dense="true">
+                    @L["Amount / schedule editing is disabled because some payments are marked as paid."]
+                </MudAlert>
+            }
+
+            @if (_previewPayments.Count > 0)
+            {
+                <MudDivider Class="my-2" />
+
+                <MudText Typo="Typo.subtitle2">@L["Schedule preview"]</MudText>
+                <MudTable Items="@_previewPayments" Dense="true" Elevation="0">
+                    <HeaderContent>
+                        <MudTh>@L["Due date"]</MudTh>
+                        <MudTh Style="text-align:right">@L["Amount"]</MudTh>
+                    </HeaderContent>
+                    <RowTemplate Context="p">
+                        <MudTd>@p.DueDate.ToString("yyyy-MM-dd")</MudTd>
+                        <MudTd Style="text-align:right">@p.Amount.ToString("N2")</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">@L["Save"]</MudButton>
+    </DialogActions>
+</MudDialog>

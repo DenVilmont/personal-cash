@@ -1,0 +1,117 @@
+﻿@page "/accounts"
+@inherits PersonalCash.Shared.UiComponentBase
+
+@using Domain.Contracts
+@using Domain.Enums
+
+<AuthorizeView>
+    <Authorized>
+        <MudContainer Class="pa-6" MaxWidth="MaxWidth.Medium">
+
+            <MudText Typo="Typo.h5">Accounts</MudText>
+
+            <MudPaper Class="pa-6 mt-4">
+                <MudText Typo="Typo.h6">Add account</MudText>
+
+                <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
+                    <MudItem xs="12" sm="6" Class="d-flex">
+                        <MudTextField Label="Name"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Class="w-100"
+                                      @bind-Value="_name" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="3" Class="d-flex">
+                        <MudTextField Label="Currency"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Class="w-100"
+                                      @bind-Value="_currency"
+                                      Disabled="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="3" Class="d-flex">
+                        <MudSelect T="string" Label="Icon"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   Class="w-100"
+                                   @bind-Value="_iconKey">
+                            @foreach (var key in Enum.GetValues<AccountIcon>())
+                            {
+                                var icon = key.GetIcon();
+                                <MudSelectItem Value="@key.ToString()">
+                                    <div class="icon-option">
+                                        <MudIcon Icon="@icon" />
+                                    </div>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudSwitch T="bool"
+                                   Color="Color.Primary"
+                                   @bind-Value="_showBalance"
+                                   Label="Show balance" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_busy" OnClick="AddAsync">
+                            Add
+                        </MudButton>
+
+                        <MudButton Class="ml-2" Variant="Variant.Outlined" Disabled="_busy" OnClick="LoadAsync">
+                            Refresh
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+
+            <MudPaper Class="pa-4 mt-4" Elevation="2">
+                <MudText Typo="Typo.subtitle1">My accounts (@_items.Count)</MudText>
+
+                <MudTable Items="_items" Dense="true" Hover="true" Class="mt-2" RowsPerPage="20">
+                    <HeaderContent>
+                        <MudTh></MudTh>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Currency</MudTh>
+                        <MudTh align="right">Balance</MudTh>
+                        <MudTh align="right">Expected</MudTh>
+                        <MudTh>Archived</MudTh>
+                        <MudTh align="right"></MudTh>
+                    </HeaderContent>
+
+                    <RowTemplate Context="a">
+                        <MudTd>
+                            <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                        </MudTd>
+                        <MudTd>@a.Name</MudTd>
+                        <MudTd>@a.Currency</MudTd>
+                        <MudTd align="right">@(a.ShowBalance ? a.BalanceActual : "****")</MudTd>
+                        <MudTd align="right">@(a.ShowBalance ? a.BalanceExpected : "****")</MudTd>
+                        <MudTd>@(a.IsArchived ? "Yes" : "No")</MudTd>
+                        <MudTd align="right">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="_busy" OnClick="@(async () => await OpenEditAsync(a))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Disabled="_busy" OnClick="@(async () => await ConfirmDeleteAsync(a))" />
+                        </MudTd>
+                    </RowTemplate>
+
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
+                    </PagerContent>
+                </MudTable>
+            </MudPaper>
+        </MudContainer>
+    </Authorized>
+
+    <NotAuthorized>
+        <MudContainer Class="d-flex justify-center align-center" Style="height:100vh !important">
+            <MudPaper Elevation="5" Class="pa-10" style="text-align:center">
+                <MudText Typo="Typo.h6">Please login first</MudText>
+                <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" Href="/login">
+                    Go to login
+                </MudButton>
+            </MudPaper>
+        </MudContainer>
+    </NotAuthorized>
+</AuthorizeView>

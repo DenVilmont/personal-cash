@@ -1,4 +1,4 @@
-# BlazorWebAssemblySupabaseTemplate 🚀
+# PersonalCash 🚀
 
 This template provides a foundational setup for building Blazor applications using WebAssembly, with a Supabase backend integration. 🎉
 

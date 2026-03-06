@@ -1,0 +1,612 @@
+﻿@page "/transactions"
+@inherits PersonalCash.Shared.UiComponentBase
+
+@using MudBlazor
+@using Domain;
+@using Domain.Enums
+@using Domain.Contracts;
+@using System.Globalization
+
+
+<AuthorizeView>
+    <Authorized>
+        <MudContainer Class="pa-6" MaxWidth="MaxWidth.False">
+
+            <MudText Typo="Typo.h5">Transactions</MudText>
+
+            <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
+
+                <!-- Balances row for <lg -->
+                <MudItem xs="12" Class="d-block d-lg-none">
+                    <MudExpansionPanels Class="mb-6" Elevation="2">
+                        <MudExpansionPanel Expanded="false" Class="pa-4" Style="position: sticky; top: 88px;">
+                            <TitleContent>
+                                <div class="d-flex">
+                                    <MudText Typo="Typo.h5">@L["Balances"]</MudText>
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                @if (_activeAccounts.Count == 0)
+                                {
+                                    <MudText Typo="Typo.body2" Class="mt-2">@L["No accounts"]</MudText>
+                                }
+                                else
+                                {
+                                    <MudStack Row="true" Spacing="2" Class="mt-3 balances-scroll" Wrap="Wrap.Wrap">
+                                        @foreach (var a in _activeAccounts.Where(x => x.ShowBalance).OrderBy(x => x.Name))
+                                        {
+                                            <MudPaper Class="pa-2 balance-card" Elevation="0" Outlined="true">
+                                                <div class="icon-option">
+                                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                                    <span>@a.Name</span>
+                                                </div>
+
+                                                <div class="balance-actual">@a.BalanceActual.ToString("N2") @a.Currency</div>
+                                                <div class="balance-expected text-muted">@a.BalanceExpected.ToString("N2") @a.Currency</div>
+                                            </MudPaper>
+                                        }
+                                    </MudStack>
+                                }
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
+                </MudItem>
+
+                <!-- Balances row for lg -->
+                <MudItem xs="12" lg="2" Class="d-none d-lg-block">
+                    <MudPaper Class="pa-4" Style="position: sticky; top: 88px;">
+                        <MudText Typo="Typo.h6">@L["Balances"]</MudText>
+
+                        @if (_activeAccounts.Count == 0)
+                        {
+                            <MudText Typo="Typo.body2" Class="mt-2">@L["No accounts"]</MudText>
+                        }
+                        else
+                        {
+                            <MudStack Spacing="2" Class="mt-3">
+                                @foreach (var a in _activeAccounts.Where(x => x.ShowBalance).OrderBy(x => x.Name))
+                                {
+                                    <div class="balance-row">
+                                        <div class="balance-left">
+                                            <div class="icon-option">
+                                                <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                                <span>@a.Name</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="balance-right">
+                                            <div class="balance-actual">
+                                                @a.BalanceActual.ToString("N2") @a.Currency
+                                            </div>
+                                            <div class="balance-expected text-muted">
+                                                @a.BalanceExpected.ToString("N2") @a.Currency
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </MudStack>
+                        }
+                    </MudPaper>
+                </MudItem>
+
+                <!-- CENTER: 50% on lg+ (Add + Table stay here) -->
+                <MudItem xs="12" sm="8" lg="7">
+
+                    <MudExpansionPanels Class="mb-6" Elevation="2">
+                        <MudExpansionPanel Expanded="false" Class="pa-4" Style="position: sticky; top: 88px;">
+                            <TitleContent>
+                                <div class="d-flex">
+                                    <MudIcon Icon="@Icons.Material.Filled.AddCircle" class="mr-3"></MudIcon>
+                                    <MudText Typo="Typo.h5">Add transaction</MudText>
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
+                                    <!-- Row 1 -->
+                                    <MudItem xs="12" md="6" Class="d-flex">
+                                        <MudDatePicker Label="Date"
+                                                       Variant="Variant.Outlined"
+                                                       Margin="Margin.Dense"
+                                                       Class="w-100"
+                                                       @bind-Date="OccurredOnPicker" />
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="d-flex">
+                                        <MudSelect T="EntryType"
+                                                   Label="Type"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Value="_entryType">
+                                            <MudSelectItem Value="EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
+                                            <MudSelectItem Value="EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
+                                        </MudSelect>
+                                    </MudItem>
+                                    <MudItem xs="12" md="6">
+                                        @if (_categories.Count == 0)
+                                        {
+                                            <MudTextField T="Guid"
+                                                          Label="Account"
+                                                          Disabled="true"
+                                                          Variant="Variant.Outlined"
+                                                          Margin="Margin.Dense"
+                                                          Class="w-100" />
+                                        }
+                                        else
+                                        {
+                                            <MudSelect T="Guid"
+                                                       Label="Account"
+                                                       Variant="Variant.Outlined"
+                                                       Margin="Margin.Dense"
+                                                       Class="w-100"
+                                                       @bind-Value="_accountId">
+                                                @foreach (var a in _activeAccounts)
+                                                {
+                                                    <MudSelectItem Value="@a.Id">
+                                                        <div class="icon-option">
+                                                            <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                                            @a.Name (@a.Currency)
+                                                        </div>
+                                                    </MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                        }
+                                    </MudItem>
+
+                                    <MudItem xs="12" md="6" Class="d-flex">
+                                        <MudNumericField T="decimal"
+                                                         Label="Amount"
+                                                         Variant="Variant.Outlined"
+                                                         Margin="Margin.Dense"
+                                                         Class="w-100"
+                                                         HideSpinButtons="true"
+                                                         Immediate="true"
+                                                         Culture="CultureInfo.CurrentCulture"
+                                                         Adornment="Adornment.Start"
+                                                         AdornmentText="EUR"
+                                                         @bind-Value="_amount" />
+                                    </MudItem>
+                                    <MudItem xs="12" md="6" Class="d-flex">
+                                        @if (_categories.Count == 0)
+                                        {
+                                            <MudTextField T="Guid"
+                                                          Label="Category"
+                                                          Disabled="true"
+                                                          Variant="Variant.Outlined"
+                                                          Margin="Margin.Dense"
+                                                          Class="w-100" />
+                                        }
+                                        else
+                                        {
+                                            <MudSelect T="Guid"
+                                                       Label="Category"
+                                                       Variant="Variant.Outlined"
+                                                       Margin="Margin.Dense"
+                                                       Class="w-100"
+                                                       @bind-Value="_categoryId">
+                                                @foreach (var c in _categories)
+                                                {
+                                                    <MudSelectItem Value="@c.Id">@c.Name</MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                        }
+                                    </MudItem>
+
+                                    <!-- Row 3 -->
+                                    <MudItem xs="12" md="12" Class="d-flex">
+                                        <MudTextField Label="Note"
+                                                      Variant="Variant.Outlined"
+                                                      Margin="Margin.Dense"
+                                                      Lines="3"
+                                                      Class="w-100"
+                                                      @bind-Value="_note" />
+                                    </MudItem>
+
+                                    <!-- Row 4 -->
+                                    <MudItem xs="12" md="6" Class="d-flex">
+                                        <MudStack Row="true" alignitems="AlignItems.Center" Class="w-100">
+                                            <MudSwitch T="bool"
+                                                       Label="Is For Planning"
+                                                       @bind-Value="_isForPlanning"
+                                                       Color="Color.Primary" />
+                                        </MudStack>
+                                    </MudItem>
+
+                                    <!-- Buttons -->
+                                    <MudItem xs="12">
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="Color.Primary"
+                                                   Disabled="_busy"
+                                                   OnClick="AddAsync">
+                                            @L["Add"]
+                                        </MudButton>
+
+                                        <MudButton Class="ml-2"
+                                                   Variant="Variant.Outlined"
+                                                   Disabled="_busy"
+                                                   OnClick="LoadAsync">
+                                            @L["Refresh"]
+                                        </MudButton>
+                                    </MudItem>
+                                </MudGrid>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                        <!-- Filters on phone (xs): after Add, before Table -->
+                        <div class="d-block d-sm-none mt-4">
+                            <MudExpansionPanel Expanded="false" KeepContentAlive="true" Class="pa-4" elevation="2" Style="position: sticky; top: 88px;">
+                                <TitleContent>
+                                    <div class="d-flex">
+                                        <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-3"></MudIcon>
+                                        <MudText Typo="Typo.h5">Filters</MudText>
+                                    </div>
+                                </TitleContent>
+                                <ChildContent>
+                                    <MudStack Spacing="2" Class="mt-2">
+
+                                        <MudDatePicker Label="From"
+                                                       Variant="Variant.Outlined"
+                                                       Margin="Margin.Dense"
+                                                       Class="w-100"
+                                                       @bind-Date="FilterFromDateTime"
+                                                       @bind-Date:after="ApplyFilters"
+                                                       Clearable="true" />
+
+                                        <MudDatePicker Label="To"
+                                                       Variant="Variant.Outlined"
+                                                       Margin="Margin.Dense"
+                                                       Class="w-100"
+                                                       @bind-Date="FilterToDateTime"
+                                                       @bind-Date:after="ApplyFilters"
+                                                       Clearable="true" />
+
+                                        <MudSelect T="DateOnly?" Label="Month"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Value="_fMonth"
+                                                   @bind-Value:after="ApplyFilters"
+                                                   Clearable="true"
+                                                   OnClearButtonClick="CrearFDates">
+                                            <MudSelectItem Value="@((DateOnly?)null)">All</MudSelectItem>
+
+                                            @foreach (var m in _monthOptions)
+                                            {
+                                                <MudSelectItem Value="@((DateOnly?)m)">@m.ToString("MMMM yyyy")</MudSelectItem>
+                                            }
+                                        </MudSelect>
+
+                                        <MudSelect T="Guid?" Label="Account"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Value="_fAccountId"
+                                                   @bind-Value:after="ApplyFilters"
+                                                   Clearable="true"
+                                                   OnClearButtonClick="ApplyFilters">
+                                            <MudSelectItem Value="@((Guid?)null)">All</MudSelectItem>
+                                            @foreach (var a in _accounts)
+                                            {
+                                                <MudSelectItem Value="@((Guid?)a.Id)">@a.Name</MudSelectItem>
+                                            }
+                                        </MudSelect>
+
+                                        <MudSelect T="EntryType?" Label="Type"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Value="_fEntryType"
+                                                   @bind-Value:after="ApplyFilters"
+                                                   Clearable="true"
+                                                   OnClearButtonClick="ApplyFilters">
+                                            <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">All</MudSelectItem>
+                                            <MudSelectItem T="EntryType?" Value="@EntryType.Income">Income</MudSelectItem>
+                                            <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">Outcome</MudSelectItem>
+                                        </MudSelect>
+
+                                        <MudSelect T="Guid?" Label="Category"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Value="_fCategoryId"
+                                                   @bind-Value:after="ApplyFilters"
+                                                   Clearable="true"
+                                                   OnClearButtonClick="ApplyFilters">
+                                            <MudSelectItem Value="@((Guid?)null)">All</MudSelectItem>
+                                            @foreach (var c in _categories)
+                                            {
+                                                <MudSelectItem Value="@((Guid?)c.Id)">@c.Name</MudSelectItem>
+                                            }
+                                        </MudSelect>
+
+                                        <MudSelect T="bool?" Label="Planned"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Value="_fIsForPlanning"
+                                                   @bind-Value:after="ApplyFilters"
+                                                   Clearable="true"
+                                                   OnClearButtonClick="ApplyFilters">
+                                            <MudSelectItem Value="@((bool?)null)">All</MudSelectItem>
+                                            <MudSelectItem Value="@((bool?)true)">For Planning only</MudSelectItem>
+                                            <MudSelectItem Value="@((bool?)false)">Actual only</MudSelectItem>
+                                        </MudSelect>
+
+                                        <MudTextField Label="Note contains"
+                                                      Variant="Variant.Outlined"
+                                                      Margin="Margin.Dense"
+                                                      Class="w-100"
+                                                      @bind-Value="_fNote"
+                                                      @bind-Value:after="ApplyFilters"
+                                                      Clearable="true"
+                                                      OnClearButtonClick="ApplyFilters" />
+
+                                        <MudNumericField T="decimal?" Label="Min amount"
+                                                         Variant="Variant.Outlined"
+                                                         Margin="Margin.Dense"
+                                                         Class="w-100"
+                                                         @bind-Value="_fMinAmount"
+                                                         @bind-Value:after="ApplyFilters"
+                                                         Clearable="true" />
+
+                                        <MudNumericField T="decimal?" Label="Max amount"
+                                                         Variant="Variant.Outlined"
+                                                         Margin="Margin.Dense"
+                                                         Class="w-100"
+                                                         @bind-Value="_fMaxAmount"
+                                                         @bind-Value:after="ApplyFilters"
+                                                         Clearable="true" />
+
+                                        <MudStack Row="true" Spacing="2">
+
+                                            <MudButton Variant="Variant.Outlined"
+                                                       Disabled="_busy"
+                                                       OnClick="ResetFilters">
+                                                Reset
+                                            </MudButton>
+                                        </MudStack>
+
+                                    </MudStack>
+                                </ChildContent>
+                            </MudExpansionPanel>
+                        </div>
+                    </MudExpansionPanels>
+                    <div class="table-scroll">
+                        <MudTable Items="_items"
+                                  Dense="true"
+                                  Hover="true"
+                                  Class="mt-2"
+                                  RowsPerPage="20"
+                                  RowClassFunc="TxRowClass">
+                            <ToolBarContent>
+                                <MudText Typo="Typo.h6">My transactions</MudText>
+                            </ToolBarContent>
+                            <HeaderContent>
+                                <MudTh>
+                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.OccurredOn)">
+                                        Date
+                                    </MudTableSortLabel>
+                                </MudTh>
+                                <MudTh>
+                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.OccurredOn)">
+                                        Account
+                                    </MudTableSortLabel>
+                                </MudTh>
+                                <MudTh>
+                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.EntryType)">
+                                        Type
+                                    </MudTableSortLabel>
+                                </MudTh>
+                                <MudTh>
+                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.Amount)">
+                                        Amount
+                                    </MudTableSortLabel>
+                                </MudTh>
+                                <MudTh>
+                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.CategoryId)">
+                                        Category
+                                    </MudTableSortLabel>
+                                </MudTh>
+                                <MudTh>
+                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.Note ?? string.Empty)">
+                                        Note
+                                    </MudTableSortLabel>
+                                </MudTh>
+                                <MudTh></MudTh>
+                            </HeaderContent>
+
+                            <RowTemplate Context="tx">
+                                <MudTd>@tx.OccurredOn.ToString("yyyy-MM-dd")</MudTd>
+                                <MudTd>
+                                    <div class="icon-option">
+                                        <MudIcon Icon="@GetAccountIcon(tx.AccountId).GetIcon()" />
+                                        @GetAccountName(tx.AccountId)
+                                    </div>
+                                </MudTd>
+                                <MudTd>@(tx.EntryType.ToLocalizedString(L))</MudTd>
+                                <MudTd>@SignedAmount(tx) @tx.Currency</MudTd>
+                                <MudTd>@CategoryName(tx.CategoryId)</MudTd>
+                                <MudTd>@tx.Note</MudTd>
+                                <MudTd Class="align-right">
+                                    @if (tx.IsPlanned)
+                                    {
+                                        <MudIconButton Icon="@Icons.Material.Filled.AddTask"
+                                                       Disabled="_busy"
+                                                       OnClick="@(async () => await OpenRealizePlannedAsync(tx))" />
+                                    }
+
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                   Disabled="_busy"
+                                                   OnClick="@(async () => await OpenEditAsync(tx))" />
+
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Color="Color.Error"
+                                                   Disabled="_busy"
+                                                   OnClick="@(async () => await ConfirmDeleteAsync(tx))" />
+                                </MudTd>
+                            </RowTemplate>
+
+                            <PagerContent>
+                                <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
+                            </PagerContent>
+                        </MudTable>
+                    </div>
+                </MudItem>
+
+                <!-- RIGHT: filters (one per row); stacks under center on small screens -->
+                <MudItem xs="12" sm="4" lg="3" Class="d-none d-sm-block">
+                    <MudExpansionPanels Class="mb-6">
+                        <MudExpansionPanel Expanded="true" KeepContentAlive="true" Class="pa-4" elevation="2" Style="position: sticky; top: 88px;">
+                            <TitleContent>
+                                <div class="d-flex">
+                                    <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-3"></MudIcon>
+                                    <MudText Typo="Typo.h5">Filters</MudText>
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudStack Spacing="2" Class="mt-2">
+
+                                    <MudDatePicker Label="From"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Date="FilterFromDateTime"
+                                                   @bind-Date:after="ApplyFilters"
+                                                   Clearable="true" />
+
+                                    <MudDatePicker Label="To"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Date="FilterToDateTime"
+                                                   @bind-Date:after="ApplyFilters"
+                                                   Clearable="true" />
+
+                                    <MudSelect T="DateOnly?" Label="Month"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               @bind-Value="_fMonth"
+                                               @bind-Value:after="ApplyFilters"
+                                               Clearable="true"
+                                               OnClearButtonClick="CrearFDates">
+                                        <MudSelectItem Value="@((DateOnly?)null)">All</MudSelectItem>
+
+                                        @foreach (var m in _monthOptions)
+                                        {
+                                            <MudSelectItem Value="@((DateOnly?)m)">@m.ToString("MMMM yyyy")</MudSelectItem>
+                                        }
+                                    </MudSelect>
+
+                                    <MudSelect T="Guid?" Label="Account"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               @bind-Value="_fAccountId"
+                                               @bind-Value:after="ApplyFilters"
+                                               Clearable="true"
+                                               OnClearButtonClick="ApplyFilters">
+                                        <MudSelectItem Value="@((Guid?)null)">All</MudSelectItem>
+                                        @foreach (var a in _accounts)
+                                        {
+                                            <MudSelectItem Value="@((Guid?)a.Id)">@a.Name</MudSelectItem>
+                                        }
+                                    </MudSelect>
+
+                                    <MudSelect T="EntryType?" Label="Type"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               @bind-Value="_fEntryType"
+                                               @bind-Value:after="ApplyFilters"
+                                               Clearable="true"
+                                               OnClearButtonClick="ApplyFilters">
+                                        <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">All</MudSelectItem>
+                                        <MudSelectItem T="EntryType?" Value="@EntryType.Income">Income</MudSelectItem>
+                                        <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">Outcome</MudSelectItem>
+                                    </MudSelect>
+
+                                    <MudSelect T="Guid?" Label="Category"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               @bind-Value="_fCategoryId"
+                                               @bind-Value:after="ApplyFilters"
+                                               Clearable="true"
+                                               OnClearButtonClick="ApplyFilters">
+                                        <MudSelectItem Value="@((Guid?)null)">All</MudSelectItem>
+                                        @foreach (var c in _categories)
+                                        {
+                                            <MudSelectItem Value="@((Guid?)c.Id)">@c.Name</MudSelectItem>
+                                        }
+                                    </MudSelect>
+
+                                    <MudSelect T="bool?" Label="Planned"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               @bind-Value="_fIsForPlanning"
+                                               @bind-Value:after="ApplyFilters"
+                                               Clearable="true"
+                                               OnClearButtonClick="ApplyFilters">
+                                        <MudSelectItem Value="@((bool?)null)">All</MudSelectItem>
+                                        <MudSelectItem Value="@((bool?)true)">For Planning only</MudSelectItem>
+                                        <MudSelectItem Value="@((bool?)false)">Actual only</MudSelectItem>
+                                    </MudSelect>
+
+                                    <MudTextField Label="Note contains"
+                                                  Variant="Variant.Outlined"
+                                                  Margin="Margin.Dense"
+                                                  Class="w-100"
+                                                  @bind-Value="_fNote"
+                                                  @bind-Value:after="ApplyFilters"
+                                                  Clearable="true"
+                                                  OnClearButtonClick="ApplyFilters" />
+
+                                    <MudNumericField T="decimal?" Label="Min amount"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"
+                                                     Class="w-100"
+                                                     @bind-Value="_fMinAmount"
+                                                     @bind-Value:after="ApplyFilters"
+                                                     Clearable="true" />
+
+                                    <MudNumericField T="decimal?" Label="Max amount"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"
+                                                     Class="w-100"
+                                                     @bind-Value="_fMaxAmount"
+                                                     @bind-Value:after="ApplyFilters"
+                                                     Clearable="true" />
+
+                                    <MudStack Row="true" Spacing="2">
+
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Disabled="_busy"
+                                                   OnClick="ResetFilters">
+                                            Reset
+                                        </MudButton>
+                                    </MudStack>
+
+                                </MudStack>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
+                </MudItem>
+                <MudItem xs="12" lg="1" Class="d-none d-lg-block">
+                </MudItem>
+            </MudGrid>
+
+        </MudContainer>
+    </Authorized>
+
+    <NotAuthorized>
+        <MudContainer Class="d-flex justify-center align-center" Style="height:100vh !important">
+            <MudPaper Elevation="5" Class="pa-10" style="text-align:center">
+                <MudText Typo="Typo.h6">Please login first</MudText>
+                <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" Href="/login">
+                    Go to login
+                </MudButton>
+            </MudPaper>
+        </MudContainer>
+    </NotAuthorized>
+</AuthorizeView>

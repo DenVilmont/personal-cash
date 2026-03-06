@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Application\**" />
+    <Compile Remove="Domain\**" />
+    <Compile Remove="Infrastructure\**" />
+    <Content Remove="Application\**" />
+    <Content Remove="Domain\**" />
+    <Content Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="Application\**" />
+    <EmbeddedResource Remove="Domain\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <None Remove="Application\**" />
+    <None Remove="Domain\**" />
+    <None Remove="Infrastructure\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.3" PrivateAssets="all" />
+    <PackageReference Include="MudBlazor" Version="9.0.0" />
+    <PackageReference Include="Supabase" Version="1.1.1" />
+    <!-- <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" /> -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Supabase\Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="Application\Application.csproj" />
+    <ProjectReference Include="Domain\Domain.csproj" />
+    <ProjectReference Include="Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+	<BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+  </PropertyGroup>
+
+</Project>

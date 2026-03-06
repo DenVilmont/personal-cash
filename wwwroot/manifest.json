@@ -1,6 +1,6 @@
 {
-  "name": "BlazorWebAssemblySupabaseTemplate",
-  "short_name": "BlazorWebAssemblySupabaseTemplate",
+  "name": "PersonalCash",
+  "short_name": "PersonalCash",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

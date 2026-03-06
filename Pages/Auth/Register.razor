@@ -1,0 +1,57 @@
+﻿@inherits PersonalCash.Shared.UiComponentBase
+
+@using Infrastructure.Auth
+@inject AuthService Auth
+@inject NavigationManager Nav
+
+<MudContainer Class="d-flex justify-center align-center" Style="height:100vh !important">
+    <MudPaper Elevation="5" Class="pa-10" style="text-align:center">
+        <MudContainer Class="d-flex flex-column justify-center" style="width: 450px">
+            <MudText Typo="Typo.h5">Create account</MudText>
+            <br>
+
+            <MudTextField Label="Email"
+                          @bind-Value="email"
+                          Variant="Variant.Outlined"
+                          Immediate="true" />
+
+            <MudTextField Label="Password"
+                          @bind-Value="password"
+                          Variant="Variant.Outlined"
+                          InputType="InputType.Password"
+                          Immediate="true" />
+
+            <br>
+
+            <MudButton Variant="Variant.Filled"
+                       FullWidth
+                       Color="Color.Primary"
+                       Disabled="@_busy"
+                       OnClick="OnRegister">
+                Create account
+            </MudButton>
+
+            <MudButton Class="mt-2"
+                       Variant="Variant.Outlined"
+                       FullWidth
+                       Disabled="@_busy"
+                       OnClick="@(() => Nav.NavigateTo("/login"))">
+                Back to login
+            </MudButton>
+
+            @if (!string.IsNullOrWhiteSpace(message))
+            {
+                <MudAlert Class="mt-4" Severity="Severity.Info" Variant="Variant.Outlined">
+                    @message
+                </MudAlert>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(error))
+            {
+                <MudAlert Class="mt-4" Severity="Severity.Error" Variant="Variant.Outlined">
+                    @error
+                </MudAlert>
+            }
+        </MudContainer>
+    </MudPaper>
+</MudContainer>

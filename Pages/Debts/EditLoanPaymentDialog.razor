@@ -1,0 +1,45 @@
+﻿@inherits PersonalCash.Shared.UiComponentBase
+
+@using MudBlazor
+@using Domain.Contracts
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="2">
+
+            <MudDatePicker Label="@L["Date"]"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="w-100"
+                           @bind-Date="DueDatePicker" />
+
+            <MudNumericField T="decimal"
+                             Label="@L["Amount"]"
+                             @bind-Value="_amount"
+                             Variant="Variant.Outlined"
+                             HideSpinButtons="true"
+                             Culture="CultureInfo.CurrentCulture"
+                             Format="0.00"
+                             Adornment="Adornment.Start"
+                             AdornmentText="@_currency" />
+
+            <MudSwitch T=" bool"
+                       Color="Color.Primary"
+                       @bind-Value="_isPaid"
+                       Label="@L["Paid"]" />
+
+            <MudTextField Label="@L[" Comment"]"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Lines="2"
+                          Class="w-100"
+                          @bind-Value="_note" />
+
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveAsync">@L["Save"]</MudButton>
+    </DialogActions>
+</MudDialog>

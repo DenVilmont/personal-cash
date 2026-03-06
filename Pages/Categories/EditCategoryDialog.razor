@@ -1,0 +1,26 @@
+﻿@inherits PersonalCash.Shared.UiComponentBase
+
+@using Domain.Contracts
+@using MudBlazor
+@using Microsoft.AspNetCore.Components
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.subtitle1">Edit category</MudText>
+
+        <MudGrid Class="mt-2">
+            <MudItem xs="12">
+                <MudTextField Label="Name"
+                              @bind-Value="_name"
+                              Variant="Variant.Outlined" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_busy" OnClick="SaveAsync">
+            Save
+        </MudButton>
+    </DialogActions>
+</MudDialog>

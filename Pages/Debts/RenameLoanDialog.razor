@@ -1,0 +1,18 @@
+﻿@inherits PersonalCash.Shared.UiComponentBase
+
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField Label="@L["Name"]"
+        Variant="Variant.Outlined"
+        Margin="Margin.Dense"
+        Class="w-100"
+        @bind-Value="_name"/>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveAsync">@L["Save"]</MudButton>
+    </DialogActions>
+</MudDialog>
