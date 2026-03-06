@@ -10,9 +10,10 @@ public partial class Login
         await RunAsync(async () =>
         {
             await AuthService.Login(email, password);
+            NavigationManager.NavigateTo("transactions");
         }, successMessage: "Login successfull");
 
-        NavigationManager.NavigateTo("transactions");
+        
     }
 }
 
