@@ -92,7 +92,7 @@ public partial class MainLayout : LayoutComponentBase, IDisposable
         {
             await AuthService.Logout();
             UserSettingsStore.Clear();
-            NavigationManager.NavigateTo("/login", forceLoad: true);
+            NavigationManager.NavigateTo("login", forceLoad: true);
         }
         catch (Exception ex)
         {
