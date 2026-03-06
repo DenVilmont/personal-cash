@@ -195,4 +195,31 @@
   <data name="Login" xml:space="preserve">
     <value>Iniciar sesión</value>
   </data>
+  <data name="Demo_Login" xml:space="preserve">
+    <value>Iniciar sesión con usuario demo</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Bienvenido</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="Create_account" xml:space="preserve">
+    <value>Crear cuenta</value>
+  </data>
+  <data name="Login_successful" xml:space="preserve">
+    <value>Has iniciado sesión correctamente</value>
+  </data>
+  <data name="Demo_login_successful" xml:space="preserve">
+    <value>Se ha iniciado sesión en modo demo correctamente</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Atrás</value>
+  </data>
+  <data name="Account_created_Registration_message" xml:space="preserve">
+    <value>Cuenta creada. Revisa tu correo electrónico y confirma tu cuenta; luego inicia sesión.</value>
+  </data>
 </root>

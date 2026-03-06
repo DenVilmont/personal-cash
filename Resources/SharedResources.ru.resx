@@ -195,4 +195,31 @@
   <data name="Login" xml:space="preserve">
     <value>Авторизоваться</value>
   </data>
+  <data name="Demo_Login" xml:space="preserve">
+    <value>Авторизоваться с демо пользователем</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Добро пожаловать</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="Create_account" xml:space="preserve">
+    <value>Создать аккаунт</value>
+  </data>
+  <data name="Login_successful" xml:space="preserve">
+    <value>Вы успешно вошли в систему</value>
+  </data>
+  <data name="Demo_login_successful" xml:space="preserve">
+    <value>Вход в демо-режим выполнен успешно</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="Account_created_Registration_message" xml:space="preserve">
+    <value>Аккаунт создан. Проверьте почту и подтвердите аккаунт, затем войдите.</value>
+  </data>
 </root>

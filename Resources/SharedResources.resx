@@ -195,4 +195,31 @@
   <data name="Login" xml:space="preserve">
     <value>Login</value>
   </data>
+  <data name="Demo_Login" xml:space="preserve">
+    <value>Login with demo user</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Create_account" xml:space="preserve">
+    <value>Create an account</value>
+  </data>
+  <data name="Login_successful" xml:space="preserve">
+    <value>Login successful</value>
+  </data>
+  <data name="Demo_login_successful" xml:space="preserve">
+    <value>Demo login successful</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Account_created_Registration_message" xml:space="preserve">
+    <value>Account created. Check your email, confirm your account, then log in.</value>
+  </data>
 </root>
