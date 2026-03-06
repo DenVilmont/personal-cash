@@ -34,6 +34,15 @@ jobs:
 
       - name: Publish
         run: dotnet publish ./PersonalCash.csproj -c Release -o ./artifacts/publish -p:BaseHref=/${{ github.event.repository.name }}/
+        
+      - name: Rewrite base href
+        uses: SteveSandersonMS/ghaction-rewrite-base-href@5b54862a8831e012d4f1a8b2660894415fdde8ec # v1.1.0
+        with:
+          html_path: ./artifacts/publish/wwwroot/index.html
+          base_href: /${{ github.event.repository.name }}/
+          
+      - name: Add .nojekyll
+        run: touch ./artifacts/publish/wwwroot/.nojekyll
 
       - name: Add 404 fallback
         run: cp ./artifacts/publish/wwwroot/index.html ./artifacts/publish/wwwroot/404.html
