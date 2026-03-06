@@ -12,7 +12,7 @@ public partial class Login
             await AuthService.Login(email, password);
         }, successMessage: "Login successfull");
 
-        NavigationManager.NavigateTo(NavigationManager.BaseUri);
+        NavigationManager.NavigateTo("transactions");
     }
 }
 
