@@ -3,14 +3,15 @@ using Application.Services;
 using Domain.Contracts;
 using Infrastructure.Auth;
 using Infrastructure.Localization;
-using Infrastructure.Models;
 using Infrastructure.Settings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
 namespace PersonalCash.Pages.Settings
 {
+    [Authorize]
     public partial class SettingsPage
     {
         [Inject] private UserSettingsService UserSettingsService { get; set; } = default!;

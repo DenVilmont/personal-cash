@@ -273,4 +273,10 @@
   <data name="Transaction_CategoryRequired_ValidationError" xml:space="preserve">
     <value>Please select a category</value>
   </data>
+  <data name="Auth_NotAuthorized_Title" xml:space="preserve">
+    <value>Sign-in required</value>
+  </data>
+  <data name="Auth_NotAuthorized_Message" xml:space="preserve">
+    <value>You cannot access this page without signing in. Log in to your account or create a new one.</value>
+  </data>
 </root>

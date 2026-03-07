@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
+﻿using Application.Services;
 using Domain.Contracts;
 using Infrastructure.Auth;
 using Infrastructure.Settings;
-using Application.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace PersonalCash.Pages.Debts;
 
+[Authorize]
 public partial class DebtsPage
 {
     [Inject] private LoansService LoansService { get; set; } = default!;

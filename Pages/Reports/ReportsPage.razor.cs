@@ -1,12 +1,14 @@
 ﻿using Application.Services;
-using Domain.Enums;
 using Domain.Contracts;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using PersonalCash.Shared.Localization;
 
 namespace PersonalCash.Pages.Reports;
 
+[Authorize]
 public partial class ReportsPage
 {
     [Inject] private AccountsService AccountsService { get; set; } = default!;

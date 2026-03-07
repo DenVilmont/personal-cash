@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using Application.Services;
+﻿using Application.Services;
 using Domain.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace PersonalCash.Pages.Categories
 {
+    [Authorize]
     public partial class CategoriesPage
     {
         [Inject] public CategoriesService CategoriesService { get; set; } = default!;

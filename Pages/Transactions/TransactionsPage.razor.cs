@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using Application.Services;
-using Domain.Enums;
+﻿using Application.Services;
 using Domain.Contracts;
+using Domain.Enums;
 using Infrastructure.Auth;
 using Infrastructure.Settings;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace PersonalCash.Pages.Transactions;
 
+[Authorize]
 public partial class TransactionsPage
 {
     [Inject] private TransactionService TxService { get; set; } = default!;

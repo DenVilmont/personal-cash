@@ -3,7 +3,35 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
                 <NotAuthorized>
-                    <img width="600" src="https://i.kym-cdn.com/entries/icons/original/000/002/144/You_Shall_Not_Pass!_0-1_screenshot.jpg" />
+                        <MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
+                            <MudPaper Class="pa-6 pa-sm-8">
+                                <MudStack Spacing="3" AlignItems="AlignItems.Center">
+                                    <MudIcon Icon="@Icons.Material.Filled.Lock" Size="Size.Large" Color="Color.Warning" />
+
+                                    <MudText Typo="Typo.h5" Align="Align.Center">
+                                        @L["Auth_NotAuthorized_Title"]
+                                    </MudText>
+
+                                    <MudText Typo="Typo.body1" Align="Align.Center" Class="mud-secondary-text">
+                                        @L["Auth_NotAuthorized_Message"]
+                                    </MudText>
+
+                                    <MudStack Row="true" Wrap="Wrap.Wrap" Justify="Justify.Center" Spacing="2" Class="mt-2">
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="Color.Primary"
+                                                   Href="login">
+                                            @L["Login"]
+                                        </MudButton>
+
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Color="Color.Primary"
+                                                   Href="register">
+                                            @L["Create_account"]
+                                        </MudButton>
+                                    </MudStack>
+                                </MudStack>
+                            </MudPaper>
+                        </MudContainer>
                 </NotAuthorized>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
