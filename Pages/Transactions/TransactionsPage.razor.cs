@@ -35,7 +35,6 @@ public partial class TransactionsPage
     protected List<CategoryDto> _categories = new();
     protected Dictionary<Guid, string> _categoryById = new();
     protected Guid _categoryId;
-    protected string _categoryName = "";
     protected string? _note;
 
     private DateOnly? _fFrom;
@@ -144,12 +143,10 @@ public partial class TransactionsPage
         if (_categories.Count > 0)
         {
             _categoryId = _categories.First().Id;
-            _categoryName = CategoryName(_categoryId);
         }
         else
         {
             _categoryId = Guid.Empty;
-            _categoryName = "";
         }
         
 
@@ -163,10 +160,6 @@ public partial class TransactionsPage
                     ?? Guid.Empty;
     }
 
-    protected string GetAccountName(Guid id) => _accountById.TryGetValue(id, out var a) ? a.Name : "";
-    protected AccountIcon GetAccountIcon(Guid id) => AccountIconExtensions.FromDbKey(_accountById.TryGetValue(id, out var a) ? a.IconKey : "");
-    protected string CategoryName(Guid id) => _categoryById.TryGetValue(id, out var name) ? name : "";
-
     protected Task LoadAsync() => RunAsync(LoadCoreAsync);
 
     private async Task LoadCoreAsync()
@@ -178,19 +171,6 @@ public partial class TransactionsPage
 
         await InitializeFiltersAsync();
         ApplyFilters();
-    }
-
-    private string TxRowClass(TransactionDto tx, int rowNumber)
-    {
-        if (tx.IsPlanned)
-            return "tx-planned";
-
-        return tx.EntryType switch
-        {
-            EntryType.Income => "tx-income",
-            EntryType.Outcome => "tx-outcome",
-            _ => ""
-        };
     }
 
     protected async Task AddAsync()
@@ -265,14 +245,14 @@ public partial class TransactionsPage
 
         MarkupString msg = (MarkupString)(
             $"{SignedAmount(tx)} {tx.Currency}  {tx.OccurredOn:yyyy-MM-dd}<br/><br/>" +
-            $"This cannot be undone.");
+            $"{L["Transactions_DeleteDialog_Message"]}");
 
         // returns Task<bool?> (true = Yes, null/false = Cancel/No) :contentReference[oaicite:0]{index=0}
         bool? confirmed = await DialogService.ShowMessageBoxAsync(
-            "Delete transaction?",
+            L["Transactions_DeleteDialog_Title"],
             msg,
-            yesText: "Delete",
-            cancelText: "Cancel",
+            yesText: L["Delete"],
+            cancelText: L["Cancel"],
             options: options);
 
         if (confirmed == true)
@@ -284,7 +264,7 @@ public partial class TransactionsPage
         {
             await TxService.DeleteTransactionAndUpdateBalances(tx);
             await LoadCoreAsync();
-        }, successMessage: "Deleted");
+        }, successMessage: L["Deleted"]);
 
     protected async Task OpenEditAsync(TransactionDto tx)
     {

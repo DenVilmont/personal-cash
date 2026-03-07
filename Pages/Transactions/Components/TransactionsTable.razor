@@ -1,0 +1,94 @@
+﻿@using Domain.Contracts
+@using Domain.Enums
+@using PersonalCash.Presentation.Icons
+
+<div class="table-scroll">
+    <MudTable Items="Items"
+              Dense="true"
+              Hover="true"
+              Class="mt-2"
+              RowsPerPage="20"
+              RowClassFunc="TxRowClass">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">@L["Transactions_TableTitle"]</MudText>
+        </ToolBarContent>
+
+        <HeaderContent>
+            <MudTh>
+                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => x.OccurredOn))">
+                    @L["Date"]
+                </MudTableSortLabel>
+            </MudTh>
+
+            <MudTh>
+                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => GetAccountName(x.AccountId)))">
+                    @L["Account"]
+                </MudTableSortLabel>
+            </MudTh>
+
+            <MudTh>
+                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => x.EntryType))">
+                    @L["Type"]
+                </MudTableSortLabel>
+            </MudTh>
+
+            <MudTh>
+                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => SignedAmount(x)))">
+                    @L["Amount"]
+                </MudTableSortLabel>
+            </MudTh>
+
+            <MudTh>
+                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => GetCategoryName(x.CategoryId)))">
+                    @L["Category"]
+                </MudTableSortLabel>
+            </MudTh>
+
+            <MudTh>
+                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => x.Note ?? string.Empty))">
+                    @L["Note"]
+                </MudTableSortLabel>
+            </MudTh>
+
+            <MudTh></MudTh>
+        </HeaderContent>
+
+        <RowTemplate Context="tx">
+            <MudTd>@tx.OccurredOn.ToString("yyyy-MM-dd")</MudTd>
+
+            <MudTd>
+                <div class="icon-option">
+                    <MudIcon Icon="@GetAccountIcon(tx.AccountId).GetIcon()" />
+                    @GetAccountName(tx.AccountId)
+                </div>
+            </MudTd>
+
+            <MudTd>@tx.EntryType.ToLocalizedString(L)</MudTd>
+            <MudTd>@SignedAmount(tx) @tx.Currency</MudTd>
+            <MudTd>@GetCategoryName(tx.CategoryId)</MudTd>
+            <MudTd>@tx.Note</MudTd>
+
+            <MudTd Class="align-right">
+                @if (tx.IsPlanned)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.AddTask"
+                                   Disabled="Busy"
+                                   OnClick="@(async () => await OnRealizePlanned.InvokeAsync(tx))" />
+                }
+
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Disabled="Busy"
+                               OnClick="@(async () => await OnEdit.InvokeAsync(tx))" />
+
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Disabled="Busy"
+                               OnClick="@(async () => await OnDelete.InvokeAsync(tx))" />
+            </MudTd>
+        </RowTemplate>
+
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
+        </PagerContent>
+    </MudTable>
+</div>

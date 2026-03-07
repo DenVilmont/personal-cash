@@ -7,7 +7,6 @@ namespace Infrastructure.Models
     public class UserPageState : BaseModel
     {
         [PrimaryKey("id", false)]
-        [Column("id")]
         public Guid Id { get; set; }
 
         [Column("user_id")]

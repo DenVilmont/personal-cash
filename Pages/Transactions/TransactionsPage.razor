@@ -9,167 +9,90 @@
 @using PersonalCash.Pages.Transactions.Components
 
 
-<AuthorizeView>
-    <Authorized>
-        <MudContainer Class="pa-6" MaxWidth="MaxWidth.False">
+<MudContainer Class="pa-6" MaxWidth="MaxWidth.False">
 
-            <MudText Typo="Typo.h5">Transactions</MudText>
+    <MudText Typo="Typo.h5">@L["Transactions_PageTitle"]</MudText>
 
-            <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
+    <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
 
-                <!-- Balances -->
-                <MudItem xs="12" lg="2">
-                    <TransactionsBalancesPanel Accounts="_activeAccounts" />
-                </MudItem>
-                <!-- Balances -->
-                
-                <!-- CENTER: 50% on lg+ (Add + Table stay here) -->
-                <MudItem xs="12" sm="8" lg="7">
-                    <!-- AddForm -->
-                    <TransactionsAddForm @bind-OccurredOn="OccurredOnPicker"
-                                         @bind-Amount="_amount"
-                                         @bind-EntryType="_entryType"
-                                         @bind-IsForPlanning="_isForPlanning"
-                                         Accounts="_activeAccounts"
-                                         @bind-AccountId="SelectedAccountId"
-                                         Currency="@_currency"
-                                         Categories="_categories"
-                                         @bind-CategoryId="_categoryId"
-                                         @bind-Note="_note"
-                                         Busy="_busy"
-                                         OnAdd="AddAsync"
-                                         OnRefresh="LoadAsync" />
-                    <!-- AddForm -->
-                    <!-- Mobile Filters(xs): after Add, before Table -->
-                    <TransactionsFiltersPanel ContainerClass="d-block d-sm-none mt-4"
-                                              @bind-FromDate="FilterFromDateTime"
-                                              @bind-ToDate="FilterToDateTime"
-                                              @bind-Month="FilterMonth"
-                                              @bind-AccountIds="FilterAccountIds"
-                                              @bind-SelectedEntryType="_fEntryType"
-                                              @bind-CategoryIds="FilterCategoryIds"
-                                              @bind-IsForPlanning="_fIsForPlanning"
-                                              @bind-Note="_fNote"
-                                              @bind-MinAmount="_fMinAmount"
-                                              @bind-MaxAmount="_fMaxAmount"
-                                              MonthOptions="_monthOptions"
-                                              Accounts="_accounts"
-                                              Categories="_categories"
-                                              OnFiltersChanged="ApplyFilters"
-                                              Busy="_busy"
-                                              OnClear="ClearFilters"
-                                              OnSave="SaveFiltersAsync"
-                                              OnReset="ResetFiltersAsync" />
-                    <!-- Mobile Filters(xs): after Add, before Table -->
-                        
-                    <div class="table-scroll">
-                        <MudTable Items="_items"
-                                  Dense="true"
-                                  Hover="true"
-                                  Class="mt-2"
-                                  RowsPerPage="20"
-                                  RowClassFunc="TxRowClass">
-                            <ToolBarContent>
-                                <MudText Typo="Typo.h6">My transactions</MudText>
-                            </ToolBarContent>
-                            <HeaderContent>
-                                <MudTh>
-                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.OccurredOn)">
-                                        Date
-                                    </MudTableSortLabel>
-                                </MudTh>
-                                <MudTh>
-                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.AccountId)">
-                                        Account
-                                    </MudTableSortLabel>
-                                </MudTh>
-                                <MudTh>
-                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.EntryType)">
-                                        Type
-                                    </MudTableSortLabel>
-                                </MudTh>
-                                <MudTh>
-                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.Amount)">
-                                        Amount
-                                    </MudTableSortLabel>
-                                </MudTh>
-                                <MudTh>
-                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.CategoryId)">
-                                        Category
-                                    </MudTableSortLabel>
-                                </MudTh>
-                                <MudTh>
-                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.Note ?? string.Empty)">
-                                        Note
-                                    </MudTableSortLabel>
-                                </MudTh>
-                                <MudTh></MudTh>
-                            </HeaderContent>
+        <!-- Balances -->
+        <MudItem xs="12" lg="2">
+            <TransactionsBalancesPanel Accounts="_activeAccounts" />
+        </MudItem>
+        <!-- Balances -->
+        <!-- CENTER: 50% on lg+ (Add + Table stay here) -->
+        <MudItem xs="12" sm="8" lg="7">
+            <!-- AddForm -->
+            <TransactionsAddForm @bind-OccurredOn="OccurredOnPicker"
+                                 @bind-Amount="_amount"
+                                 @bind-EntryType="_entryType"
+                                 @bind-IsForPlanning="_isForPlanning"
+                                 Accounts="_activeAccounts"
+                                 @bind-AccountId="SelectedAccountId"
+                                 Currency="@_currency"
+                                 Categories="_categories"
+                                 @bind-CategoryId="_categoryId"
+                                 @bind-Note="_note"
+                                 Busy="_busy"
+                                 OnAdd="AddAsync"
+                                 OnRefresh="LoadAsync" />
+            <!-- AddForm -->
+            <!-- Mobile Filters(xs): after Add, before Table -->
+            <TransactionsFiltersPanel ContainerClass="d-block d-sm-none mt-4"
+                                      @bind-FromDate="FilterFromDateTime"
+                                      @bind-ToDate="FilterToDateTime"
+                                      @bind-Month="FilterMonth"
+                                      @bind-AccountIds="FilterAccountIds"
+                                      @bind-SelectedEntryType="_fEntryType"
+                                      @bind-CategoryIds="FilterCategoryIds"
+                                      @bind-IsForPlanning="_fIsForPlanning"
+                                      @bind-Note="_fNote"
+                                      @bind-MinAmount="_fMinAmount"
+                                      @bind-MaxAmount="_fMaxAmount"
+                                      MonthOptions="_monthOptions"
+                                      Accounts="_accounts"
+                                      Categories="_categories"
+                                      OnFiltersChanged="ApplyFilters"
+                                      Busy="_busy"
+                                      OnClear="ClearFilters"
+                                      OnSave="SaveFiltersAsync"
+                                      OnReset="ResetFiltersAsync" />
+            <!-- Mobile Filters(xs): after Add, before Table -->
+            <!-- Transactions Table -->
+            <TransactionsTable Items="_items"
+                               AccountsById="_accountById"
+                               CategoriesById="_categoryById"
+                               Busy="_busy"
+                               OnEdit="OpenEditAsync"
+                               OnDelete="ConfirmDeleteAsync"
+                               OnRealizePlanned="OpenRealizePlannedAsync" />
+            <!-- Transactions Table -->
+        </MudItem>
 
-                            <RowTemplate Context="tx">
-                                <MudTd>@tx.OccurredOn.ToString("yyyy-MM-dd")</MudTd>
-                                <MudTd>
-                                    <div class="icon-option">
-                                        <MudIcon Icon="@GetAccountIcon(tx.AccountId).GetIcon()" />
-                                        @GetAccountName(tx.AccountId)
-                                    </div>
-                                </MudTd>
-                                <MudTd>@(tx.EntryType.ToLocalizedString(L))</MudTd>
-                                <MudTd>@SignedAmount(tx) @tx.Currency</MudTd>
-                                <MudTd>@CategoryName(tx.CategoryId)</MudTd>
-                                <MudTd>@tx.Note</MudTd>
-                                <MudTd Class="align-right">
-                                    @if (tx.IsPlanned)
-                                    {
-                                        <MudIconButton Icon="@Icons.Material.Filled.AddTask"
-                                                       Disabled="_busy"
-                                                       OnClick="@(async () => await OpenRealizePlannedAsync(tx))" />
-                                    }
+        <!-- RIGHT: filters (one per row); stacks under center on small screens -->
+        <MudItem xs="12" sm="4" lg="3" Class="d-none d-sm-block">
+            <TransactionsFiltersPanel @bind-FromDate="FilterFromDateTime"
+                                      @bind-ToDate="FilterToDateTime"
+                                      @bind-Month="FilterMonth"
+                                      @bind-AccountIds="FilterAccountIds"
+                                      @bind-SelectedEntryType="_fEntryType"
+                                      @bind-CategoryIds="FilterCategoryIds"
+                                      @bind-IsForPlanning="_fIsForPlanning"
+                                      @bind-Note="_fNote"
+                                      @bind-MinAmount="_fMinAmount"
+                                      @bind-MaxAmount="_fMaxAmount"
+                                      MonthOptions="_monthOptions"
+                                      Accounts="_accounts"
+                                      Categories="_categories"
+                                      OnFiltersChanged="ApplyFilters"
+                                      Busy="_busy"
+                                      OnClear="ClearFilters"
+                                      OnSave="SaveFiltersAsync"
+                                      OnReset="ResetFiltersAsync" />
+        </MudItem>
+        <!-- RIGHT: filters (one per row); stacks under center on small screens -->
 
-                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                                   Disabled="_busy"
-                                                   OnClick="@(async () => await OpenEditAsync(tx))" />
-
-                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                                   Color="Color.Error"
-                                                   Disabled="_busy"
-                                                   OnClick="@(async () => await ConfirmDeleteAsync(tx))" />
-                                </MudTd>
-                            </RowTemplate>
-
-                            <PagerContent>
-                                <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
-                            </PagerContent>
-                        </MudTable>
-                    </div>
-                </MudItem>
-
-                <!-- RIGHT: filters (one per row); stacks under center on small screens -->
-                <MudItem xs="12" sm="4" lg="3" Class="d-none d-sm-block">
-                    <TransactionsFiltersPanel @bind-FromDate="FilterFromDateTime"
-                                              @bind-ToDate="FilterToDateTime"
-                                              @bind-Month="FilterMonth"
-                                              @bind-AccountIds="FilterAccountIds"
-                                              @bind-SelectedEntryType="_fEntryType"
-                                              @bind-CategoryIds="FilterCategoryIds"
-                                              @bind-IsForPlanning="_fIsForPlanning"
-                                              @bind-Note="_fNote"
-                                              @bind-MinAmount="_fMinAmount"
-                                              @bind-MaxAmount="_fMaxAmount"
-                                              MonthOptions="_monthOptions"
-                                              Accounts="_accounts"
-                                              Categories="_categories"
-                                              OnFiltersChanged="ApplyFilters" 
-                                              Busy="_busy"
-                                              OnClear="ClearFilters"
-                                              OnSave="SaveFiltersAsync"
-                                              OnReset="ResetFiltersAsync" />
-                </MudItem>
-                <!-- RIGHT: filters (one per row); stacks under center on small screens -->
-               
-                <MudItem xs="12" lg="1" Class="d-none d-lg-block">
-                </MudItem>
-            </MudGrid>
-        </MudContainer>
-    </Authorized>
-</AuthorizeView>
+        <MudItem xs="12" lg="1" Class="d-none d-lg-block">
+        </MudItem>
+    </MudGrid>
+</MudContainer>
