@@ -297,7 +297,7 @@ public partial class TransactionsPage
             CloseButton = true
         };
 
-        var dialog = await DialogService.ShowAsync<EditTransactionDialog>("Edit transaction", parameters, options);
+        var dialog = await DialogService.ShowAsync<EditTransactionDialog>(L["Transactions_EditTransaction_Title"], parameters, options);
         var result = await dialog.Result;
 
         if (result is null || result.Canceled)
@@ -309,7 +309,7 @@ public partial class TransactionsPage
         {
             await TxService.UpdateTransactionAndUpdateBalances(tx, updated);
             await LoadCoreAsync();
-        }, successMessage: "Updated");
+        }, successMessage: L["Updated"]);
     }
 
     protected async Task OpenRealizePlannedAsync(TransactionDto tx)
@@ -343,7 +343,7 @@ public partial class TransactionsPage
             CloseButton = true
         };
 
-        var dialog = await DialogService.ShowAsync<RealizePlannedTransactionDialog>("Realize planned transaction", parameters, options);
+        var dialog = await DialogService.ShowAsync<RealizePlannedTransactionDialog>(L["Transactions_RealizePlannedTransaction_Title"], parameters, options);
         var result = await dialog.Result;
 
         if (result is null || result.Canceled)
@@ -362,7 +362,7 @@ public partial class TransactionsPage
                 await TxService.DeleteTransactionAndUpdateBalances(updated);
             }
             await LoadCoreAsync();
-        }, successMessage: "Realized");
+        }, successMessage: L["Transactions_TransactionCompleted"]);
     }
 
     private void RebuildMonthOptions()

@@ -61,7 +61,7 @@ namespace PersonalCash.Pages.Transactions
                 Tx.AccountId = _accountId;
                 Tx.CategoryId = _categoryId;
                 Tx.Note = _note;
-
+                
                 MudDialog.Close(DialogResult.Ok(Tx));
                 return Task.CompletedTask;
             });

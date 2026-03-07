@@ -59,7 +59,7 @@ namespace PersonalCash.Pages.Transactions
                     Tx.Note = _note;
 
                     MudDialog.Close(DialogResult.Ok(Tx));
-                }, successMessage: "Realized");
+                });
             }
             else
             {
@@ -85,7 +85,7 @@ namespace PersonalCash.Pages.Transactions
                     Tx.Note = _note;
 
                     MudDialog.Close(DialogResult.Ok(Tx));
-                }, successMessage: "Realized");
+                });
             }
         }
 
