@@ -64,6 +64,21 @@ public partial class TransactionsPage
         await LoadAsync();
     }
 
+    protected Guid SelectedAccountId
+    {
+        get => _accountId;
+        set
+        {
+            _accountId = value;
+
+            if (_accountById.TryGetValue(value, out var acc) &&
+                !string.IsNullOrWhiteSpace(acc.Currency))
+            {
+                _currency = acc.Currency.Trim().ToUpperInvariant();
+            }
+        }
+    }
+
     private DateTime? FilterFromDateTime
     {
         get => _fFrom.HasValue ? _fFrom.Value.ToDateTime(TimeOnly.MinValue) : null;
@@ -105,14 +120,9 @@ public partial class TransactionsPage
 
         _accountById = _accounts.ToDictionary(x => x.Id, x => x);
 
-        // Prefer the first non-archived account, otherwise take the first one.
-        _accountId = _accounts.FirstOrDefault(a => !a.IsArchived)?.Id
-                     ?? _accounts.FirstOrDefault()?.Id
-                     ?? Guid.Empty;
-
-        // Keep currency in sync with the selected account.
-        if (_accountById.TryGetValue(_accountId, out var acc))
-            _currency = acc.Currency;
+        SelectedAccountId = _accounts.FirstOrDefault(a => !a.IsArchived)?.Id
+                    ?? _accounts.FirstOrDefault()?.Id
+                    ?? Guid.Empty;
     }
 
     protected string GetAccountName(Guid id) => _accountById.TryGetValue(id, out var a) ? a.Name : "";

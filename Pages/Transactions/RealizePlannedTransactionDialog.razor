@@ -18,8 +18,8 @@
 
             <MudItem xs="12" sm="6">
                 <MudSelect Disabled="true" T="EntryType" Label="Type" @bind-Value="_entryType" Variant="Variant.Outlined">
-                    <MudSelectItem Value="EntryType.Income">Income</MudSelectItem>
-                    <MudSelectItem Value="EntryType.Outcome">Outcome</MudSelectItem>
+                    <MudSelectItem Value="EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
+                    <MudSelectItem Value="EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
                 </MudSelect>
             </MudItem>
 

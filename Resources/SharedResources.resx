@@ -225,12 +225,6 @@
   <data name="Date" xml:space="preserve">
     <value>Date</value>
   </data>
-  <data name="Income" xml:space="preserve">
-    <value>Income</value>
-  </data>
-  <data name="Outcome" xml:space="preserve">
-    <value>Outcome</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
@@ -278,5 +272,14 @@
   </data>
   <data name="Auth_NotAuthorized_Message" xml:space="preserve">
     <value>You cannot access this page without signing in. Log in to your account or create a new one.</value>
+  </data>
+  <data name="Balances" xml:space="preserve">
+    <value>Balances</value>
+  </data>
+  <data name="No_accounts" xml:space="preserve">
+    <value>No accounts yet</value>
+  </data>
+  <data name="Add_transaction" xml:space="preserve">
+    <value>Add transaction</value>
   </data>
 </root>

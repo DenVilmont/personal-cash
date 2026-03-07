@@ -19,8 +19,8 @@
 
             <MudItem xs="12" sm="6">
                 <MudSelect T="EntryType" Label=@L["Type"] @bind-Value="_entryType" Variant="Variant.Outlined">
-                    <MudSelectItem Value="EntryType.Income">@L["Income"]</MudSelectItem>
-                    <MudSelectItem Value="EntryType.Outcome">@L["Outcome"]</MudSelectItem>
+                    <MudSelectItem Value="EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
+                    <MudSelectItem Value="EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
                 </MudSelect>
             </MudItem>
 

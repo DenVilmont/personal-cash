@@ -1,0 +1,70 @@
+﻿@using Domain.Enums
+
+@if (VisibleAccounts.Count == 0)
+{
+    <div>
+        <MudText Typo="Typo.body2" Class="mt-2">@L["No_accounts"]</MudText>
+    </div>
+}
+else
+{
+    <!-- Mobile / tablet -->
+    <div class="d-block d-lg-none">
+        <MudExpansionPanels Class="mb-6" Elevation="2">
+            <MudExpansionPanel Expanded="false" Class="pa-4" Style="position: sticky; top: 88px;">
+                <TitleContent>
+                    <div class="d-flex">
+                        <MudText Typo="Typo.h5">@L["Balances"]</MudText>
+                    </div>
+                </TitleContent>
+
+                <ChildContent>
+                    <MudStack Row="true" Spacing="2" Class="mt-3 balances-scroll" Wrap="Wrap.Wrap">
+                        @foreach (var a in VisibleAccounts)
+                        {
+                            <MudPaper Class="pa-2 balance-card" Elevation="0" Outlined="true">
+                                <div class="icon-option">
+                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                    <span>@a.Name</span>
+                                </div>
+
+                                <div class="balance-actual">@a.BalanceActual.ToString("N2") @a.Currency</div>
+                                <div class="balance-expected text-muted">@a.BalanceExpected.ToString("N2") @a.Currency</div>
+                            </MudPaper>
+                        }
+                    </MudStack>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </div>
+
+    <!-- Desktop -->
+    <div class="d-none d-lg-block">
+        <MudPaper Class="pa-4" Style="position: sticky; top: 88px;">
+            <MudText Typo="Typo.h6">@L["Balances"]</MudText>
+
+            <MudStack Spacing="2" Class="mt-3">
+                @foreach (var a in VisibleAccounts)
+                {
+                    <div class="balance-row">
+                        <div class="balance-left">
+                            <div class="icon-option">
+                                <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                <span>@a.Name</span>
+                            </div>
+                        </div>
+
+                        <div class="balance-right">
+                            <div class="balance-actual">
+                                @a.BalanceActual.ToString("N2") @a.Currency
+                            </div>
+                            <div class="balance-expected text-muted">
+                                @a.BalanceExpected.ToString("N2") @a.Currency
+                            </div>
+                        </div>
+                    </div>
+                }
+            </MudStack>
+        </MudPaper>
+    </div>
+}

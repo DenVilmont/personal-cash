@@ -6,6 +6,7 @@
 @using Domain.Enums
 @using Domain.Contracts;
 @using System.Globalization
+@using PersonalCash.Pages.Transactions.Components
 
 
 <AuthorizeView>
@@ -16,221 +17,36 @@
 
             <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
 
-                <!-- Balances row for <lg -->
-                <MudItem xs="12" Class="d-block d-lg-none">
-                    <MudExpansionPanels Class="mb-6" Elevation="2">
-                        <MudExpansionPanel Expanded="false" Class="pa-4" Style="position: sticky; top: 88px;">
-                            <TitleContent>
-                                <div class="d-flex">
-                                    <MudText Typo="Typo.h5">@L["Balances"]</MudText>
-                                </div>
-                            </TitleContent>
-                            <ChildContent>
-                                @if (_activeAccounts.Count == 0)
-                                {
-                                    <MudText Typo="Typo.body2" Class="mt-2">@L["No accounts"]</MudText>
-                                }
-                                else
-                                {
-                                    <MudStack Row="true" Spacing="2" Class="mt-3 balances-scroll" Wrap="Wrap.Wrap">
-                                        @foreach (var a in _activeAccounts.Where(x => x.ShowBalance).OrderBy(x => x.Name))
-                                        {
-                                            <MudPaper Class="pa-2 balance-card" Elevation="0" Outlined="true">
-                                                <div class="icon-option">
-                                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
-                                                    <span>@a.Name</span>
-                                                </div>
-
-                                                <div class="balance-actual">@a.BalanceActual.ToString("N2") @a.Currency</div>
-                                                <div class="balance-expected text-muted">@a.BalanceExpected.ToString("N2") @a.Currency</div>
-                                            </MudPaper>
-                                        }
-                                    </MudStack>
-                                }
-                            </ChildContent>
-                        </MudExpansionPanel>
-                    </MudExpansionPanels>
+                <!-- Balances -->
+                <MudItem xs="12" lg="2">
+                    <TransactionsBalancesPanel Accounts="_activeAccounts" />
                 </MudItem>
+                <!-- Balances -->
 
-                <!-- Balances row for lg -->
-                <MudItem xs="12" lg="2" Class="d-none d-lg-block">
-                    <MudPaper Class="pa-4" Style="position: sticky; top: 88px;">
-                        <MudText Typo="Typo.h6">@L["Balances"]</MudText>
-
-                        @if (_activeAccounts.Count == 0)
-                        {
-                            <MudText Typo="Typo.body2" Class="mt-2">@L["No accounts"]</MudText>
-                        }
-                        else
-                        {
-                            <MudStack Spacing="2" Class="mt-3">
-                                @foreach (var a in _activeAccounts.Where(x => x.ShowBalance).OrderBy(x => x.Name))
-                                {
-                                    <div class="balance-row">
-                                        <div class="balance-left">
-                                            <div class="icon-option">
-                                                <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
-                                                <span>@a.Name</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="balance-right">
-                                            <div class="balance-actual">
-                                                @a.BalanceActual.ToString("N2") @a.Currency
-                                            </div>
-                                            <div class="balance-expected text-muted">
-                                                @a.BalanceExpected.ToString("N2") @a.Currency
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </MudStack>
-                        }
-                    </MudPaper>
-                </MudItem>
 
                 <!-- CENTER: 50% on lg+ (Add + Table stay here) -->
                 <MudItem xs="12" sm="8" lg="7">
 
                     <MudExpansionPanels Class="mb-6" Elevation="2">
-                        <MudExpansionPanel Expanded="false" Class="pa-4" Style="position: sticky; top: 88px;">
-                            <TitleContent>
-                                <div class="d-flex">
-                                    <MudIcon Icon="@Icons.Material.Filled.AddCircle" class="mr-3"></MudIcon>
-                                    <MudText Typo="Typo.h5">Add transaction</MudText>
-                                </div>
-                            </TitleContent>
-                            <ChildContent>
-                                <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
-                                    <!-- Row 1 -->
-                                    <MudItem xs="12" md="6" Class="d-flex">
-                                        <MudDatePicker Label="Date"
-                                                       Variant="Variant.Outlined"
-                                                       Margin="Margin.Dense"
-                                                       Class="w-100"
-                                                       @bind-Date="OccurredOnPicker" />
-                                    </MudItem>
+                        
+                        <!-- AddForm -->
+                        <TransactionsAddForm @bind-OccurredOn="OccurredOnPicker"
+                                             @bind-Amount="_amount"
+                                             @bind-EntryType="_entryType"
+                                             @bind-IsForPlanning="_isForPlanning"
+                                             Accounts="_activeAccounts"
+                                             @bind-AccountId="SelectedAccountId"
+                                             Currency="@_currency"
+                                             Categories="_categories"
+                                             @bind-CategoryId="_categoryId"
+                                             @bind-Note="_note"
+                                             Busy="_busy"
+                                             OnAdd="AddAsync"
+                                             OnRefresh="LoadAsync" />
+                        <!-- AddForm -->
 
-                                    <MudItem xs="12" md="6" Class="d-flex">
-                                        <MudSelect T="EntryType"
-                                                   Label="Type"
-                                                   Variant="Variant.Outlined"
-                                                   Margin="Margin.Dense"
-                                                   Class="w-100"
-                                                   @bind-Value="_entryType">
-                                            <MudSelectItem Value="EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
-                                            <MudSelectItem Value="EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
-                                        </MudSelect>
-                                    </MudItem>
-                                    <MudItem xs="12" md="6">
-                                        @if (_activeAccounts.Count == 0)
-                                        {
-                                            <MudTextField T="Guid"
-                                                          Label="Account"
-                                                          Disabled="true"
-                                                          Variant="Variant.Outlined"
-                                                          Margin="Margin.Dense"
-                                                          Class="w-100" />
-                                        }
-                                        else
-                                        {
-                                            <MudSelect T="Guid"
-                                                       Label="Account"
-                                                       Variant="Variant.Outlined"
-                                                       Margin="Margin.Dense"
-                                                       Class="w-100"
-                                                       @bind-Value="_accountId">
-                                                @foreach (var a in _activeAccounts)
-                                                {
-                                                    <MudSelectItem Value="@a.Id">
-                                                        <div class="icon-option">
-                                                            <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
-                                                            @a.Name (@a.Currency)
-                                                        </div>
-                                                    </MudSelectItem>
-                                                }
-                                            </MudSelect>
-                                        }
-                                    </MudItem>
 
-                                    <MudItem xs="12" md="6" Class="d-flex">
-                                        <MudNumericField T="decimal"
-                                                         Label="Amount"
-                                                         Variant="Variant.Outlined"
-                                                         Margin="Margin.Dense"
-                                                         Class="w-100"
-                                                         HideSpinButtons="true"
-                                                         Immediate="true"
-                                                         Culture="CultureInfo.CurrentCulture"
-                                                         Adornment="Adornment.Start"
-                                                         AdornmentText=@_currency
-                                                         @bind-Value="_amount" />
-                                    </MudItem>
-                                    <MudItem xs="12" md="6" Class="d-flex">
-                                        @if (_categories.Count == 0)
-                                        {
-                                            <MudTextField T="Guid"
-                                                          Label="Category"
-                                                          Disabled="true"
-                                                          Variant="Variant.Outlined"
-                                                          Margin="Margin.Dense"
-                                                          Class="w-100" />
-                                        }
-                                        else
-                                        {
-                                            <MudSelect T="Guid"
-                                                       Label="Category"
-                                                       Variant="Variant.Outlined"
-                                                       Margin="Margin.Dense"
-                                                       Class="w-100"
-                                                       @bind-Value="_categoryId">
-                                                @foreach (var c in _categories)
-                                                {
-                                                    <MudSelectItem Value="@c.Id">@c.Name</MudSelectItem>
-                                                }
-                                            </MudSelect>
-                                        }
-                                    </MudItem>
 
-                                    <!-- Row 3 -->
-                                    <MudItem xs="12" md="12" Class="d-flex">
-                                        <MudTextField Label="Note"
-                                                      Variant="Variant.Outlined"
-                                                      Margin="Margin.Dense"
-                                                      Lines="3"
-                                                      Class="w-100"
-                                                      @bind-Value="_note" />
-                                    </MudItem>
-
-                                    <!-- Row 4 -->
-                                    <MudItem xs="12" md="6" Class="d-flex">
-                                        <MudStack Row="true" alignitems="AlignItems.Center" Class="w-100">
-                                            <MudSwitch T="bool"
-                                                       Label="Is For Planning"
-                                                       @bind-Value="_isForPlanning"
-                                                       Color="Color.Primary" />
-                                        </MudStack>
-                                    </MudItem>
-
-                                    <!-- Buttons -->
-                                    <MudItem xs="12">
-                                        <MudButton Variant="Variant.Filled"
-                                                   Color="Color.Primary"
-                                                   Disabled="_busy || _accountId == Guid.Empty || _categoryId == Guid.Empty"
-                                                   OnClick="AddAsync">
-                                            @L["Add"]
-                                        </MudButton>
-
-                                        <MudButton Class="ml-2"
-                                                   Variant="Variant.Outlined"
-                                                   Disabled="_busy"
-                                                   OnClick="LoadAsync">
-                                            @L["Refresh"]
-                                        </MudButton>
-                                    </MudItem>
-                                </MudGrid>
-                            </ChildContent>
-                        </MudExpansionPanel>
                         <!-- Filters on phone (xs): after Add, before Table -->
                         <div class="d-block d-sm-none mt-4">
                             <MudExpansionPanel Expanded="false" KeepContentAlive="true" Class="pa-4" elevation="2" Style="position: sticky; top: 88px;">
@@ -299,8 +115,8 @@
                                                    Clearable="true"
                                                    OnClearButtonClick="ApplyFilters">
                                             <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">All</MudSelectItem>
-                                            <MudSelectItem T="EntryType?" Value="@EntryType.Income">Income</MudSelectItem>
-                                            <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">Outcome</MudSelectItem>
+                                            <MudSelectItem T="EntryType?" Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
+                                            <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
                                         </MudSelect>
 
                                         <MudSelect T="Guid?" Label="Category"

@@ -225,12 +225,6 @@
   <data name="Date" xml:space="preserve">
     <value>Дата</value>
   </data>
-  <data name="Income" xml:space="preserve">
-    <value>Доход</value>
-  </data>
-  <data name="Outcome" xml:space="preserve">
-    <value>Расходы</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>Тип</value>
   </data>
@@ -278,5 +272,14 @@
   </data>
   <data name="Auth_NotAuthorized_Message" xml:space="preserve">
     <value>У вас нет доступа к этой странице без авторизации. Войдите в аккаунт или создайте новый.</value>
+  </data>
+  <data name="Balances" xml:space="preserve">
+    <value>Балансы</value>
+  </data>
+  <data name="No_accounts" xml:space="preserve">
+    <value>Счетов пока нет</value>
+  </data>
+  <data name="Add_transaction" xml:space="preserve">
+    <value>Добавить транзакцию</value>
   </data>
 </root>
