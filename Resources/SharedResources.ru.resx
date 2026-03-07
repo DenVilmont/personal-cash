@@ -282,4 +282,76 @@
   <data name="Add_transaction" xml:space="preserve">
     <value>Добавить транзакцию</value>
   </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="Filter_Date_From" xml:space="preserve">
+    <value>Дата начала</value>
+  </data>
+  <data name="Filter_Date_To" xml:space="preserve">
+    <value>Дата окончания</value>
+  </data>
+  <data name="Filter_Month" xml:space="preserve">
+    <value>Месяц</value>
+  </data>
+  <data name="Filter_Month_All" xml:space="preserve">
+    <value>Все месяцы</value>
+  </data>
+  <data name="Filter_Account" xml:space="preserve">
+    <value>Счёт</value>
+  </data>
+  <data name="Filter_Account_All" xml:space="preserve">
+    <value>Все счета</value>
+  </data>
+  <data name="Filter_Type" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="Filter_Type_All" xml:space="preserve">
+    <value>Все типы</value>
+  </data>
+  <data name="Filter_Category" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="Filter_Category_All" xml:space="preserve">
+    <value>Все категории</value>
+  </data>
+  <data name="Filter_Planned" xml:space="preserve">
+    <value>Запланировано</value>
+  </data>
+  <data name="Filter_Planned_All" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="Filter_PlannedOnly" xml:space="preserve">
+    <value>Только запланированные</value>
+  </data>
+  <data name="Filter_ActualOnly" xml:space="preserve">
+    <value>Только выполненные</value>
+  </data>
+  <data name="Filter_NoteContains" xml:space="preserve">
+    <value>Текст примечания</value>
+  </data>
+  <data name="Filter_AmountFrom" xml:space="preserve">
+    <value>Сумма от</value>
+  </data>
+  <data name="Filter_AmountTo" xml:space="preserve">
+    <value>Сумма до</value>
+  </data>
+  <data name="Filter_Clear" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="Filter_Reset" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="Filter_Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="Filter_Saved_InfoMessage" xml:space="preserve">
+    <value>Фильтры были сохранены</value>
+  </data>
+  <data name="Filter_ResetCompleted_InfoMessage" xml:space="preserve">
+    <value>Фильтры сброшены, сохранённые фильтры удалены.</value>
+  </data>
+  <data name="Filter_Cleared_InfoMessage" xml:space="preserve">
+    <value>Фильтры очищены</value>
+  </data>
 </root>

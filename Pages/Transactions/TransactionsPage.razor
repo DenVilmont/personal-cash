@@ -22,170 +22,46 @@
                     <TransactionsBalancesPanel Accounts="_activeAccounts" />
                 </MudItem>
                 <!-- Balances -->
-
-
+                
                 <!-- CENTER: 50% on lg+ (Add + Table stay here) -->
                 <MudItem xs="12" sm="8" lg="7">
-
-                    <MudExpansionPanels Class="mb-6" Elevation="2">
+                    <!-- AddForm -->
+                    <TransactionsAddForm @bind-OccurredOn="OccurredOnPicker"
+                                         @bind-Amount="_amount"
+                                         @bind-EntryType="_entryType"
+                                         @bind-IsForPlanning="_isForPlanning"
+                                         Accounts="_activeAccounts"
+                                         @bind-AccountId="SelectedAccountId"
+                                         Currency="@_currency"
+                                         Categories="_categories"
+                                         @bind-CategoryId="_categoryId"
+                                         @bind-Note="_note"
+                                         Busy="_busy"
+                                         OnAdd="AddAsync"
+                                         OnRefresh="LoadAsync" />
+                    <!-- AddForm -->
+                    <!-- Mobile Filters(xs): after Add, before Table -->
+                    <TransactionsFiltersPanel ContainerClass="d-block d-sm-none mt-4"
+                                              @bind-FromDate="FilterFromDateTime"
+                                              @bind-ToDate="FilterToDateTime"
+                                              @bind-Month="FilterMonth"
+                                              @bind-AccountIds="FilterAccountIds"
+                                              @bind-SelectedEntryType="_fEntryType"
+                                              @bind-CategoryIds="FilterCategoryIds"
+                                              @bind-IsForPlanning="_fIsForPlanning"
+                                              @bind-Note="_fNote"
+                                              @bind-MinAmount="_fMinAmount"
+                                              @bind-MaxAmount="_fMaxAmount"
+                                              MonthOptions="_monthOptions"
+                                              Accounts="_accounts"
+                                              Categories="_categories"
+                                              OnFiltersChanged="ApplyFilters"
+                                              Busy="_busy"
+                                              OnClear="ClearFilters"
+                                              OnSave="SaveFiltersAsync"
+                                              OnReset="ResetFiltersAsync" />
+                    <!-- Mobile Filters(xs): after Add, before Table -->
                         
-                        <!-- AddForm -->
-                        <TransactionsAddForm @bind-OccurredOn="OccurredOnPicker"
-                                             @bind-Amount="_amount"
-                                             @bind-EntryType="_entryType"
-                                             @bind-IsForPlanning="_isForPlanning"
-                                             Accounts="_activeAccounts"
-                                             @bind-AccountId="SelectedAccountId"
-                                             Currency="@_currency"
-                                             Categories="_categories"
-                                             @bind-CategoryId="_categoryId"
-                                             @bind-Note="_note"
-                                             Busy="_busy"
-                                             OnAdd="AddAsync"
-                                             OnRefresh="LoadAsync" />
-                        <!-- AddForm -->
-
-
-
-                        <!-- Filters on phone (xs): after Add, before Table -->
-                        <div class="d-block d-sm-none mt-4">
-                            <MudExpansionPanel Expanded="false" KeepContentAlive="true" Class="pa-4" elevation="2" Style="position: sticky; top: 88px;">
-                                <TitleContent>
-                                    <div class="d-flex">
-                                        <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-3"></MudIcon>
-                                        <MudText Typo="Typo.h5">Filters</MudText>
-                                    </div>
-                                </TitleContent>
-                                <ChildContent>
-                                    <MudStack Spacing="2" Class="mt-2">
-
-                                        <MudDatePicker Label="From"
-                                                       Variant="Variant.Outlined"
-                                                       Margin="Margin.Dense"
-                                                       Class="w-100"
-                                                       @bind-Date="FilterFromDateTime"
-                                                       @bind-Date:after="ApplyFilters"
-                                                       Clearable="true" />
-
-                                        <MudDatePicker Label="To"
-                                                       Variant="Variant.Outlined"
-                                                       Margin="Margin.Dense"
-                                                       Class="w-100"
-                                                       @bind-Date="FilterToDateTime"
-                                                       @bind-Date:after="ApplyFilters"
-                                                       Clearable="true" />
-
-                                        <MudSelect T="DateOnly?" Label="Month"
-                                                   Variant="Variant.Outlined"
-                                                   Margin="Margin.Dense"
-                                                   Class="w-100"
-                                                   @bind-Value="_fMonth"
-                                                   @bind-Value:after="ApplyFilters"
-                                                   Clearable="true"
-                                                   OnClearButtonClick="CrearFDates">
-                                            <MudSelectItem Value="@((DateOnly?)null)">All</MudSelectItem>
-
-                                            @foreach (var m in _monthOptions)
-                                            {
-                                                <MudSelectItem Value="@((DateOnly?)m)">@m.ToString("MMMM yyyy")</MudSelectItem>
-                                            }
-                                        </MudSelect>
-
-                                        <MudSelect T="Guid?" Label="Account"
-                                                   Variant="Variant.Outlined"
-                                                   Margin="Margin.Dense"
-                                                   Class="w-100"
-                                                   @bind-Value="_fAccountId"
-                                                   @bind-Value:after="ApplyFilters"
-                                                   Clearable="true"
-                                                   OnClearButtonClick="ApplyFilters">
-                                            <MudSelectItem Value="@((Guid?)null)">All</MudSelectItem>
-                                            @foreach (var a in _accounts)
-                                            {
-                                                <MudSelectItem Value="@((Guid?)a.Id)">@a.Name</MudSelectItem>
-                                            }
-                                        </MudSelect>
-
-                                        <MudSelect T="EntryType?" Label="Type"
-                                                   Variant="Variant.Outlined"
-                                                   Margin="Margin.Dense"
-                                                   Class="w-100"
-                                                   @bind-Value="_fEntryType"
-                                                   @bind-Value:after="ApplyFilters"
-                                                   Clearable="true"
-                                                   OnClearButtonClick="ApplyFilters">
-                                            <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">All</MudSelectItem>
-                                            <MudSelectItem T="EntryType?" Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
-                                            <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
-                                        </MudSelect>
-
-                                        <MudSelect T="Guid?" Label="Category"
-                                                   Variant="Variant.Outlined"
-                                                   Margin="Margin.Dense"
-                                                   Class="w-100"
-                                                   @bind-Value="_fCategoryId"
-                                                   @bind-Value:after="ApplyFilters"
-                                                   Clearable="true"
-                                                   OnClearButtonClick="ApplyFilters">
-                                            <MudSelectItem Value="@((Guid?)null)">All</MudSelectItem>
-                                            @foreach (var c in _categories)
-                                            {
-                                                <MudSelectItem Value="@((Guid?)c.Id)">@c.Name</MudSelectItem>
-                                            }
-                                        </MudSelect>
-
-                                        <MudSelect T="bool?" Label="Planned"
-                                                   Variant="Variant.Outlined"
-                                                   Margin="Margin.Dense"
-                                                   Class="w-100"
-                                                   @bind-Value="_fIsForPlanning"
-                                                   @bind-Value:after="ApplyFilters"
-                                                   Clearable="true"
-                                                   OnClearButtonClick="ApplyFilters">
-                                            <MudSelectItem Value="@((bool?)null)">All</MudSelectItem>
-                                            <MudSelectItem Value="@((bool?)true)">For Planning only</MudSelectItem>
-                                            <MudSelectItem Value="@((bool?)false)">Actual only</MudSelectItem>
-                                        </MudSelect>
-
-                                        <MudTextField Label="Note contains"
-                                                      Variant="Variant.Outlined"
-                                                      Margin="Margin.Dense"
-                                                      Class="w-100"
-                                                      @bind-Value="_fNote"
-                                                      @bind-Value:after="ApplyFilters"
-                                                      Clearable="true"
-                                                      OnClearButtonClick="ApplyFilters" />
-
-                                        <MudNumericField T="decimal?" Label="Min amount"
-                                                         Variant="Variant.Outlined"
-                                                         Margin="Margin.Dense"
-                                                         Class="w-100"
-                                                         @bind-Value="_fMinAmount"
-                                                         @bind-Value:after="ApplyFilters"
-                                                         Clearable="true" />
-
-                                        <MudNumericField T="decimal?" Label="Max amount"
-                                                         Variant="Variant.Outlined"
-                                                         Margin="Margin.Dense"
-                                                         Class="w-100"
-                                                         @bind-Value="_fMaxAmount"
-                                                         @bind-Value:after="ApplyFilters"
-                                                         Clearable="true" />
-
-                                        <MudStack Row="true" Spacing="2">
-
-                                            <MudButton Variant="Variant.Outlined"
-                                                       Disabled="_busy"
-                                                       OnClick="ResetFilters">
-                                                Reset
-                                            </MudButton>
-                                        </MudStack>
-
-                                    </MudStack>
-                                </ChildContent>
-                            </MudExpansionPanel>
-                        </div>
-                    </MudExpansionPanels>
                     <div class="table-scroll">
                         <MudTable Items="_items"
                                   Dense="true"
@@ -203,7 +79,7 @@
                                     </MudTableSortLabel>
                                 </MudTh>
                                 <MudTh>
-                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.OccurredOn)">
+                                    <MudTableSortLabel SortBy="new Func<TransactionDto, object>(x => x.AccountId)">
                                         Account
                                     </MudTableSortLabel>
                                 </MudTh>
@@ -270,144 +146,27 @@
 
                 <!-- RIGHT: filters (one per row); stacks under center on small screens -->
                 <MudItem xs="12" sm="4" lg="3" Class="d-none d-sm-block">
-                    <MudExpansionPanels Class="mb-6">
-                        <MudExpansionPanel Expanded="true" KeepContentAlive="true" Class="pa-4" elevation="2" Style="position: sticky; top: 88px;">
-                            <TitleContent>
-                                <div class="d-flex">
-                                    <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-3"></MudIcon>
-                                    <MudText Typo="Typo.h5">Filters</MudText>
-                                </div>
-                            </TitleContent>
-                            <ChildContent>
-                                <MudStack Spacing="2" Class="mt-2">
-
-                                    <MudDatePicker Label="From"
-                                                   Variant="Variant.Outlined"
-                                                   Margin="Margin.Dense"
-                                                   Class="w-100"
-                                                   @bind-Date="FilterFromDateTime"
-                                                   @bind-Date:after="ApplyFilters"
-                                                   Clearable="true" />
-
-                                    <MudDatePicker Label="To"
-                                                   Variant="Variant.Outlined"
-                                                   Margin="Margin.Dense"
-                                                   Class="w-100"
-                                                   @bind-Date="FilterToDateTime"
-                                                   @bind-Date:after="ApplyFilters"
-                                                   Clearable="true" />
-
-                                    <MudSelect T="DateOnly?" Label="Month"
-                                               Variant="Variant.Outlined"
-                                               Margin="Margin.Dense"
-                                               Class="w-100"
-                                               @bind-Value="_fMonth"
-                                               @bind-Value:after="ApplyFilters"
-                                               Clearable="true"
-                                               OnClearButtonClick="CrearFDates">
-                                        <MudSelectItem Value="@((DateOnly?)null)">All</MudSelectItem>
-
-                                        @foreach (var m in _monthOptions)
-                                        {
-                                            <MudSelectItem Value="@((DateOnly?)m)">@m.ToString("MMMM yyyy")</MudSelectItem>
-                                        }
-                                    </MudSelect>
-
-                                    <MudSelect T="Guid?" Label="Account"
-                                               Variant="Variant.Outlined"
-                                               Margin="Margin.Dense"
-                                               Class="w-100"
-                                               @bind-Value="_fAccountId"
-                                               @bind-Value:after="ApplyFilters"
-                                               Clearable="true"
-                                               OnClearButtonClick="ApplyFilters">
-                                        <MudSelectItem Value="@((Guid?)null)">All</MudSelectItem>
-                                        @foreach (var a in _accounts)
-                                        {
-                                            <MudSelectItem Value="@((Guid?)a.Id)">@a.Name</MudSelectItem>
-                                        }
-                                    </MudSelect>
-
-                                    <MudSelect T="EntryType?" Label="Type"
-                                               Variant="Variant.Outlined"
-                                               Margin="Margin.Dense"
-                                               Class="w-100"
-                                               @bind-Value="_fEntryType"
-                                               @bind-Value:after="ApplyFilters"
-                                               Clearable="true"
-                                               OnClearButtonClick="ApplyFilters">
-                                        <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">All</MudSelectItem>
-                                        <MudSelectItem T="EntryType?" Value="@EntryType.Income">Income</MudSelectItem>
-                                        <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">Outcome</MudSelectItem>
-                                    </MudSelect>
-
-                                    <MudSelect T="Guid?" Label="Category"
-                                               Variant="Variant.Outlined"
-                                               Margin="Margin.Dense"
-                                               Class="w-100"
-                                               @bind-Value="_fCategoryId"
-                                               @bind-Value:after="ApplyFilters"
-                                               Clearable="true"
-                                               OnClearButtonClick="ApplyFilters">
-                                        <MudSelectItem Value="@((Guid?)null)">All</MudSelectItem>
-                                        @foreach (var c in _categories)
-                                        {
-                                            <MudSelectItem Value="@((Guid?)c.Id)">@c.Name</MudSelectItem>
-                                        }
-                                    </MudSelect>
-
-                                    <MudSelect T="bool?" Label="Planned"
-                                               Variant="Variant.Outlined"
-                                               Margin="Margin.Dense"
-                                               Class="w-100"
-                                               @bind-Value="_fIsForPlanning"
-                                               @bind-Value:after="ApplyFilters"
-                                               Clearable="true"
-                                               OnClearButtonClick="ApplyFilters">
-                                        <MudSelectItem Value="@((bool?)null)">All</MudSelectItem>
-                                        <MudSelectItem Value="@((bool?)true)">For Planning only</MudSelectItem>
-                                        <MudSelectItem Value="@((bool?)false)">Actual only</MudSelectItem>
-                                    </MudSelect>
-
-                                    <MudTextField Label="Note contains"
-                                                  Variant="Variant.Outlined"
-                                                  Margin="Margin.Dense"
-                                                  Class="w-100"
-                                                  @bind-Value="_fNote"
-                                                  @bind-Value:after="ApplyFilters"
-                                                  Clearable="true"
-                                                  OnClearButtonClick="ApplyFilters" />
-
-                                    <MudNumericField T="decimal?" Label="Min amount"
-                                                     Variant="Variant.Outlined"
-                                                     Margin="Margin.Dense"
-                                                     Class="w-100"
-                                                     @bind-Value="_fMinAmount"
-                                                     @bind-Value:after="ApplyFilters"
-                                                     Clearable="true" />
-
-                                    <MudNumericField T="decimal?" Label="Max amount"
-                                                     Variant="Variant.Outlined"
-                                                     Margin="Margin.Dense"
-                                                     Class="w-100"
-                                                     @bind-Value="_fMaxAmount"
-                                                     @bind-Value:after="ApplyFilters"
-                                                     Clearable="true" />
-
-                                    <MudStack Row="true" Spacing="2">
-
-                                        <MudButton Variant="Variant.Outlined"
-                                                   Disabled="_busy"
-                                                   OnClick="ResetFilters">
-                                            Reset
-                                        </MudButton>
-                                    </MudStack>
-
-                                </MudStack>
-                            </ChildContent>
-                        </MudExpansionPanel>
-                    </MudExpansionPanels>
+                    <TransactionsFiltersPanel @bind-FromDate="FilterFromDateTime"
+                                              @bind-ToDate="FilterToDateTime"
+                                              @bind-Month="FilterMonth"
+                                              @bind-AccountIds="FilterAccountIds"
+                                              @bind-SelectedEntryType="_fEntryType"
+                                              @bind-CategoryIds="FilterCategoryIds"
+                                              @bind-IsForPlanning="_fIsForPlanning"
+                                              @bind-Note="_fNote"
+                                              @bind-MinAmount="_fMinAmount"
+                                              @bind-MaxAmount="_fMaxAmount"
+                                              MonthOptions="_monthOptions"
+                                              Accounts="_accounts"
+                                              Categories="_categories"
+                                              OnFiltersChanged="ApplyFilters" 
+                                              Busy="_busy"
+                                              OnClear="ClearFilters"
+                                              OnSave="SaveFiltersAsync"
+                                              OnReset="ResetFiltersAsync" />
                 </MudItem>
+                <!-- RIGHT: filters (one per row); stacks under center on small screens -->
+               
                 <MudItem xs="12" lg="1" Class="d-none d-lg-block">
                 </MudItem>
             </MudGrid>

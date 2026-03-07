@@ -94,6 +94,7 @@ internal static class ServiceCollectionExtensions
         services.AddScoped<ILoanPaymentsRepository, LoanPaymentsRepository>();
         services.AddScoped<ITransactionsRepository, TransactionsRepository>();
         services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
+        services.AddScoped<IUserPageStatesRepository, UserPageStatesRepository>();
 
         services.AddScoped<UserSettingsStore>();
         services.AddScoped<CurrentUserService>();
@@ -108,6 +109,7 @@ internal static class ServiceCollectionExtensions
         services.AddScoped<CategoriesService>();
         services.AddScoped<LoansService>();
         services.AddScoped<UserSettingsService>();
+        services.AddScoped<PageStateService>();
 
         return services;
     }

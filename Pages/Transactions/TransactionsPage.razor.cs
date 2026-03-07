@@ -1,5 +1,7 @@
 ﻿using Application.Services;
+using Domain.Constants;
 using Domain.Contracts;
+using Domain.Contracts.FiltersState;
 using Domain.Enums;
 using Infrastructure.Auth;
 using Infrastructure.Settings;
@@ -19,6 +21,7 @@ public partial class TransactionsPage
     [Inject] private NavigationManager Nav { get; set; } = default!;
     [Inject] private IDialogService DialogService { get; set; } = default!;
     [Inject] private UserSettingsStore UserSettingsStore { get; set; } = default!;
+    [Inject] private PageStateService PageStateService { get; set; } = default!;
 
     protected DateOnly? _occurredOn = DateOnly.FromDateTime(DateTime.Today);
     protected decimal _amount;
@@ -37,16 +40,16 @@ public partial class TransactionsPage
 
     private DateOnly? _fFrom;
     private DateOnly? _fTo;
+    private DateOnly? _fMonth;
+    private bool _filtersInitDone;
+    private List<DateOnly> _monthOptions = new();
     private EntryType? _fEntryType;     // null = all, 0/1 = income/outcome
-    private Guid? _fCategoryId;     // null = all
+    private HashSet<Guid> _fCategoryIds = new();     // null = all
+    private HashSet<Guid> _fAccountIds = new();
     private bool? _fIsForPlanning;        // null = all, true/false
     private string? _fNote;         // search in note
     private decimal? _fMinAmount;
     private decimal? _fMaxAmount;
-    private Guid? _fAccountId;
-    private DateOnly? _fMonth;
-    private bool _monthInitDone;
-    private List<DateOnly> _monthOptions = new();
 
     private List<TransactionDto> _allItems = new();
     protected List<TransactionDto> _items = new();
@@ -82,13 +85,48 @@ public partial class TransactionsPage
     private DateTime? FilterFromDateTime
     {
         get => _fFrom.HasValue ? _fFrom.Value.ToDateTime(TimeOnly.MinValue) : null;
-        set => _fFrom = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
+        set
+        {
+            _fFrom = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
+            _fMonth = null;
+        }
     }
 
     private DateTime? FilterToDateTime
     {
         get => _fTo.HasValue ? _fTo.Value.ToDateTime(TimeOnly.MinValue) : null;
-        set => _fTo = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
+        set
+        {
+            _fTo = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
+            _fMonth = null;
+        }
+    }
+
+    private DateOnly? FilterMonth
+    {
+        get => _fMonth;
+        set
+        {
+            _fMonth = value;
+
+            if (value is not null)
+            {
+                _fFrom = null;
+                _fTo = null;
+            }
+        }
+    }
+
+    private IReadOnlyCollection<Guid> FilterAccountIds
+    {
+        get => _fAccountIds;
+        set => _fAccountIds = value?.ToHashSet() ?? new HashSet<Guid>();
+    }
+
+    private IReadOnlyCollection<Guid> FilterCategoryIds
+    {
+        get => _fCategoryIds;
+        set => _fCategoryIds = value?.ToHashSet() ?? new HashSet<Guid>();
     }
 
     protected DateTime? OccurredOnPicker
@@ -133,30 +171,12 @@ public partial class TransactionsPage
 
     private async Task LoadCoreAsync()
     {
-        _amount = 0;
-        _entryType = EntryType.Outcome;
-        _isForPlanning = false;
-        _note = "";
-
         _allItems = await TxService.GetAllAsync();
         RebuildMonthOptions();
 
         _activeAccounts = await AccountsService.GetActiveAsync();
 
-
-        if (!_monthInitDone)
-        {
-            var today = DateOnly.FromDateTime(DateTime.Today);
-            var currentMonth = new DateOnly(today.Year, today.Month, 1);
-            _fMonth = _monthOptions.Contains(currentMonth)
-                ? currentMonth
-                : _monthOptions.FirstOrDefault();
-
-            // если список пуст — не ставим месяц
-            if (_monthOptions.Count == 0)
-                _fMonth = null;
-            _monthInitDone = true;
-        }
+        await InitializeFiltersAsync();
         ApplyFilters();
     }
 
@@ -386,28 +406,95 @@ public partial class TransactionsPage
             _monthOptions.Add(m);
     }
 
+    private TransactionsFilterStateDto BuildCurrentFilterState()
+    {
+        return new TransactionsFilterStateDto
+        {
+            From = _fFrom,
+            To = _fTo,
+            Month = _fMonth,
+            AccountIds = _fAccountIds.ToList(),
+            CategoryIds = _fCategoryIds.ToList(),
+            SelectedEntryType = _fEntryType,
+            IsForPlanning = _fIsForPlanning,
+            Note = string.IsNullOrWhiteSpace(_fNote) ? null : _fNote.Trim(),
+            MinAmount = _fMinAmount,
+            MaxAmount = _fMaxAmount
+        };
+    }
+
+    private void ApplyFilterState(TransactionsFilterStateDto state)
+    {
+        _fFrom = state.From;
+        _fTo = state.To;
+
+        _fMonth = state.Month is not null && _monthOptions.Contains(state.Month.Value)
+            ? state.Month
+            : null;
+
+        _fAccountIds = (state.AccountIds ?? new List<Guid>())
+            .Where(id => _accountById.ContainsKey(id))
+            .ToHashSet();
+
+        _fCategoryIds = (state.CategoryIds ?? new List<Guid>())
+            .Where(id => _categoryById.ContainsKey(id))
+            .ToHashSet();
+
+        _fEntryType = state.SelectedEntryType;
+        _fIsForPlanning = state.IsForPlanning;
+        _fNote = string.IsNullOrWhiteSpace(state.Note) ? null : state.Note.Trim();
+        _fMinAmount = state.MinAmount;
+        _fMaxAmount = state.MaxAmount;
+
+        if (_fMonth is not null)
+        {
+            _fFrom = null;
+            _fTo = null;
+        }
+    }
+
+    private async Task InitializeFiltersAsync()
+    {
+        if (_filtersInitDone)
+            return;
+
+        var saved = await PageStateService.LoadAsync<TransactionsFilterStateDto>(PageStateKeys.Transactions);
+
+        if (saved is not null)
+            ApplyFilterState(saved);
+        else
+            ApplyDefaultFilters();
+
+        _filtersInitDone = true;
+    }
+
     private void ApplyFilters()
     {
         IEnumerable<TransactionDto> q = _allItems;
+
+        DateOnly? effectiveFrom = _fFrom;
+        DateOnly? effectiveTo = _fTo;
+
         if (_fMonth is not null)
         {
-            _fFrom = new DateOnly(_fMonth.Value.Year, _fMonth.Value.Month, 1);
-            _fTo = _fFrom.Value.AddMonths(1).AddDays(-1);
+            effectiveFrom = new DateOnly(_fMonth.Value.Year, _fMonth.Value.Month, 1);
+            effectiveTo = effectiveFrom.Value.AddMonths(1).AddDays(-1);
         }
-        if (_fFrom is not null)
-            q = q.Where(x => x.OccurredOn >= _fFrom.Value);
 
-        if (_fTo is not null)
-            q = q.Where(x => x.OccurredOn <= _fTo.Value);
+        if (effectiveFrom is not null)
+            q = q.Where(x => x.OccurredOn >= effectiveFrom.Value);
+
+        if (effectiveTo is not null)
+            q = q.Where(x => x.OccurredOn <= effectiveTo.Value);
 
         if (_fEntryType is not null)
             q = q.Where(x => x.EntryType == _fEntryType.Value);
 
-        if (_fCategoryId is not null)
-            q = q.Where(x => x.CategoryId == _fCategoryId.Value);
+        if (_fCategoryIds.Count > 0)
+            q = q.Where(x => _fCategoryIds.Contains(x.CategoryId));
 
-        if (_fAccountId is not null)
-            q = q.Where(x => x.AccountId == _fAccountId.Value);
+        if (_fAccountIds.Count > 0)
+            q = q.Where(x => _fAccountIds.Contains(x.AccountId));
 
         if (_fIsForPlanning is not null)
             q = q.Where(x => x.IsPlanned == _fIsForPlanning.Value);
@@ -429,27 +516,72 @@ public partial class TransactionsPage
 
         _items = q.ToList();
     }
-    private void CrearFDates()
+
+    private void ApplyDefaultFilters()
     {
-        _fMonth = null;
         _fFrom = null;
         _fTo = null;
-        ApplyFilters();
+        _fEntryType = null;
+        _fCategoryIds = new HashSet<Guid>();
+        _fAccountIds = new HashSet<Guid>();
+        _fIsForPlanning = null;
+        _fNote = null;
+        _fMinAmount = null;
+        _fMaxAmount = null;
+
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        var currentMonth = new DateOnly(today.Year, today.Month, 1);
+
+        if(_monthOptions.Count == 0)
+        {
+            _fMonth = null;
+        }
+        else
+        {
+            _fMonth = _monthOptions.Contains(currentMonth)
+            ? currentMonth
+            : _monthOptions.FirstOrDefault();
+        }
     }
 
-    private void ResetFilters()
+    private void ClearFilters()
     {
         _fFrom = null;
         _fTo = null;
         _fMonth = null;
         _fEntryType = null;
-        _fCategoryId = null;
+        _fAccountIds = new HashSet<Guid>();
+        _fCategoryIds = new HashSet<Guid>();
         _fIsForPlanning = null;
         _fNote = null;
         _fMinAmount = null;
         _fMaxAmount = null;
-        
 
         ApplyFilters();
+        Snackbar.Add(L["Filter_Cleared_InfoMessage"], Severity.Info);
+    }
+
+    private async Task SaveFiltersAsync()
+    {
+        if (!CurrentUser.TryGetUserId(out var userId))
+        {
+            Snackbar.Add(L["InvalidUserId_Error"], Severity.Error);
+            return;
+        }
+
+        await RunAsync(async () =>
+        {
+            await PageStateService.SaveAsync(userId, PageStateKeys.Transactions, BuildCurrentFilterState());
+        }, successMessage: L["Filter_Saved_InfoMessage"], Severity.Info);
+    }
+
+    private async Task ResetFiltersAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await PageStateService.DeleteAsync(PageStateKeys.Transactions);
+            ApplyDefaultFilters();
+            ApplyFilters();
+        }, successMessage: L["Filter_ResetCompleted_InfoMessage"], Severity.Info);
     }
 }

@@ -282,4 +282,76 @@
   <data name="Add_transaction" xml:space="preserve">
     <value>Añadir transacción</value>
   </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filtros</value>
+  </data>
+  <data name="Filter_Date_From" xml:space="preserve">
+    <value>Fecha inicial</value>
+  </data>
+  <data name="Filter_Date_To" xml:space="preserve">
+    <value>Fecha final</value>
+  </data>
+  <data name="Filter_Month" xml:space="preserve">
+    <value>Mes</value>
+  </data>
+  <data name="Filter_Month_All" xml:space="preserve">
+    <value>Todos los meses</value>
+  </data>
+  <data name="Filter_Account" xml:space="preserve">
+    <value>Cuenta</value>
+  </data>
+  <data name="Filter_Account_All" xml:space="preserve">
+    <value>Todas las cuentas</value>
+  </data>
+  <data name="Filter_Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="Filter_Type_All" xml:space="preserve">
+    <value>Todos los tipos</value>
+  </data>
+  <data name="Filter_Category" xml:space="preserve">
+    <value>Categoría</value>
+  </data>
+  <data name="Filter_Category_All" xml:space="preserve">
+    <value>Todas las categorías</value>
+  </data>
+  <data name="Filter_Planned" xml:space="preserve">
+    <value>Planificado</value>
+  </data>
+  <data name="Filter_Planned_All" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="Filter_PlannedOnly" xml:space="preserve">
+    <value>Solo planificadas</value>
+  </data>
+  <data name="Filter_ActualOnly" xml:space="preserve">
+    <value>Solo realizadas</value>
+  </data>
+  <data name="Filter_NoteContains" xml:space="preserve">
+    <value>Texto de la nota</value>
+  </data>
+  <data name="Filter_AmountFrom" xml:space="preserve">
+    <value>Importe desde</value>
+  </data>
+  <data name="Filter_AmountTo" xml:space="preserve">
+    <value>Importe hasta</value>
+  </data>
+  <data name="Filter_Clear" xml:space="preserve">
+    <value>Limpiar</value>
+  </data>
+  <data name="Filter_Reset" xml:space="preserve">
+    <value>Restablecer</value>
+  </data>
+  <data name="Filter_Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="Filter_Saved_InfoMessage" xml:space="preserve">
+    <value>Los filtros se han guardado</value>
+  </data>
+  <data name="Filter_ResetCompleted_InfoMessage" xml:space="preserve">
+    <value>Se han restablecido los filtros y se han eliminado los filtros guardados.</value>
+  </data>
+  <data name="Filter_Cleared_InfoMessage" xml:space="preserve">
+    <value>Filtros borrados</value>
+  </data>
 </root>
