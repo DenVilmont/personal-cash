@@ -57,7 +57,7 @@ public partial class TransactionsPage
         var userSettings = await UserSettingsStore.GetAsync();
         if (userSettings is not null && !string.IsNullOrWhiteSpace(userSettings.PreferredCurrency))
             _currency = userSettings.PreferredCurrency.Trim().ToUpperInvariant();
-        RebuildMonthOptions();
+        
         await LoadCategoriesAsync();
         await LoadAsync();
     }
@@ -127,6 +127,7 @@ public partial class TransactionsPage
         _note = "";
 
         _allItems = await TxService.GetAllAsync();
+        RebuildMonthOptions();
 
         _activeAccounts = await AccountsService.GetActiveAsync();
 
@@ -164,31 +165,37 @@ public partial class TransactionsPage
     {
         if (_occurredOn is null)
         {
-            Snackbar.Add("Date is required", Severity.Warning);
+            Snackbar.Add(L["Transaction_DateRequired_ValidationError"], Severity.Warning);
             return;
         }
 
         if (_amount <= 0)
         {
-            Snackbar.Add("Amount must be > 0", Severity.Warning);
+            Snackbar.Add(L["Transaction_AmountMustBePositive_ValidationError"], Severity.Warning);
             return;
         }
 
         if (_accountId == Guid.Empty)
         {
-            Snackbar.Add("Account is required", Severity.Warning);
+            Snackbar.Add(L["Transaction_AccountRequired_ValidationError"], Severity.Warning);
+            return;
+        }
+
+        if (_categoryId == Guid.Empty)
+        {
+            Snackbar.Add(L["Transaction_CategoryRequired_ValidationError"], Severity.Warning);
             return;
         }
 
         if (!CurrentUser.IsAuthenticated)
         {
-            Snackbar.Add("Not authenticated", Severity.Error);
+            Snackbar.Add(L["NotAuthenticated_Error"], Severity.Error);
             return;
         }
 
         if (!CurrentUser.TryGetUserId(out var userId))
         {
-            Snackbar.Add("Invalid user id", Severity.Error);
+            Snackbar.Add(L["InvalidUserId_Error"], Severity.Error);
             return;
         }
 
@@ -212,7 +219,7 @@ public partial class TransactionsPage
             _amount = 0m;
             _note = null;
             await LoadCoreAsync();
-        }, successMessage: "Added");
+        }, successMessage: L["Added"]);
     }
 
 

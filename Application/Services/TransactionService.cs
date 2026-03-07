@@ -1,6 +1,7 @@
 ﻿using Domain.Contracts;
 using Domain.Enums;
 using Domain.Ports;
+using Application.Common;
 
 namespace Application.Services
 {
@@ -29,8 +30,28 @@ namespace Application.Services
             .ThenByDescending(x => x.CreatedAt)
             .ToList();
 
+        private static void ValidateTransactionForSave(TransactionDto tx)
+        {
+            if (tx.UserId == Guid.Empty)
+                throw new AppValidationException("Invalid user id");
+
+            if (tx.AccountId == Guid.Empty)
+                throw new AppValidationException("Account is required");
+
+            if (tx.CategoryId == Guid.Empty)
+                throw new AppValidationException("Category is required");
+
+            if (tx.Amount <= 0)
+                throw new AppValidationException("Amount must be greater than 0");
+
+            if (string.IsNullOrWhiteSpace(tx.Currency))
+                throw new AppValidationException("Currency is required");
+        }
+
         public async Task InsertTransactionAndUpdateBalances(TransactionDto tx)
         {
+            ValidateTransactionForSave(tx);
+
             var inserted = await _txRepo.InsertReturningAsync(tx);
 
             try
@@ -64,6 +85,8 @@ namespace Application.Services
 
         public async Task UpdateTransactionAndUpdateBalances(TransactionDto oldTx, TransactionDto newTx)
         {
+            ValidateTransactionForSave(newTx);
+
             await _txRepo.UpdateAsync(newTx);
 
             var (oldActual, oldExpected) = GetDeltas(oldTx);

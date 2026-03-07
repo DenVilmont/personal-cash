@@ -222,4 +222,55 @@
   <data name="Account_created_Registration_message" xml:space="preserve">
     <value>Аккаунт создан. Проверьте почту и подтвердите аккаунт, затем войдите.</value>
   </data>
+  <data name="Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>Доход</value>
+  </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>Расходы</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Счёт</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Сумма</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Примечание</value>
+  </data>
+  <data name="Is_For_Planning" xml:space="preserve">
+    <value>Запланированная транзакция</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Transaction_DateRequired_ValidationError" xml:space="preserve">
+    <value>Дата обязательна</value>
+  </data>
+  <data name="Transaction_AmountMustBePositive_ValidationError" xml:space="preserve">
+    <value>Сумма должна быть больше нуля</value>
+  </data>
+  <data name="Transaction_AccountRequired_ValidationError" xml:space="preserve">
+    <value>Выберите счёт</value>
+  </data>
+  <data name="NotAuthenticated_Error" xml:space="preserve">
+    <value>Требуется авторизация</value>
+  </data>
+  <data name="InvalidUserId_Error" xml:space="preserve">
+    <value>Недопустимый идентификатор пользователя</value>
+  </data>
+  <data name="Added" xml:space="preserve">
+    <value>Успешно добавлено</value>
+  </data>
+  <data name="Transaction_CategoryRequired_ValidationError" xml:space="preserve">
+    <value>Выберите категорию</value>
+  </data>
 </root>

@@ -222,4 +222,55 @@
   <data name="Account_created_Registration_message" xml:space="preserve">
     <value>Cuenta creada. Revisa tu correo electrónico y confirma tu cuenta; luego inicia sesión.</value>
   </data>
+  <data name="Date" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>Ingreso</value>
+  </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>Gasto</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Cuenta</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Importe</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoría</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="Is_For_Planning" xml:space="preserve">
+    <value>Transacción planificada</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Transaction_DateRequired_ValidationError" xml:space="preserve">
+    <value>La fecha es obligatoria</value>
+  </data>
+  <data name="Transaction_AmountMustBePositive_ValidationError" xml:space="preserve">
+    <value>El importe debe ser mayor que cero</value>
+  </data>
+  <data name="Transaction_AccountRequired_ValidationError" xml:space="preserve">
+    <value>Seleccione una cuenta</value>
+  </data>
+  <data name="NotAuthenticated_Error" xml:space="preserve">
+    <value>Se requiere autenticación</value>
+  </data>
+  <data name="InvalidUserId_Error" xml:space="preserve">
+    <value>Identificador de usuario no válido</value>
+  </data>
+  <data name="Added" xml:space="preserve">
+    <value>Añadido correctamente</value>
+  </data>
+  <data name="Transaction_CategoryRequired_ValidationError" xml:space="preserve">
+    <value>Seleccione una categoría</value>
+  </data>
 </root>

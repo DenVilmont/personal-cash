@@ -123,7 +123,7 @@
                                         </MudSelect>
                                     </MudItem>
                                     <MudItem xs="12" md="6">
-                                        @if (_categories.Count == 0)
+                                        @if (_activeAccounts.Count == 0)
                                         {
                                             <MudTextField T="Guid"
                                                           Label="Account"
@@ -163,7 +163,7 @@
                                                          Immediate="true"
                                                          Culture="CultureInfo.CurrentCulture"
                                                          Adornment="Adornment.Start"
-                                                         AdornmentText="EUR"
+                                                         AdornmentText=@_currency
                                                          @bind-Value="_amount" />
                                     </MudItem>
                                     <MudItem xs="12" md="6" Class="d-flex">
@@ -216,7 +216,7 @@
                                     <MudItem xs="12">
                                         <MudButton Variant="Variant.Filled"
                                                    Color="Color.Primary"
-                                                   Disabled="_busy"
+                                                   Disabled="_busy || _accountId == Guid.Empty || _categoryId == Guid.Empty"
                                                    OnClick="AddAsync">
                                             @L["Add"]
                                         </MudButton>

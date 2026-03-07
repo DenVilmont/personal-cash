@@ -12,21 +12,21 @@
 
         <MudGrid Class="mt-2">
             <MudItem xs="12" sm="6">
-                <MudDatePicker Label="Date"
+                <MudDatePicker Label=@L["Date"]
                                @bind-Date="OccurredOnPicker"
                                Variant="Variant.Outlined" />
             </MudItem>
 
             <MudItem xs="12" sm="6">
-                <MudSelect T="EntryType" Label="Type" @bind-Value="_entryType" Variant="Variant.Outlined">
-                    <MudSelectItem Value="EntryType.Income">Income</MudSelectItem>
-                    <MudSelectItem Value="EntryType.Outcome">Outcome</MudSelectItem>
+                <MudSelect T="EntryType" Label=@L["Type"] @bind-Value="_entryType" Variant="Variant.Outlined">
+                    <MudSelectItem Value="EntryType.Income">@L["Income"]</MudSelectItem>
+                    <MudSelectItem Value="EntryType.Outcome">@L["Outcome"]</MudSelectItem>
                 </MudSelect>
             </MudItem>
 
             <MudItem xs="12" sm="6">
                 <MudSelect T="Guid"
-                           Label="Account"
+                           Label=@L["Account"]
                            @bind-Value="_accountId"
                            Variant="Variant.Outlined">
                     @foreach (var a in Accounts)
@@ -42,7 +42,7 @@
             </MudItem>
             <MudItem xs="12" sm="6">
                 <MudNumericField T="decimal"
-                                 Label="Amount"
+                                 Label=@L["Amount"]
                                  @bind-Value="_amount"
                                  Variant="Variant.Outlined"
                                  HideSpinButtons="true"
@@ -53,16 +53,16 @@
             </MudItem>
 
             <MudItem xs="12" sm="6">
-                <MudSelect T="Guid" Label="Category" @bind-Value="_categoryId" Variant="Variant.Outlined">
+                <MudSelect T="Guid" Label=@L["Category"] @bind-Value="_categoryId" Variant="Variant.Outlined">
                     @foreach (var c in Categories)
                     {
-                        <MudSelectItem T="Guid" Value="c.Id">@c.Name</MudSelectItem>
+                        <MudSelectItem T="Guid" Value="@c.Id">@c.Name</MudSelectItem>
                     }
                 </MudSelect>
             </MudItem>
 
             <MudItem xs="12">
-                <MudTextField Label="Note"
+                <MudTextField Label=@L["Note"]
                               @bind-Value="_note"
                               Variant="Variant.Outlined"
                               Lines="3" />
@@ -70,7 +70,7 @@
             <MudItem xs="12" md="6" Class="d-flex align-center">
                 <MudStack direction="Row" alignitems="AlignItems.Center" Class="w-100">
                     <MudSwitch T="bool"
-                               Label="Is For Planning"
+                               Label=@L["Is_For_Planning"]
                                @bind-Value="_isForPlanning"
                                Color="Color.Primary" />
                 </MudStack>
@@ -79,9 +79,9 @@
     </DialogContent>
 
     <DialogActions>
-        <MudButton Variant="Variant.Text" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">@L["Cancel"]</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_busy" OnClick="SaveAsync">
-            Save
+            @L["Save"]
         </MudButton>
     </DialogActions>
 </MudDialog>
