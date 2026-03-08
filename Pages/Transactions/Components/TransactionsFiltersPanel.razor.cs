@@ -8,6 +8,7 @@ namespace PersonalCash.Pages.Transactions.Components;
 public partial class TransactionsFiltersPanel
 {
     [Parameter] public string ContainerClass { get; set; } = string.Empty;
+    [Parameter] public bool IsCollapsible { get; set; } = true;
 
     [Parameter] public DateTime? FromDate { get; set; }
     [Parameter] public EventCallback<DateTime?> FromDateChanged { get; set; }

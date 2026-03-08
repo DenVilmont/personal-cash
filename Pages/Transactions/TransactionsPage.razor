@@ -8,105 +8,98 @@
 @using System.Globalization
 @using PersonalCash.Pages.Transactions.Components
 
+<div class="transactions-page">
+    <MudContainer MaxWidth="MaxWidth.False">
+        <div class="transactions-layout">
 
-<MudContainer Class="pa-6" MaxWidth="MaxWidth.False">
+            <section class="transactions-layout__top">
+                <div class="transactions-layout__balances">
+                    <TransactionsBalancesPanel Accounts="_activeAccounts" />
+                </div>
 
-    <MudText Typo="Typo.h5">@L["Transactions_PageTitle"]</MudText>
+                <div class="transactions-layout__add">
+                    <TransactionsAddForm @bind-OccurredOn="OccurredOnPicker"
+                                         @bind-Amount="_amount"
+                                         @bind-EntryType="_entryType"
+                                         @bind-IsForPlanning="_isForPlanning"
+                                         Accounts="_activeAccounts"
+                                         @bind-AccountId="SelectedAccountId"
+                                         Currency="@_currency"
+                                         Categories="_categories"
+                                         @bind-CategoryId="_categoryId"
+                                         @bind-Note="_note"
+                                         Busy="_busy"
+                                         OnAdd="AddAsync"
+                                         OnRefresh="LoadAsync" />
+                </div>
+            </section>
 
-    <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
-
-        <!-- Balances -->
-        <MudItem xs="12" lg="2">
-            <TransactionsBalancesPanel Accounts="_activeAccounts" />
-        </MudItem>
-        <!-- Balances -->
-        <!-- CENTER: 50% on lg+ (Add + Table stay here) -->
-        <MudItem xs="12" sm="8" lg="7">
-            <!-- AddForm -->
-            <TransactionsAddForm @bind-OccurredOn="OccurredOnPicker"
-                                 @bind-Amount="_amount"
-                                 @bind-EntryType="_entryType"
-                                 @bind-IsForPlanning="_isForPlanning"
-                                 Accounts="_activeAccounts"
-                                 @bind-AccountId="SelectedAccountId"
-                                 Currency="@_currency"
-                                 Categories="_categories"
-                                 @bind-CategoryId="_categoryId"
-                                 @bind-Note="_note"
-                                 Busy="_busy"
-                                 OnAdd="AddAsync"
-                                 OnRefresh="LoadAsync" />
-            <!-- AddForm -->
-            <!-- Mobile Filters(xs): after Add, before Table -->
-            <TransactionsFiltersPanel ContainerClass="d-block d-sm-none mt-4"
-                                      @bind-FromDate="FilterFromDateTime"
-                                      @bind-ToDate="FilterToDateTime"
-                                      @bind-Month="FilterMonth"
-                                      @bind-AccountIds="FilterAccountIds"
-                                      @bind-SelectedEntryType="_fEntryType"
-                                      @bind-CategoryIds="FilterCategoryIds"
-                                      @bind-IsForPlanning="_fIsForPlanning"
-                                      @bind-Note="_fNote"
-                                      @bind-MinAmount="_fMinAmount"
-                                      @bind-MaxAmount="_fMaxAmount"
-                                      MonthOptions="_monthOptions"
-                                      Accounts="_accounts"
-                                      Categories="_categories"
-                                      OnFiltersChanged="ApplyFilters"
-                                      Busy="_busy"
-                                      OnClear="ClearFilters"
-                                      OnSave="SaveFiltersAsync"
-                                      OnReset="ResetFiltersAsync" />
-            <!-- Mobile Filters(xs): after Add, before Table -->
-
-
-            <!-- Transactions Table -->
-            <div class="d-block d-md-none">
-                <TransactionsTableMobileList Items="_items"
-                                        AccountsById="_accountById"
-                                        CategoriesById="_categoryById"
-                                        Busy="_busy"
-                                        OnEdit="OpenEditAsync"
-                                        OnDelete="ConfirmDeleteAsync"
-                                        OnRealizePlanned="OpenRealizePlannedAsync" />
+            <div class="transactions-layout__filters-inline">
+                <TransactionsFiltersPanel @bind-FromDate="FilterFromDateTime"
+                                          @bind-ToDate="FilterToDateTime"
+                                          @bind-Month="FilterMonth"
+                                          @bind-AccountIds="FilterAccountIds"
+                                          @bind-SelectedEntryType="_fEntryType"
+                                          @bind-CategoryIds="FilterCategoryIds"
+                                          @bind-IsForPlanning="_fIsForPlanning"
+                                          @bind-Note="_fNote"
+                                          @bind-MinAmount="_fMinAmount"
+                                          @bind-MaxAmount="_fMaxAmount"
+                                          MonthOptions="_monthOptions"
+                                          Accounts="_accounts"
+                                          Categories="_categories"
+                                          OnFiltersChanged="ApplyFilters"
+                                          Busy="_busy"
+                                          OnClear="ClearFilters"
+                                          OnSave="SaveFiltersAsync"
+                                          OnReset="ResetFiltersAsync" />
             </div>
 
-            <div class="d-none d-md-block">
-                <TransactionsTable Items="_items"
-                                   AccountsById="_accountById"
-                                   CategoriesById="_categoryById"
-                                   Busy="_busy"
-                                   OnEdit="OpenEditAsync"
-                                   OnDelete="ConfirmDeleteAsync"
-                                   OnRealizePlanned="OpenRealizePlannedAsync" />
-            </div>
-            <!-- Transactions Table -->
-        </MudItem>
+            <section class="transactions-layout__content">
+                <div class="transactions-layout__mobile-list">
+                    <TransactionsTableMobileList Items="_items"
+                                                 AccountsById="_accountById"
+                                                 CategoriesById="_categoryById"
+                                                 Busy="_busy"
+                                                 OnEdit="OpenEditAsync"
+                                                 OnDelete="ConfirmDeleteAsync"
+                                                 OnRealizePlanned="OpenRealizePlannedAsync" />
+                </div>
 
-        <!-- RIGHT: filters (one per row); stacks under center on small screens -->
-        <MudItem xs="12" sm="4" lg="3" Class="d-none d-sm-block">
-            <TransactionsFiltersPanel @bind-FromDate="FilterFromDateTime"
-                                      @bind-ToDate="FilterToDateTime"
-                                      @bind-Month="FilterMonth"
-                                      @bind-AccountIds="FilterAccountIds"
-                                      @bind-SelectedEntryType="_fEntryType"
-                                      @bind-CategoryIds="FilterCategoryIds"
-                                      @bind-IsForPlanning="_fIsForPlanning"
-                                      @bind-Note="_fNote"
-                                      @bind-MinAmount="_fMinAmount"
-                                      @bind-MaxAmount="_fMaxAmount"
-                                      MonthOptions="_monthOptions"
-                                      Accounts="_accounts"
-                                      Categories="_categories"
-                                      OnFiltersChanged="ApplyFilters"
-                                      Busy="_busy"
-                                      OnClear="ClearFilters"
-                                      OnSave="SaveFiltersAsync"
-                                      OnReset="ResetFiltersAsync" />
-        </MudItem>
-        <!-- RIGHT: filters (one per row); stacks under center on small screens -->
+                <div class="transactions-layout__desktop-table">
+                    <TransactionsTable Items="_items"
+                                       AccountsById="_accountById"
+                                       CategoriesById="_categoryById"
+                                       Busy="_busy"
+                                       OnEdit="OpenEditAsync"
+                                       OnDelete="ConfirmDeleteAsync"
+                                       OnRealizePlanned="OpenRealizePlannedAsync" />
+                </div>
+            </section>
 
-        <MudItem xs="12" lg="1" Class="d-none d-lg-block">
-        </MudItem>
-    </MudGrid>
-</MudContainer>
+            <aside class="transactions-layout__filters-sidebar">
+                <div class="transactions-sticky transactions-sticky--filters">
+                    <TransactionsFiltersPanel @bind-FromDate="FilterFromDateTime"
+                                              @bind-ToDate="FilterToDateTime"
+                                              @bind-Month="FilterMonth"
+                                              @bind-AccountIds="FilterAccountIds"
+                                              @bind-SelectedEntryType="_fEntryType"
+                                              @bind-CategoryIds="FilterCategoryIds"
+                                              @bind-IsForPlanning="_fIsForPlanning"
+                                              @bind-Note="_fNote"
+                                              @bind-MinAmount="_fMinAmount"
+                                              @bind-MaxAmount="_fMaxAmount"
+                                              MonthOptions="_monthOptions"
+                                              Accounts="_accounts"
+                                              Categories="_categories"
+                                              OnFiltersChanged="ApplyFilters"
+                                              Busy="_busy"
+                                              OnClear="ClearFilters"
+                                              OnSave="SaveFiltersAsync"
+                                              OnReset="ResetFiltersAsync"
+                                              IsCollapsible="false" />
+                </div>
+            </aside>
+        </div>
+    </MudContainer>
+</div>

@@ -8,11 +8,12 @@ using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using PersonalCash.Shared;
 
 namespace PersonalCash.Pages.Transactions;
 
 [Authorize]
-public partial class TransactionsPage
+public partial class TransactionsPage : IDisposable
 {
     [Inject] private TransactionService TxService { get; set; } = default!;
     [Inject] private AccountsService AccountsService { get; set; } = default!;
@@ -22,6 +23,7 @@ public partial class TransactionsPage
     [Inject] private IDialogService DialogService { get; set; } = default!;
     [Inject] private UserSettingsStore UserSettingsStore { get; set; } = default!;
     [Inject] private PageStateService PageStateService { get; set; } = default!;
+    [Inject] private AppPageTitleState PageTitleState { get; set; } = default!;
 
     protected DateOnly? _occurredOn = DateOnly.FromDateTime(DateTime.Today);
     protected decimal _amount;
@@ -52,6 +54,11 @@ public partial class TransactionsPage
 
     private List<TransactionDto> _allItems = new();
     protected List<TransactionDto> _items = new();
+
+    protected override void OnParametersSet()
+    {
+        PageTitleState.Set(L["Transactions_PageTitle"]);
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -563,5 +570,10 @@ public partial class TransactionsPage
             ApplyDefaultFilters();
             ApplyFilters();
         }, successMessage: L["Filter_ResetCompleted_InfoMessage"], Severity.Info);
+    }
+
+    public void Dispose()
+    {
+        PageTitleState.Clear();
     }
 }

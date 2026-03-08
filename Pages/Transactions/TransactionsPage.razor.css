@@ -1,0 +1,114 @@
+﻿.transactions-page {
+    padding: 12px 16px 16px;
+}
+
+.transactions-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "top"
+        "filters-inline"
+        "content";
+    gap: 16px;
+    align-items: start;
+}
+
+.transactions-layout__top {
+    grid-area: top;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.transactions-layout__balances,
+.transactions-layout__add,
+.transactions-layout__content,
+.transactions-layout__filters-inline,
+.transactions-layout__filters-sidebar {
+    min-width: 0;
+}
+
+.transactions-layout__content {
+    grid-area: content;
+}
+
+.transactions-layout__filters-sidebar {
+    grid-area: filters;
+    display: none;
+}
+
+.transactions-layout__mobile-list {
+    display: block;
+}
+
+.transactions-layout__desktop-table {
+    display: none;
+}
+
+.transactions-sticky {
+    position: static;
+}
+
+@media (min-width: 960px) {
+    .transactions-page {
+        padding: 16px 24px 24px;
+    }
+
+    .transactions-layout__mobile-list {
+        display: none;
+    }
+
+    .transactions-layout__desktop-table {
+        display: block;
+    }
+}
+
+@media (min-width: 1280px) {
+    .transactions-layout {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        grid-template-areas:
+            "top filters"
+            "content filters";
+        gap: 24px;
+    }
+
+    .transactions-layout__top {
+        grid-template-columns: 280px minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .transactions-layout__filters-inline {
+        display: none;
+    }
+
+    .transactions-layout__filters-sidebar {
+        display: block;
+    }
+
+    .transactions-sticky--filters {
+        position: sticky;
+        top: 88px;
+    }
+
+    .transactions-layout__add {
+        display: flex;
+    }
+
+        .transactions-layout__add ::deep .transactions-add-form-root {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .transactions-layout__add ::deep .transactions-add-form-panel {
+            height: 100%;
+        }
+
+    .transactions-layout__balances {
+        align-self: start;
+    }
+
+        .transactions-layout__balances ::deep .transactions-balances-panel__desktop-card {
+            width: 100%;
+        }
+}

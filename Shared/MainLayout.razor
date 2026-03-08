@@ -12,8 +12,16 @@
                        Color="Color.Inherit"
                        Edge="Edge.Start"
                        OnClick="@(_ => DrawerToggle())" />
-        <MudSpacer />
 
+        @if (!string.IsNullOrWhiteSpace(PageTitleState.Title))
+        {
+            <MudText Typo="Typo.h6" Class="ml-2 app-bar-page-title">
+                @PageTitleState.Title
+            </MudText>
+        }
+
+        <MudSpacer />
+        
         <AuthorizeView>
             <Authorized>
                 <MudMenu AnchorOrigin="Origin.BottomRight"

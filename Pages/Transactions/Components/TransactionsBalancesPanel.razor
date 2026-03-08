@@ -11,7 +11,7 @@ else
     <!-- Mobile / tablet -->
     <div class="d-block d-lg-none">
         <MudExpansionPanels Class="mb-6" Elevation="2">
-            <MudExpansionPanel Expanded="false" Class="pa-4" Style="position: sticky; top: 88px;">
+            <MudExpansionPanel Expanded="false" Class="pa-4">
                 <TitleContent>
                     <div class="d-flex">
                         <MudText Typo="Typo.h5">@L["Balances"]</MudText>
@@ -28,8 +28,16 @@ else
                                     <span>@a.Name</span>
                                 </div>
 
-                                <div class="balance-actual">@a.BalanceActual.ToString("N2") @a.Currency</div>
-                                <div class="balance-expected text-muted">@a.BalanceExpected.ToString("N2") @a.Currency</div>
+                                <div class="balance-actual">
+                                    <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                        @a.BalanceActual.ToString("N2") @a.Currency
+                                    </MudTooltip>
+                                </div>
+                                <div class="balance-expected text-muted">
+                                    <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                        @a.BalanceExpected.ToString("N2") @a.Currency
+                                    </MudTooltip>
+                                </div>
                             </MudPaper>
                         }
                     </MudStack>
@@ -40,7 +48,7 @@ else
 
     <!-- Desktop -->
     <div class="d-none d-lg-block">
-        <MudPaper Class="pa-4" Style="position: sticky; top: 88px;">
+        <MudPaper Class="pa-4 transactions-balances-panel__desktop-card">
             <MudText Typo="Typo.h6">@L["Balances"]</MudText>
 
             <MudStack Spacing="2" Class="mt-3">
@@ -56,10 +64,14 @@ else
 
                         <div class="balance-right">
                             <div class="balance-actual">
-                                @a.BalanceActual.ToString("N2") @a.Currency
+                                <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                    @a.BalanceActual.ToString("N2") @a.Currency
+                                </MudTooltip>
                             </div>
                             <div class="balance-expected text-muted">
-                                @a.BalanceExpected.ToString("N2") @a.Currency
+                                <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                    @a.BalanceExpected.ToString("N2") @a.Currency
+                                </MudTooltip>
                             </div>
                         </div>
                     </div>

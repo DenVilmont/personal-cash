@@ -396,4 +396,10 @@
   <data name="Edit" xml:space="preserve">
     <value>Editar</value>
   </data>
+  <data name="Balance_Actual_Tooltip" xml:space="preserve">
+    <value>Saldo actual sin incluir operaciones planificadas</value>
+  </data>
+  <data name="Balance_Expected_Tooltip" xml:space="preserve">
+    <value>Saldo previsto incluyendo operaciones planificadas</value>
+  </data>
 </root>

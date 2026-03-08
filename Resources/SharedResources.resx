@@ -396,4 +396,10 @@
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="Balance_Actual_Tooltip" xml:space="preserve">
+    <value>Current balance excluding planned transactions</value>
+  </data>
+  <data name="Balance_Expected_Tooltip" xml:space="preserve">
+    <value>Expected balance including planned transactions</value>
+  </data>
 </root>

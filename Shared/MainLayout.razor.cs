@@ -22,6 +22,7 @@ public partial class MainLayout : LayoutComponentBase, IDisposable
     [Inject] private ISnackbar Snackbar { get; set; } = default!;
     [Inject] private Supabase.Client SupabaseClient { get; set; } = default!;
     [Inject] private CultureService CultureService { get; set; } = default!;
+    [Inject] private AppPageTitleState PageTitleState { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,15 +35,17 @@ public partial class MainLayout : LayoutComponentBase, IDisposable
         UserSettingsStore.Changed += OnSettingsChanged;
 
         NavigationManager.LocationChanged += OnLocationChanged;
+        PageTitleState.Changed += OnPageTitleChanged;
     }
+
+    private void OnPageTitleChanged() => InvokeAsync(StateHasChanged);
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         if (_drawerOpen)
-        {
             _drawerOpen = false;
-            InvokeAsync(StateHasChanged);
-        }
+
+        InvokeAsync(StateHasChanged);
     }
 
     private void OnAuthStateChanged(Task<AuthenticationState> task)
@@ -74,15 +77,7 @@ public partial class MainLayout : LayoutComponentBase, IDisposable
         }
     }
 
-    private void OnSettingsChanged()
-        => InvokeAsync(StateHasChanged);
-
-    public void Dispose()
-    {
-        AuthStateProvider.AuthenticationStateChanged -= OnAuthStateChanged;
-        UserSettingsStore.Changed -= OnSettingsChanged;
-        NavigationManager.LocationChanged -= OnLocationChanged;
-    }
+    private void OnSettingsChanged() => InvokeAsync(StateHasChanged);
 
     private void DrawerToggle() => _drawerOpen = !_drawerOpen;
 
@@ -122,6 +117,14 @@ public partial class MainLayout : LayoutComponentBase, IDisposable
             var mime = string.IsNullOrWhiteSpace(currentUser!.AvatarMime) ? "image/png" : currentUser.AvatarMime!;
             return $"data:{mime};base64,{currentUser.AvatarBase64}";
         }
+    }
+
+    public void Dispose()
+    {
+        AuthStateProvider.AuthenticationStateChanged -= OnAuthStateChanged;
+        UserSettingsStore.Changed -= OnSettingsChanged;
+        NavigationManager.LocationChanged -= OnLocationChanged;
+        PageTitleState.Changed -= OnPageTitleChanged;
     }
 
 }
