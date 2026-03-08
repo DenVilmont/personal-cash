@@ -23,12 +23,40 @@
     opacity: 0.7;
 }
 
-.balances-scroll {
-    overflow-x: auto;
-    padding-bottom: 4px;
+.balances-list {
+    gap: 8px;
 }
 
-.balance-card {
-    min-width: 210px;
-    flex: 0 0 auto;
+.balance-row--mobile {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+}
+
+    .balance-row--mobile:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+@media (max-width: 599.98px) {
+    .balance-row--mobile {
+        gap: 10px;
+    }
+
+    .balance-left {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .balance-right {
+        flex: 0 0 auto;
+        max-width: 55%;
+    }
+
+    .balance-actual {
+        font-size: 0.95rem;
+    }
+
+    .balance-expected {
+        font-size: 0.78rem;
+    }
 }

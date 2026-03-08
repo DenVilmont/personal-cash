@@ -10,37 +10,43 @@ else
 {
     <!-- Mobile / tablet -->
     <div class="d-block d-lg-none">
-        <MudExpansionPanels Class="mb-6" Elevation="2">
-            <MudExpansionPanel Expanded="false" Class="pa-4">
+        <MudExpansionPanels Class="transactions-mobile-panel-group" Elevation="2">
+            <MudExpansionPanel Expanded="false" Class="transactions-mobile-compact-panel">
                 <TitleContent>
-                    <div class="d-flex">
-                        <MudText Typo="Typo.h5">@L["Balances"]</MudText>
+                    <div class="d-flex transactions-mobile-compact-panel__title">
+                        <MudText Typo="Typo.h6" Class="transactions-mobile-compact-panel__text">@L["Balances"]</MudText>
                     </div>
                 </TitleContent>
 
                 <ChildContent>
-                    <MudStack Row="true" Spacing="2" Class="mt-3 balances-scroll" Wrap="Wrap.Wrap">
-                        @foreach (var a in VisibleAccounts)
-                        {
-                            <MudPaper Class="pa-2 balance-card" Elevation="0" Outlined="true">
-                                <div class="icon-option">
-                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
-                                    <span>@a.Name</span>
-                                </div>
+                    <div class="transactions-mobile-panel-body">
+                        <MudStack Spacing="2" Class="balances-list">
+                            @foreach (var a in VisibleAccounts)
+                            {
+                                <div class="balance-row balance-row--mobile">
+                                    <div class="balance-left">
+                                        <div class="icon-option">
+                                            <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                            <span>@a.Name</span>
+                                        </div>
+                                    </div>
 
-                                <div class="balance-actual">
-                                    <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
-                                        @a.BalanceActual.ToString("N2") @a.Currency
-                                    </MudTooltip>
+                                    <div class="balance-right">
+                                        <div class="balance-actual">
+                                            <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                                @a.BalanceActual.ToString("N2") @a.Currency
+                                            </MudTooltip>
+                                        </div>
+                                        <div class="balance-expected text-muted">
+                                            <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                                @a.BalanceExpected.ToString("N2") @a.Currency
+                                            </MudTooltip>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="balance-expected text-muted">
-                                    <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
-                                        @a.BalanceExpected.ToString("N2") @a.Currency
-                                    </MudTooltip>
-                                </div>
-                            </MudPaper>
-                        }
-                    </MudStack>
+                            }
+                        </MudStack>
+                    </div>
                 </ChildContent>
             </MudExpansionPanel>
         </MudExpansionPanels>
