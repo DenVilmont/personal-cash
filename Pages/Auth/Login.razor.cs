@@ -16,6 +16,9 @@ public partial class Login
         }, successMessage: L["Login_successful"]);
     }
 
+    public Task OnSubmitLogin()
+    => OnClickLogin();
+
     public async Task OnClickDemoLogin()
     {
         await RunAsync(async () =>

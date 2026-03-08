@@ -20,13 +20,13 @@ else
                         <div class="tx-mobile-content @(tx.IsPlanned ? "tx-mobile-content-planned" : string.Empty)">
                             <div class="tx-mobile-top">
                                 <div class="tx-mobile-left">
-                                    <MudText Typo="Typo.subtitle2" Class="tx-mobile-date">
+                                    <MudText Typo="Typo.subtitle2">
                                         @tx.OccurredOn.ToString("yyyy-MM-dd")
                                     </MudText>
 
                                     <div class="tx-mobile-account">
                                         <MudIcon Icon="@GetAccountIcon(tx.AccountId).GetIcon()" Size="Size.Small" />
-                                        <MudText Typo="Typo.body2" Class="tx-mobile-account-text">@GetAccountName(tx.AccountId)</MudText>
+                                        <MudText Typo="Typo.body2">@GetAccountName(tx.AccountId)</MudText>
                                     </div>
                                 </div>
 
@@ -35,7 +35,7 @@ else
                                         @SignedAmount(tx) @tx.Currency
                                     </MudText>
 
-                                    <MudText Typo="Typo.body2" Align="Align.Right" Class="mud-secondary-text tx-mobile-category">
+                                    <MudText Typo="Typo.body2" Align="Align.Right">
                                         @GetCategoryName(tx.CategoryId)
                                     </MudText>
                                 </div>
@@ -43,7 +43,7 @@ else
 
                             @if (!string.IsNullOrWhiteSpace(tx.Note))
                             {
-                                <MudText Typo="Typo.body2" Class="tx-mobile-note">@tx.Note</MudText>
+                                <MudText Typo="Typo.body2">@tx.Note</MudText>
                             }
                         </div>
 
