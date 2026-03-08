@@ -1,0 +1,28 @@
+﻿.table-scroll {
+    overflow-x: auto;
+}
+
+.tx-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.tx-actions-cell {
+    white-space: nowrap;
+}
+
+::deep .tx-income > td {
+    background-color: rgba(0, 200, 0, 0.08);
+}
+
+::deep .tx-outcome > td {
+    background-color: rgba(255, 0, 0, 0.06);
+}
+
+::deep .tx-planned > td:not(:last-child) {
+    filter: grayscale(1);
+    opacity: 0.65;
+}

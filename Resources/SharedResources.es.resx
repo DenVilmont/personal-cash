@@ -384,4 +384,16 @@
   <data name="Transactions_TransactionCompleted" xml:space="preserve">
     <value>Transacción registrada</value>
   </data>
+  <data name="Transactions_Empty" xml:space="preserve">
+    <value>No hay transacciones</value>
+  </data>
+  <data name="Planned_transaction" xml:space="preserve">
+    <value>Transacción planificada</value>
+  </data>
+  <data name="Transactions_RealizeAction" xml:space="preserve">
+    <value>Realizar</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
 </root>

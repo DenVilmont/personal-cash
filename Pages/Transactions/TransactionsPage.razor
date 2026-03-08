@@ -58,14 +58,28 @@
                                       OnSave="SaveFiltersAsync"
                                       OnReset="ResetFiltersAsync" />
             <!-- Mobile Filters(xs): after Add, before Table -->
+
+
             <!-- Transactions Table -->
-            <TransactionsTable Items="_items"
-                               AccountsById="_accountById"
-                               CategoriesById="_categoryById"
-                               Busy="_busy"
-                               OnEdit="OpenEditAsync"
-                               OnDelete="ConfirmDeleteAsync"
-                               OnRealizePlanned="OpenRealizePlannedAsync" />
+            <div class="d-block d-md-none">
+                <TransactionsTableMobileList Items="_items"
+                                        AccountsById="_accountById"
+                                        CategoriesById="_categoryById"
+                                        Busy="_busy"
+                                        OnEdit="OpenEditAsync"
+                                        OnDelete="ConfirmDeleteAsync"
+                                        OnRealizePlanned="OpenRealizePlannedAsync" />
+            </div>
+
+            <div class="d-none d-md-block">
+                <TransactionsTable Items="_items"
+                                   AccountsById="_accountById"
+                                   CategoriesById="_categoryById"
+                                   Busy="_busy"
+                                   OnEdit="OpenEditAsync"
+                                   OnDelete="ConfirmDeleteAsync"
+                                   OnRealizePlanned="OpenRealizePlannedAsync" />
+            </div>
             <!-- Transactions Table -->
         </MudItem>
 

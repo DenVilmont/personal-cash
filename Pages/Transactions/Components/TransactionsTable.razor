@@ -68,22 +68,25 @@
             <MudTd>@GetCategoryName(tx.CategoryId)</MudTd>
             <MudTd>@tx.Note</MudTd>
 
-            <MudTd Class="align-right">
-                @if (tx.IsPlanned)
-                {
-                    <MudIconButton Icon="@Icons.Material.Filled.AddTask"
+            <MudTd Class="align-right tx-actions-cell">
+                <div class="tx-actions">
+                    @if (tx.IsPlanned)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.AddTask"
+                                       Color="Color.Success"
+                                       Disabled="Busy"
+                                       OnClick="@(async () => await OnRealizePlanned.InvokeAsync(tx))" />
+                    }
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                    Disabled="Busy"
-                                   OnClick="@(async () => await OnRealizePlanned.InvokeAsync(tx))" />
-                }
+                                   OnClick="@(async () => await OnEdit.InvokeAsync(tx))" />
 
-                <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Disabled="Busy"
-                               OnClick="@(async () => await OnEdit.InvokeAsync(tx))" />
-
-                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                               Color="Color.Error"
-                               Disabled="Busy"
-                               OnClick="@(async () => await OnDelete.InvokeAsync(tx))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   Disabled="Busy"
+                                   OnClick="@(async () => await OnDelete.InvokeAsync(tx))" />
+                </div>
             </MudTd>
         </RowTemplate>
 

@@ -1,0 +1,22 @@
+﻿.avatar-upload {
+    position: relative;
+    display: inline-block;
+}
+
+::deep .avatar-upload__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+    ::deep .avatar-upload__input:disabled {
+        cursor: not-allowed;
+    }
+
+.settings-inline-action {
+    align-self: center;
+    width: fit-content;
+}

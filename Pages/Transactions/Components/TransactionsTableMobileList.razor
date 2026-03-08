@@ -1,0 +1,88 @@
+﻿@using Domain.Contracts
+@using Domain.Enums
+@using PersonalCash.Presentation.Icons
+
+@if (Items.Count == 0)
+{
+    <MudPaper Class="pa-4 mt-2" Outlined="true">
+        <MudText Typo="Typo.body1">@L["Transactions_Empty"]</MudText>
+    </MudPaper>
+}
+else
+{
+    <MudStack Spacing="2" Class="mt-2">
+        @foreach (var tx in Items)
+        {
+            <div class="tx-mobile-card @GetCardClass(tx)">
+                <MudPaper Class="pa-2 tx-mobile-card-paper"
+                          Outlined="true">
+                    <MudStack Spacing="2">
+                        <div class="tx-mobile-content @(tx.IsPlanned ? "tx-mobile-content-planned" : string.Empty)">
+                            <div class="tx-mobile-top">
+                                <div class="tx-mobile-left">
+                                    <MudText Typo="Typo.subtitle2">
+                                        @tx.OccurredOn.ToString("yyyy-MM-dd")
+                                    </MudText>
+
+                                    <div class="tx-mobile-account">
+                                        <MudIcon Icon="@GetAccountIcon(tx.AccountId).GetIcon()" Size="Size.Small" />
+                                        <MudText Typo="Typo.body2">@GetAccountName(tx.AccountId)</MudText>
+                                    </div>
+                                </div>
+
+                                <div class="tx-mobile-right">
+                                    <MudText Typo="Typo.h6" Align="Align.Right">
+                                        @SignedAmount(tx) @tx.Currency
+                                    </MudText>
+
+                                    <MudText Typo="Typo.body2" Align="Align.Right" Class="mud-secondary-text">
+                                        @GetCategoryName(tx.CategoryId)
+                                    </MudText>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(tx.Note))
+                            {
+                                <MudText Typo="Typo.body2">@tx.Note</MudText>
+                            }
+                        </div>
+
+                        <MudDivider />
+
+                        <div class="tx-mobile-actions">
+                            <div class="tx-mobile-actions-left">
+                                @if (tx.IsPlanned)
+                                {
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Success"
+                                               Size="Size.Small"
+                                               Disabled="Busy"
+                                               OnClick="@(async () => await OnRealizePlanned.InvokeAsync(tx))">
+                                        @L["Transactions_RealizeAction"]
+                                    </MudButton>
+                                }
+                            </div>
+
+                            <div class="tx-mobile-actions-right">
+                                <MudButton Variant="Variant.Outlined"
+                                           Size="Size.Small"
+                                           Disabled="Busy"
+                                           OnClick="@(async () => await OnEdit.InvokeAsync(tx))">
+                                    @L["Edit"]
+                                </MudButton>
+
+                                <MudButton Variant="Variant.Outlined"
+                                           Color="Color.Error"
+                                           Size="Size.Small"
+                                           Disabled="Busy"
+                                           OnClick="@(async () => await OnDelete.InvokeAsync(tx))">
+                                    @L["Delete"]
+                                </MudButton>
+                            </div>
+                        </div>
+                    </MudStack>
+                </MudPaper>
+            </div>
+        }
+    </MudStack>
+}

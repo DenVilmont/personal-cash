@@ -37,12 +37,14 @@
                                        class="avatar-upload__input"
                                        disabled="@_busy" />
                         </div>
-                        <MudButton Variant="Variant.Text"
-                                   Color="Color.Error"
-                                   Disabled="_busy || string.IsNullOrWhiteSpace(_settings.AvatarBase64)"
-                                   OnClick="RemoveAvatarAsync">
-                            @L["Remove"]
-                        </MudButton>
+                        <div class="settings-inline-action">
+                            <MudButton Variant="Variant.Text"
+                                       Color="Color.Error"
+                                       Disabled="_busy || string.IsNullOrWhiteSpace(_settings.AvatarBase64)"
+                                       OnClick="RemoveAvatarAsync">
+                                @L["Remove"]
+                            </MudButton>
+                        </div>
                     </MudStack>
                 </MudStack>
 

@@ -1,0 +1,67 @@
+﻿.tx-mobile-card {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.tx-mobile-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.tx-mobile-left,
+.tx-mobile-right {
+    min-width: 0;
+}
+
+.tx-mobile-left {
+    flex: 1 1 auto;
+}
+
+.tx-mobile-right {
+    flex: 0 0 auto;
+    text-align: right;
+}
+
+.tx-mobile-account {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.tx-mobile-income {
+    background-color: rgba(0, 200, 0, 0.08);
+}
+
+.tx-mobile-outcome {
+    background-color: rgba(255, 0, 0, 0.06);
+}
+
+.tx-mobile-content-planned {
+    filter: grayscale(1);
+    opacity: 0.65;
+}
+
+.tx-mobile-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.tx-mobile-actions-left,
+.tx-mobile-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tx-mobile-actions-right {
+    margin-left: auto;
+}
+
+::deep .tx-mobile-card-paper {
+    background-color: transparent !important;
+}
