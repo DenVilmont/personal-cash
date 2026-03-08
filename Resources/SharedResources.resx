@@ -249,7 +249,7 @@
   <data name="Transaction_DateRequired_ValidationError" xml:space="preserve">
     <value>Date is required</value>
   </data>
-  <data name="Transaction_AmountMustBePositive_ValidationError" xml:space="preserve">
+  <data name="Transaction_AmountMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
     <value>Amount must be a positive number</value>
   </data>
   <data name="Transaction_AccountRequired_ValidationError" xml:space="preserve">
@@ -401,5 +401,8 @@
   </data>
   <data name="Balance_Expected_Tooltip" xml:space="preserve">
     <value>Expected balance including planned transactions</value>
+  </data>
+  <data name="Transaction_DateIsRequired_ValidationError" xml:space="preserve">
+    <value>Transaction date is required</value>
   </data>
 </root>

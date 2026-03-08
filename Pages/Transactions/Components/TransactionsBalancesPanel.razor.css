@@ -52,11 +52,7 @@
         max-width: 55%;
     }
 
-    .balance-actual {
-        font-size: 0.95rem;
-    }
-
     .balance-expected {
-        font-size: 0.78rem;
+        font-size: 0.8rem;
     }
 }

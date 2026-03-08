@@ -152,24 +152,4 @@
     ::deep .transactions-mobile-panel-body {
         padding: 0 12px 12px;
     }
-
-        ::deep .transactions-mobile-panel-body .mud-input-label,
-        ::deep .transactions-mobile-panel-body .mud-input-label-inputcontrol {
-            font-size: 0.72rem;
-        }
-
-        ::deep .transactions-mobile-panel-body input,
-        ::deep .transactions-mobile-panel-body textarea,
-        ::deep .transactions-mobile-panel-body .mud-input-slot,
-        ::deep .transactions-mobile-panel-body .mud-select-input,
-        ::deep .transactions-mobile-panel-body .mud-input-adornment,
-        ::deep .transactions-mobile-panel-body .mud-chip-content {
-            font-size: 0.8rem;
-        }
-
-        ::deep .transactions-mobile-panel-body .mud-button-root,
-        ::deep .transactions-mobile-panel-body .mud-button-label,
-        ::deep .transactions-mobile-panel-body .mud-switch .mud-typography {
-            font-size: 0.76rem;
-        }
 }

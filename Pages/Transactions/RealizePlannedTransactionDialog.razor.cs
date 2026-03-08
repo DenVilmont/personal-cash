@@ -3,6 +3,8 @@ using Domain.Contracts;
 using Domain.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using PersonalCash.Shared.Extensions;
+using System.Globalization;
 
 namespace PersonalCash.Pages.Transactions
 {
@@ -15,7 +17,7 @@ namespace PersonalCash.Pages.Transactions
         [Inject] private TransactionService TxService { get; set; } = default!;
 
         private DateOnly? _occurredOn;
-        private decimal _amount;
+        private string _amountText = string.Empty;
         private EntryType _entryType;
         private bool _isForPlanning;
         private string _currency = "";
@@ -29,7 +31,7 @@ namespace PersonalCash.Pages.Transactions
             _entryType = Tx.EntryType;
             _isForPlanning = Tx.IsPlanned;
             _currency = Tx.Currency;
-            _amount = Tx.Amount;
+            _amountText = Tx.Amount.ToString("0.00", CultureInfo.CurrentCulture);
             _accountId = Tx.AccountId;
             _categoryId = Tx.CategoryId;
             _note = Tx.Note;
@@ -44,17 +46,23 @@ namespace PersonalCash.Pages.Transactions
         private async Task SaveAsync()
         {
             if (_occurredOn is null)
+            {
+                Snackbar.Add(L["Transaction_DateIsRequired_ValidationError"], Severity.Error);
                 return;
+            }
 
-            if (_amount <= 0)
+            if (!_amountText.TryParseDecimal(out var parsedAmount) || parsedAmount <= 0)
+            {
+                Snackbar.Add(L["Transaction_AmountMustBeValidPositiveNumber_ValidationError"], Severity.Error);
                 return;
+            }
 
-            if (_amount >= Tx.Amount)
+            if (parsedAmount >= Tx.Amount)
             {
                 await RunAsync(async () =>
                 {
                     Tx.OccurredOn = _occurredOn.Value;
-                    Tx.Amount = _amount;
+                    Tx.Amount = parsedAmount;
                     Tx.IsPlanned = false;
                     Tx.Note = _note;
 
@@ -66,7 +74,7 @@ namespace PersonalCash.Pages.Transactions
                 var copy = new TransactionDto
                 {
                     OccurredOn = _occurredOn.Value,
-                    Amount = _amount,
+                    Amount = parsedAmount,
                     EntryType = _entryType,
                     IsPlanned = false,
                     Currency = string.IsNullOrWhiteSpace(_currency) ? "EUR" : _currency.Trim().ToUpperInvariant(),
@@ -80,7 +88,7 @@ namespace PersonalCash.Pages.Transactions
                 {
                     await TxService.InsertTransactionAndUpdateBalances(copy);
 
-                    Tx.Amount -= _amount;
+                    Tx.Amount -= parsedAmount;
                     Tx.IsPlanned = true;
                     Tx.Note = _note;
 

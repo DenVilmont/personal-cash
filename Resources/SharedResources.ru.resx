@@ -249,8 +249,8 @@
   <data name="Transaction_DateRequired_ValidationError" xml:space="preserve">
     <value>Дата обязательна</value>
   </data>
-  <data name="Transaction_AmountMustBePositive_ValidationError" xml:space="preserve">
-    <value>Сумма должна быть больше нуля</value>
+  <data name="Transaction_AmountMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
+    <value>Сумма операции должна быть корректным положительным числом.</value>
   </data>
   <data name="Transaction_AccountRequired_ValidationError" xml:space="preserve">
     <value>Выберите счёт</value>
@@ -401,5 +401,8 @@
   </data>
   <data name="Balance_Expected_Tooltip" xml:space="preserve">
     <value>Предполагаемый баланс с учётом планируемых операций</value>
+  </data>
+  <data name="Transaction_DateIsRequired_ValidationError" xml:space="preserve">
+    <value>Дата операции обязательна</value>
   </data>
 </root>

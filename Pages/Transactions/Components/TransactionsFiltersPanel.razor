@@ -42,12 +42,10 @@
                                    Class="w-100"
                                    Value="Month"
                                    ValueChanged="OnMonthChanged"
+                                   Placeholder="@L["Filter_Month_All"]"
                                    Clearable="true"
                                    OnClearButtonClick="OnMonthCleared">
-                            <MudSelectItem T="DateOnly?" Value="@((DateOnly?)null)">
-                                @L["Filter_Month_All"]
-                            </MudSelectItem>
-
+                            <MudSelectItem T="DateOnly?" Value="@((DateOnly?)null)" />
                             @foreach (var m in MonthOptions)
                             {
                                 <MudSelectItem T="DateOnly?" Value="@m">
@@ -63,6 +61,7 @@
                                    MultiSelection="true"
                                    SelectedValues="AccountIds"
                                    SelectedValuesChanged="OnAccountIdsChanged"
+                                   Placeholder="@L["Filter_Account_All"]"
                                    MultiSelectionTextFunc="GetAccountSelectionText"
                                    Clearable="true"
                                    OnClearButtonClick="OnFiltersChanged">
@@ -92,6 +91,7 @@
                                    MultiSelection="true"
                                    SelectedValues="CategoryIds"
                                    SelectedValuesChanged="OnCategoryIdsChanged"
+                                   Placeholder="@L["Filter_Category_All"]"
                                    MultiSelectionTextFunc="GetCategorySelectionText"
                                    Clearable="true"
                                    OnClearButtonClick="OnFiltersChanged">
@@ -205,11 +205,10 @@ else
                        Class="w-100"
                        Value="Month"
                        ValueChanged="OnMonthChanged"
+                       Placeholder="@L["Filter_Month_All"]"
                        Clearable="true"
                        OnClearButtonClick="OnMonthCleared">
-                <MudSelectItem T="DateOnly?" Value="@((DateOnly?)null)">
-                    @L["Filter_Month_All"]
-                </MudSelectItem>
+                <MudSelectItem T="DateOnly?" Value="@((DateOnly?)null)" />
 
                 @foreach (var m in MonthOptions)
                 {
@@ -226,6 +225,7 @@ else
                        MultiSelection="true"
                        SelectedValues="AccountIds"
                        SelectedValuesChanged="OnAccountIdsChanged"
+                       Placeholder="@L["Filter_Account_All"]"
                        MultiSelectionTextFunc="GetAccountSelectionText"
                        Clearable="true"
                        OnClearButtonClick="OnFiltersChanged">
@@ -255,6 +255,7 @@ else
                        MultiSelection="true"
                        SelectedValues="CategoryIds"
                        SelectedValuesChanged="OnCategoryIdsChanged"
+                       Placeholder="@L["Filter_Category_All"]"
                        MultiSelectionTextFunc="GetCategorySelectionText"
                        Clearable="true"
                        OnClearButtonClick="OnFiltersChanged">

@@ -109,3 +109,9 @@ a, .btn-link {
     align-items: center;
     justify-content: center;
 }
+
+@media (max-width: 599.98px) {
+    html {
+        font-size: 14px;
+    }
+}

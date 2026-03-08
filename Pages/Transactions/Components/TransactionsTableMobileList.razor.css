@@ -70,18 +70,6 @@
 }
 
 @media (max-width: 599.98px) {
-    .tx-mobile-date {
-        font-size: 0.72rem;
-        line-height: 1.2;
-    }
-
-    .tx-mobile-account-text,
-    .tx-mobile-category,
-    .tx-mobile-note {
-        font-size: 0.76rem;
-        line-height: 1.25;
-    }
-
     .tx-mobile-amount {
         font-size: 0.92rem;
         line-height: 1.15;

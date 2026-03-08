@@ -4,7 +4,7 @@ using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using PersonalCash.Shared.Localization;
+using PersonalCash.Shared.Extensions;
 
 namespace PersonalCash.Pages.Reports;
 

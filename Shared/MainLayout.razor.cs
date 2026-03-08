@@ -32,10 +32,25 @@ public partial class MainLayout : LayoutComponentBase, IDisposable
         AuthStateProvider.AuthenticationStateChanged += OnAuthStateChanged;
 
         await UserSettingsStore.GetAsync();
+        await SyncCultureWithUserSettingsAsync();
         UserSettingsStore.Changed += OnSettingsChanged;
 
         NavigationManager.LocationChanged += OnLocationChanged;
         PageTitleState.Changed += OnPageTitleChanged;
+    }
+
+    private async Task SyncCultureWithUserSettingsAsync()
+    {
+        var preferred = UserSettingsStore.Current?.PreferredLanguage?.Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(preferred))
+            return;
+
+        var persisted = await CultureService.GetCultureAsync();
+        if (string.Equals(persisted, preferred, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        await CultureService.SetCultureAsync(preferred);
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 
     private void OnPageTitleChanged() => InvokeAsync(StateHasChanged);
@@ -67,6 +82,7 @@ public partial class MainLayout : LayoutComponentBase, IDisposable
             else
             {
                 await UserSettingsStore.GetAsync(forceRefresh: true);
+                await SyncCultureWithUserSettingsAsync();
             }
 
             await InvokeAsync(StateHasChanged);

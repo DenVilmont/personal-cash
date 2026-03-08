@@ -189,7 +189,7 @@ public partial class TransactionsPage : IDisposable
 
         if (_amount <= 0)
         {
-            Snackbar.Add(L["Transaction_AmountMustBePositive_ValidationError"], Severity.Warning);
+            Snackbar.Add(L["Transaction_AmountMustBeValidPositiveNumber_ValidationError"], Severity.Warning);
             return;
         }
 

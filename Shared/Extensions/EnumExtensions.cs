@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 
-namespace PersonalCash.Shared.Localization
+namespace PersonalCash.Shared.Extensions
 {
     public static class EnumExtensions
     {

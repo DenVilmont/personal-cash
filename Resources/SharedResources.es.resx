@@ -249,8 +249,8 @@
   <data name="Transaction_DateRequired_ValidationError" xml:space="preserve">
     <value>La fecha es obligatoria</value>
   </data>
-  <data name="Transaction_AmountMustBePositive_ValidationError" xml:space="preserve">
-    <value>El importe debe ser mayor que cero</value>
+  <data name="Transaction_AmountMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
+    <value>El importe de la operación debe ser un número positivo válido.</value>
   </data>
   <data name="Transaction_AccountRequired_ValidationError" xml:space="preserve">
     <value>Seleccione una cuenta</value>
@@ -401,5 +401,8 @@
   </data>
   <data name="Balance_Expected_Tooltip" xml:space="preserve">
     <value>Saldo previsto incluyendo operaciones planificadas</value>
+  </data>
+  <data name="Transaction_DateIsRequired_ValidationError" xml:space="preserve">
+    <value>La fecha de la transacción es obligatoria</value>
   </data>
 </root>
