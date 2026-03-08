@@ -19,7 +19,6 @@ public partial class TransactionsPage : IDisposable
     [Inject] private AccountsService AccountsService { get; set; } = default!;
     [Inject] private CategoriesService CategoriesService { get; set; } = default!;
     [Inject] private CurrentUserService CurrentUser { get; set; } = default!;
-    [Inject] private NavigationManager Nav { get; set; } = default!;
     [Inject] private IDialogService DialogService { get; set; } = default!;
     [Inject] private UserSettingsStore UserSettingsStore { get; set; } = default!;
     [Inject] private PageStateService PageStateService { get; set; } = default!;
