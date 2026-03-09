@@ -10,7 +10,7 @@
             <MudPaper Elevation="2" Class="accounts-paper">
                 <MudText Typo="Typo.h6">@L["Accounts_Add_Title"]</MudText>
 
-                <MudGrid Spacing="3" Class="accounts-form-grid" alignitems="AlignItems.Stretch">
+                <MudGrid Spacing="3" Class="accounts-form-grid" AlignItems="AlignItems.Stretch">
                     <MudItem xs="12" sm="6" Class="d-flex">
                         <MudTextField Label="@L["Accounts_Name"]"
                                       Variant="Variant.Outlined"
@@ -129,18 +129,18 @@
                                 <div class="accounts-mobile-card__actions">
                                     <MudButton Variant="Variant.Outlined"
                                                Size="Size.Small"
-                                               Disabled="_busy"
-                                               OnClick="@(async () => await OpenEditAsync(a))">
-                                        @L["Edit"]
-                                    </MudButton>
-
-                                    <MudButton Variant="Variant.Outlined"
-                                               Size="Size.Small"
                                                Color="Color.Error"
                                                Disabled="_busy"
                                                OnClick="@(async () => await ConfirmDeleteAsync(a))">
                                         @L["Delete"]
                                     </MudButton>
+
+                                    <MudButton Variant="Variant.Outlined"
+                                               Size="Size.Small"
+                                               Disabled="_busy"
+                                               OnClick="@(async () => await OpenEditAsync(a))">
+                                        @L["Edit"]
+                                    </MudButton>                                    
                                 </div>
                             </MudPaper>
                         }

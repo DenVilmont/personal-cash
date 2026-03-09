@@ -4,7 +4,6 @@
 @using Domain.Contracts
 @using Domain.Enums
 @inject CurrentUserService CurrentUser
-@inject NavigationManager Nav
 @inject IDialogService DialogService
 
 <div class="categories-page">
@@ -15,7 +14,7 @@
                 <MudPaper Elevation="2" Class="categories-paper">
                     <MudText Typo="Typo.h6">@L["Categories_Add_Title"]</MudText>
 
-                    <MudGrid Spacing="3" Class="categories-form-grid" alignitems="AlignItems.Stretch">
+                    <MudGrid Spacing="3" Class="categories-form-grid" AlignItems="AlignItems.Stretch">
                         <MudItem xs="12" Class="d-flex">
                             <MudTextField Label="@L["Categories_Name"]"
                                           Required="true"
@@ -57,7 +56,6 @@
                     else
                     {
                         <div class="categories-toolbar">
-                            <MudSpacer />
                             <MudTextField @bind-Value="_searchString"
                                           Placeholder="@L["Search"]"
                                           Variant="Variant.Text"
@@ -81,17 +79,17 @@
                                     <div class="categories-mobile-card__actions">
                                         <MudButton Variant="Variant.Outlined"
                                                    Size="Size.Small"
-                                                   Disabled="_busy"
-                                                   OnClick="@(async () => await OpenEditAsync(category))">
-                                            @L["Edit"]
-                                        </MudButton>
-
-                                        <MudButton Variant="Variant.Outlined"
-                                                   Size="Size.Small"
                                                    Color="Color.Error"
                                                    Disabled="_busy"
                                                    OnClick="@(async () => await ConfirmDeleteAsync(category))">
                                             @L["Delete"]
+                                        </MudButton>
+
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Size="Size.Small"
+                                                   Disabled="_busy"
+                                                   OnClick="@(async () => await OpenEditAsync(category))">
+                                            @L["Edit"]
                                         </MudButton>
                                     </div>
                                 </MudPaper>
@@ -141,7 +139,6 @@
                     }
                 </MudPaper>
             </section>
-
         </div>
     </MudContainer>
 </div>

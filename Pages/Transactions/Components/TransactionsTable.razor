@@ -13,7 +13,7 @@
             <col style="width: 115px; min-width: 115px" />
             <col />
             <col />
-            <col />
+            <col style="width: 130px; min-width: 130px" />
             <col />
             <col />
             <col style="width: 185px;" />
@@ -42,7 +42,7 @@
             </MudTh>
 
             <MudTh>
-                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => SignedAmount(x)))">
+                <MudTableSortLabel Class="d-flex justify-end" SortBy="@(new Func<TransactionDto, object>(x => SignedAmount(x)))">
                     @L["Amount"]
                 </MudTableSortLabel>
             </MudTh>
@@ -73,7 +73,9 @@
             </MudTd>
 
             <MudTd>@tx.EntryType.ToLocalizedString(L)</MudTd>
-            <MudTd>@SignedAmount(tx) @tx.Currency</MudTd>
+            <MudTd>
+                <span class="d-flex justify-end pc-nowrap">@($"{SignedAmount(tx):N2} {tx.Currency}")</span>
+            </MudTd>
             <MudTd>@GetCategoryName(tx.CategoryId)</MudTd>
             <MudTd>@tx.Note</MudTd>
 

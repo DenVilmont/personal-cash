@@ -161,9 +161,7 @@ public partial class TransactionsPage : IDisposable
 
         _accountById = _accounts.ToDictionary(x => x.Id, x => x);
 
-        SelectedAccountId = _accounts.FirstOrDefault(a => !a.IsArchived)?.Id
-                    ?? _accounts.FirstOrDefault()?.Id
-                    ?? Guid.Empty;
+        SelectedAccountId = _activeAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
     }
 
     protected Task LoadAsync() => RunAsync(LoadCoreAsync);
@@ -177,6 +175,16 @@ public partial class TransactionsPage : IDisposable
 
         await InitializeFiltersAsync();
         ApplyFilters();
+    }
+    protected void RefreshAsync()
+    {
+        _occurredOn = DateOnly.FromDateTime(DateTime.Today);
+        _entryType = EntryType.Outcome;
+        SelectedAccountId = _activeAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
+        _amount = 0m;
+        _categoryId = _categories.First().Id;
+        _note = null;
+        _isForPlanning = false;
     }
 
     protected async Task AddAsync()
@@ -253,7 +261,6 @@ public partial class TransactionsPage : IDisposable
             $"{SignedAmount(tx)} {tx.Currency}  {tx.OccurredOn:yyyy-MM-dd}<br/><br/>" +
             $"{L["Transactions_DeleteDialog_Message"]}");
 
-        // returns Task<bool?> (true = Yes, null/false = Cancel/No) :contentReference[oaicite:0]{index=0}
         bool? confirmed = await DialogService.ShowMessageBoxAsync(
             L["Transactions_DeleteDialog_Title"],
             msg,

@@ -13,7 +13,7 @@
 
         <ChildContent>
             <div class="transactions-mobile-panel-body">
-                <MudGrid Spacing="3" alignitems="AlignItems.Stretch">
+                <MudGrid Spacing="3" AlignItems="AlignItems.Stretch">
                     <MudItem xs="12" md="6" Class="d-flex">
                         <MudDatePicker Label="@L["Date"]"
                                        Variant="Variant.Outlined"
@@ -125,7 +125,7 @@
                     </MudItem>
 
                     <MudItem xs="12" md="6" Class="d-flex">
-                        <MudStack Row="true" alignitems="AlignItems.Center" Class="w-100">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Class="w-100">
                             <MudSwitch T="bool"
                                        Label="@L["Is_For_Planning"]"
                                        Color="Color.Primary"
@@ -135,19 +135,21 @@
                     </MudItem>
 
                     <MudItem xs="12">
-                        <MudButton Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   Disabled="Busy || AccountId == Guid.Empty || CategoryId == Guid.Empty"
-                                   OnClick="OnAddClicked">
-                            @L["Add"]
-                        </MudButton>
+                        <div class="d-flex justify-space-between gap-1">
+                            <MudButton Class="ml-2"
+                                       Variant="Variant.Outlined"
+                                       Disabled="Busy"
+                                       OnClick="OnRefreshClicked">
+                                @L["Refresh"]
+                            </MudButton>
 
-                        <MudButton Class="ml-2"
-                                   Variant="Variant.Outlined"
-                                   Disabled="Busy"
-                                   OnClick="OnRefreshClicked">
-                            @L["Refresh"]
-                        </MudButton>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Disabled="Busy || AccountId == Guid.Empty || CategoryId == Guid.Empty"
+                                       OnClick="OnAddClicked">
+                                @L["Add"]
+                            </MudButton>
+                        </div>
                     </MudItem>
                 </MudGrid>
             </div>

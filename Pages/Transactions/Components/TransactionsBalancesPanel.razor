@@ -14,6 +14,7 @@ else
             <MudExpansionPanel Expanded="false" Class="transactions-mobile-compact-panel">
                 <TitleContent>
                     <div class="d-flex transactions-mobile-compact-panel__title">
+                        <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet" Class="mr-2 transactions-mobile-compact-panel__icon" />
                         <MudText Typo="Typo.h6" Class="transactions-mobile-compact-panel__text">@L["Balances"]</MudText>
                     </div>
                 </TitleContent>
@@ -55,7 +56,10 @@ else
     <!-- Desktop -->
     <div class="d-none d-lg-block">
         <MudPaper Class="pa-4 transactions-balances-panel__desktop-card">
-            <MudText Typo="Typo.h6">@L["Balances"]</MudText>
+            <div class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet" class="mr-2" />
+                <MudText Typo="Typo.h5">@L["Balances"]</MudText>
+            </div>
 
             <MudStack Spacing="2" Class="mt-3">
                 @foreach (var a in VisibleAccounts)
