@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
+﻿using Domain.Contracts;
 using Domain.Enums;
-using Domain.Contracts;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using PersonalCash.Shared.Extensions;
+using System.Globalization;
 
 namespace PersonalCash.Pages.Accounts;
 
@@ -14,7 +16,7 @@ public partial class EditAccountDialog
     private string? _name;
     private string _currency = "EUR";
     protected bool _showBalance = true;
-    private decimal _balanceActual = 0m;
+    private string _balanceActualText = string.Empty;
     private AccountIcon _icon;
     private bool _isArchived;
 
@@ -23,7 +25,7 @@ public partial class EditAccountDialog
         _name = Account.Name;
         _currency = Account.Currency;
         _showBalance = Account.ShowBalance;
-        _balanceActual = Account.BalanceActual;
+        _balanceActualText = Account.BalanceActual.ToString("0.00", CultureInfo.CurrentCulture);
         _icon = AccountIconExtensions.FromDbKey(Account.IconKey);
         _isArchived = Account.IsArchived;
     }
@@ -34,7 +36,16 @@ public partial class EditAccountDialog
         => RunAsync(() =>
         {
             if (string.IsNullOrWhiteSpace(_name))
+            {
+                Snackbar.Add(L["Accounts_NameRequired_ValidationError"], Severity.Warning);
                 return Task.CompletedTask;
+            }
+
+            if (!_balanceActualText.TryParseDecimal(out var parsedBalanceActual))
+            {
+                Snackbar.Add(L["Accounts_BalanceActual_InvalidFormat_ValidationError"], Severity.Warning);
+                return Task.CompletedTask;
+            }
 
             Account.Name = _name.Trim();
             Account.Currency = string.IsNullOrWhiteSpace(_currency) ? "EUR" : _currency.Trim().ToUpperInvariant();
@@ -42,9 +53,9 @@ public partial class EditAccountDialog
             Account.IconKey = _icon.ToDbKey();
             Account.IsArchived = _isArchived;
 
-            if (!Account.BalanceActual.Equals(_balanceActual))
+            if (!Account.BalanceActual.Equals(parsedBalanceActual))
             {
-                var margin = _balanceActual - Account.BalanceActual;
+                var margin = parsedBalanceActual - Account.BalanceActual;
                 Account.BalanceActual += margin;
                 Account.BalanceExpected += margin;
             }

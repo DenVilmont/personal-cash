@@ -60,14 +60,14 @@
                                     <MudTable Items="@_donutLegend" Dense="true" Elevation="0">
                                         <HeaderContent>
                                             <MudTh>@L["Category"]</MudTh>
-                                            <MudTh Style="text-align:right">@L["Amount"]</MudTh>
+                                            <MudTh Class="pc-text-align-right">@L["Amount"]</MudTh>
                                         </HeaderContent>
                                         <RowTemplate Context="row">
                                             <MudTd>
                                                 <span class="legend-swatch" style="background-color:@row.Color"></span>
                                                 @row.Label
                                             </MudTd>
-                                            <MudTd Style="text-align:right">@row.Value.ToString("N2")</MudTd>
+                                            <MudTd Class="pc-text-align-right">@row.Value.ToString("N2")</MudTd>
                                         </RowTemplate>
                                     </MudTable>
                                 </div>

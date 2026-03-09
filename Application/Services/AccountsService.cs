@@ -76,6 +76,9 @@ namespace Application.Services
             await _accountsRepo.DeleteAsync(acc);
         }
 
+        public Task<bool> HasTransactionsAsync(Guid accountId)
+            => _txLookup.AnyForAccountAsync(accountId);
+
         public async Task ArchiveAsync(AccountDto acc)
         {
             acc.IsArchived = true;

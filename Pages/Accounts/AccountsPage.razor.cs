@@ -6,16 +6,18 @@ using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using PersonalCash.Shared;
 
 namespace PersonalCash.Pages.Accounts;
 
 [Authorize]
-public partial class AccountsPage
+public partial class AccountsPage : IDisposable
 {
     [Inject] public AccountsService AccountsService { get; set; } = default!;
     [Inject] public CurrentUserService CurrentUser { get; set; } = default!;
     [Inject] public IDialogService DialogService { get; set; } = default!;
     [Inject] private UserSettingsStore UserSettingsStore { get; set; } = default!;
+    [Inject] private AppPageTitleState PageTitleState { get; set; } = default!;
 
     protected string? _name;
     protected string _currency = "EUR";
@@ -23,6 +25,11 @@ public partial class AccountsPage
     protected string _iconKey = AccountIcon.Wallet.ToString();
 
     protected List<AccountDto> _items = new();
+
+    protected override void OnParametersSet()
+    {
+        PageTitleState.Set(L["Accounts_PageTitle"]);
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,7 +52,7 @@ public partial class AccountsPage
 
         if (!CurrentUser.TryGetUserId(out var userId))
         {
-            Snackbar.Add("Not authenticated", Severity.Error);
+            Snackbar.Add(L["NotAuthenticated_Error"], Severity.Error);
             return;
         }
 
@@ -60,7 +67,7 @@ public partial class AccountsPage
 
             _name = null;
             await LoadCoreAsync();
-        }, successMessage: "Added");
+        }, successMessage: L["Added"]);
     }
 
     protected async Task OpenEditAsync(AccountDto acc)
@@ -92,7 +99,7 @@ public partial class AccountsPage
             CloseButton = true
         };
 
-        var dialog = await DialogService.ShowAsync<EditAccountDialog>("Edit account", parameters, options);
+        var dialog = await DialogService.ShowAsync<EditAccountDialog>(L["Accounts_EditAccount_Title"], parameters, options);
         var result = await dialog.Result;
 
         if (result is null || result.Canceled)
@@ -105,24 +112,32 @@ public partial class AccountsPage
         {
             await AccountsService.UpdateAsync(updated);
             await LoadCoreAsync();
-        }, successMessage: "Updated");
+        }, successMessage: L["Updated"]);
     }
 
     protected async Task ConfirmDeleteAsync(AccountDto acc)
     {
         var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
 
-        MarkupString msg = (MarkupString)$"Delete '{acc.Name}'? This cannot be undone.";
+        MarkupString msg = (MarkupString)(string.Format(L["Accounts_DeleteMessage"],acc.Name));
 
         bool? confirmed = await DialogService.ShowMessageBoxAsync(
-            "Delete account?",
+            L["Accounts_DeleteDialog_Title"],
             msg,
-            yesText: "Delete",
-            cancelText: "Cancel",
+            yesText: L["Delete"],
+            cancelText: L["Cancel"],
             options: options);
 
-        if (confirmed == true)
-            await DeleteAsync(acc);
+        if (confirmed != true)
+            return;
+
+        if (await AccountsService.HasTransactionsAsync(acc.Id))
+        {
+            await ConfirmArchiveAsync(acc);
+            return;
+        }
+
+        await DeleteAsync(acc);
     }
 
     protected Task DeleteAsync(AccountDto acc)
@@ -130,21 +145,19 @@ public partial class AccountsPage
         {
             await AccountsService.DeleteAsync(acc);
             await LoadCoreAsync();
-        }, successMessage: "Deleted");
+        }, successMessage: L["Deleted"]);
 
     protected async Task ConfirmArchiveAsync(AccountDto acc)
     {
         var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
 
-        MarkupString msg = (MarkupString)(
-            $"It looks like account has transactions. An accuont cannot be deleted while it has transactions.<br/> " +
-            $"Do you want to archive account?");
+        MarkupString msg = (MarkupString)(L["Accounts_DeleteHasTransactions_Message"].Value);
 
         bool? confirmed = await DialogService.ShowMessageBoxAsync(
-            "Archive account?",
+            L["Accounts_ArchiveDialog_Title"],
             msg,
-            yesText: "Archive",
-            cancelText: "Cancel",
+            yesText: L["Accounts_ArchiveAction"],
+            cancelText: L["Cancel"],
             options: options);
 
         if (confirmed == true)
@@ -156,5 +169,10 @@ public partial class AccountsPage
         {
             await AccountsService.ArchiveAsync(acc);
             await LoadCoreAsync();
-        }, successMessage: "Archived");
+        }, successMessage: L["Accounts_Archived"]);
+
+    public void Dispose()
+    {
+        PageTitleState.Clear();
+    }
 }

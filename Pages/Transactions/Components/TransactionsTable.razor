@@ -9,6 +9,15 @@
               Class="mt-2"
               RowsPerPage="20"
               RowClassFunc="TxRowClass">
+        <ColGroup>
+            <col style="width: 115px;" />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col style="width: 185px;" />
+        </ColGroup>
         <ToolBarContent>
             <MudText Typo="Typo.h6">@L["Transactions_TableTitle"]</MudText>
         </ToolBarContent>
@@ -68,8 +77,8 @@
             <MudTd>@GetCategoryName(tx.CategoryId)</MudTd>
             <MudTd>@tx.Note</MudTd>
 
-            <MudTd Class="align-right tx-actions-cell">
-                <div class="tx-actions">
+            <MudTd Class="pc-text-align-right tx-actions-cell">
+                <div class="pc-inline-actions-nowrap">
                     @if (tx.IsPlanned)
                     {
                         <MudIconButton Icon="@Icons.Material.Filled.AddTask"

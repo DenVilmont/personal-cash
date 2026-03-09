@@ -104,14 +104,14 @@
                                                               Breakpoint="Breakpoint.Xs">
                                                         <HeaderContent>
                                                             <MudTh>@L["Due date"]</MudTh>
-                                                            <MudTh Style="text-align:right">@L["Amount"]</MudTh>
+                                                            <MudTh Class="pc-text-align-right">@L["Amount"]</MudTh>
                                                             <MudTh>@L["Status"]</MudTh>
                                                             <MudTh></MudTh>
                                                         </HeaderContent>
 
                                                         <RowTemplate Context="p">
                                                             <MudTd>@p.DueDate.ToString("yyyy-MM-dd")</MudTd>
-                                                            <MudTd Style="text-align:right">@p.Amount.ToString("N2")</MudTd>
+                                                            <MudTd Class="pc-text-align-right">@p.Amount.ToString("N2")</MudTd>
                                                             <MudTd>
                                                                 @if (p.IsPaid)
                                                                 {
@@ -126,7 +126,7 @@
                                                                     </MudChip>
                                                                 }
                                                             </MudTd>
-                                                            <MudTd Class="align-right">
+                                                            <MudTd Class="pc-text-align-right">
                                                                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                                                                Disabled="_busy"
                                                                                OnClick="() => OpenEditPaymentAsync(loan, p)" />

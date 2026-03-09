@@ -250,7 +250,7 @@
     <value>Date is required</value>
   </data>
   <data name="Transaction_AmountMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
-    <value>Amount must be a positive number</value>
+    <value>Amount must be a valid positive number</value>
   </data>
   <data name="Transaction_AccountRequired_ValidationError" xml:space="preserve">
     <value>Please select an account</value>
@@ -404,5 +404,68 @@
   </data>
   <data name="Transaction_DateIsRequired_ValidationError" xml:space="preserve">
     <value>Transaction date is required</value>
+  </data>
+  <data name="Accounts_Add_Title" xml:space="preserve">
+    <value>Add account</value>
+  </data>
+  <data name="Accounts_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Accounts_Currency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="Accounts_Icon" xml:space="preserve">
+    <value>Icon</value>
+  </data>
+  <data name="Accounts_ShowBalance" xml:space="preserve">
+    <value>Show balance</value>
+  </data>
+  <data name="Accounts_TableTitle" xml:space="preserve">
+    <value>My accounts</value>
+  </data>
+  <data name="Accounts_NoItems" xml:space="preserve">
+    <value>No accounts</value>
+  </data>
+  <data name="Accounts_Archived" xml:space="preserve">
+    <value>Archived</value>
+  </data>
+  <data name="Accounts_BalanceActual" xml:space="preserve">
+    <value>Actual balance</value>
+  </data>
+  <data name="Accounts_BalanceExpected" xml:space="preserve">
+    <value>Expected balance</value>
+  </data>
+  <data name="Accounts_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Accounts_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Accounts_PageTitle" xml:space="preserve">
+    <value>Accounts</value>
+  </data>
+  <data name="Accounts_EditAccount_Title" xml:space="preserve">
+    <value>Edit account</value>
+  </data>
+  <data name="Accounts_DeleteMessage" xml:space="preserve">
+    <value>Delete {0}? This cannot be undone.</value>
+  </data>
+  <data name="Accounts_DeleteDialog_Title" xml:space="preserve">
+    <value>Delete account?</value>
+  </data>
+  <data name="Accounts_DeleteHasTransactions_Message" xml:space="preserve">
+    <value>It looks like this account has transactions. An account cannot be deleted while it has transactions.&lt;br/&gt;Do you want to archive the account instead?</value>
+  </data>
+  <data name="Accounts_ArchiveDialog_Title" xml:space="preserve">
+    <value>Archive account?</value>
+  </data>
+  <data name="Accounts_ArchiveAction" xml:space="preserve">
+    <value>Archive</value>
+  </data>
+  <data name="Accounts_NameRequired_ValidationError" xml:space="preserve">
+    <value>Please enter an account name</value>
+  </data>
+  <data name="Accounts_AmountMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
+    <value>Amount must be a valid positive number</value>
   </data>
 </root>

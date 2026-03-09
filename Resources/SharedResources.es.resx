@@ -405,4 +405,67 @@
   <data name="Transaction_DateIsRequired_ValidationError" xml:space="preserve">
     <value>La fecha de la transacción es obligatoria</value>
   </data>
+  <data name="Accounts_Add_Title" xml:space="preserve">
+    <value>Añadir cuenta</value>
+  </data>
+  <data name="Accounts_Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="Accounts_Currency" xml:space="preserve">
+    <value>Moneda</value>
+  </data>
+  <data name="Accounts_Icon" xml:space="preserve">
+    <value>Icono</value>
+  </data>
+  <data name="Accounts_ShowBalance" xml:space="preserve">
+    <value>Mostrar saldo</value>
+  </data>
+  <data name="Accounts_TableTitle" xml:space="preserve">
+    <value>Mis cuentas</value>
+  </data>
+  <data name="Accounts_NoItems" xml:space="preserve">
+    <value>No hay cuentas</value>
+  </data>
+  <data name="Accounts_Archived" xml:space="preserve">
+    <value>Archivada</value>
+  </data>
+  <data name="Accounts_BalanceActual" xml:space="preserve">
+    <value>Saldo actual</value>
+  </data>
+  <data name="Accounts_BalanceExpected" xml:space="preserve">
+    <value>Saldo esperado</value>
+  </data>
+  <data name="Accounts_Yes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="Accounts_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Accounts_PageTitle" xml:space="preserve">
+    <value>Cuentas</value>
+  </data>
+  <data name="Accounts_EditAccount_Title" xml:space="preserve">
+    <value>Editar cuenta</value>
+  </data>
+  <data name="Accounts_DeleteMessage" xml:space="preserve">
+    <value>¿Eliminar {0}? Esta acción no se puede deshacer.</value>
+  </data>
+  <data name="Accounts_DeleteDialog_Title" xml:space="preserve">
+    <value>¿Eliminar cuenta?</value>
+  </data>
+  <data name="Accounts_DeleteHasTransactions_Message" xml:space="preserve">
+    <value>Parece que esta cuenta tiene transacciones. No se puede eliminar una cuenta mientras tenga transacciones.&lt;br/&gt;¿Desea archivar la cuenta en su lugar?</value>
+  </data>
+  <data name="Accounts_ArchiveDialog_Title" xml:space="preserve">
+    <value>¿Archivar cuenta?</value>
+  </data>
+  <data name="Accounts_ArchiveAction" xml:space="preserve">
+    <value>Archivar</value>
+  </data>
+  <data name="Accounts_NameRequired_ValidationError" xml:space="preserve">
+    <value>Introduzca un nombre para la cuenta</value>
+  </data>
+  <data name="Accounts_AmountMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
+    <value>El importe debe ser un número positivo válido</value>
+  </data>
 </root>

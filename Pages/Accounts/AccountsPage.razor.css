@@ -1,0 +1,128 @@
+﻿.accounts-page {
+    padding: 12px 0 24px;
+}
+
+.accounts-layout {
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.accounts-page ::deep .accounts-paper {
+    padding: 16px;
+}
+
+.accounts-form-grid {
+    margin-top: 8px;
+}
+
+.accounts-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.accounts-mobile-list {
+    display: none;
+    margin-top: 12px;
+}
+
+    .accounts-mobile-list ::deep .accounts-mobile-card {
+        padding: 14px 14px 12px;
+        background: rgba(220, 251, 243, 0.5);
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+.accounts-mobile-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin: -2px -2px 12px;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+    .accounts-mobile-card__top .icon-option {
+        font-weight: 600;
+    }
+
+.accounts-mobile-card__row {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+    .accounts-mobile-card__row > span:first-child {
+        color: var(--mud-palette-text-primary);
+        font-weight: 500;
+    }
+
+    .accounts-mobile-card__row > span:last-child {
+        text-align: right;
+    }
+
+    .accounts-mobile-card__row:not(:last-of-type)::after {
+        content: "";
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        bottom: 0;
+        height: 1px;
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+.accounts-mobile-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.accounts-desktop-table {
+    display: block;
+    margin-top: 12px;
+}
+
+@media (max-width: 599.98px) {
+    .accounts-page {
+        padding: 12px 0 20px;
+    }
+
+    .accounts-layout {
+        max-width: 100%;
+    }
+
+    .accounts-page ::deep .accounts-paper {
+        padding: 12px;
+    }
+
+    .accounts-mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .accounts-desktop-table {
+        display: none;
+    }
+}
+
+@media (min-width: 960px) {
+    .accounts-page {
+        padding: 16px 0 32px;
+    }
+
+        .accounts-page ::deep .accounts-paper {
+            padding: 20px;
+        }
+}

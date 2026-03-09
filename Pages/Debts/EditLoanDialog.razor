@@ -71,11 +71,11 @@
                 <MudTable Items="@_previewPayments" Dense="true" Elevation="0">
                     <HeaderContent>
                         <MudTh>@L["Due date"]</MudTh>
-                        <MudTh Style="text-align:right">@L["Amount"]</MudTh>
+                        <MudTh Class="pc-text-align-right">@L["Amount"]</MudTh>
                     </HeaderContent>
                     <RowTemplate Context="p">
                         <MudTd>@p.DueDate.ToString("yyyy-MM-dd")</MudTd>
-                        <MudTd Style="text-align:right">@p.Amount.ToString("N2")</MudTd>
+                        <MudTd Class="pc-text-align-right">@p.Amount.ToString("N2")</MudTd>
                     </RowTemplate>
                 </MudTable>
             }

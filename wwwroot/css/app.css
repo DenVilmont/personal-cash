@@ -88,10 +88,6 @@ a, .btn-link {
         content: var(--blazor-load-percentage-text, "Loading");
     }
 
-.align-right {
-    text-align: right !important;
-}
-
 .mud-snackbar-location-top-right {
     top: 55px !important;
 }
@@ -115,3 +111,28 @@ a, .btn-link {
         font-size: 14px;
     }
 }
+
+/******Helpers******/
+.pc-text-align-left {
+    text-align: left;
+}
+
+.pc-text-align-center {
+    text-align: center;
+}
+
+.pc-text-align-right {
+    text-align: right;
+}
+
+.pc-inline-actions-nowrap {
+    display: flex;
+    width: fit-content;
+    margin-left: auto;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 4px;
+    white-space: nowrap;
+}
+/******Helpers******/

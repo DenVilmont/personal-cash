@@ -2,14 +2,6 @@
     overflow-x: auto;
 }
 
-.tx-actions {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    flex-wrap: nowrap;
-    white-space: nowrap;
-}
-
 .tx-actions-cell {
     white-space: nowrap;
 }

@@ -4,17 +4,29 @@
 @using Domain.Enums
 @using System.Globalization
 
-<MudDialog>
+<MudDialog Class="edit-account-dialog"
+           ContentClass="edit-account-dialog__content"
+           ActionsClass="edit-account-dialog__actions">
     <DialogContent>
-        <MudStack Spacing="2">
+        <MudStack Spacing="2" Class="edit-account-dialog__stack">
 
-            <MudTextField Label="Name" @bind-Value="_name" Variant="Variant.Outlined" Required="true" />
+            <MudTextField Label="@L["Accounts_Name"]"
+                          @bind-Value="_name"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Required="true" />
 
-            <MudTextField Label="Currency" @bind-Value="_currency" Variant="Variant.Outlined" Disabled="true" />
+            <MudTextField Label="@L["Accounts_Currency"]"
+                          @bind-Value="_currency"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Disabled="true" />
 
-            <MudSelect T="AccountIcon" Label="Icon"
+            <MudSelect T="AccountIcon"
+                       Label="@L["Accounts_Icon"]"
                        @bind-Value="_icon"
-                       Variant="Variant.Outlined" Margin="Margin.Dense">
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense">
                 @foreach (var key in Enum.GetValues<AccountIcon>())
                 {
                     <MudSelectItem Value="@key">
@@ -24,27 +36,35 @@
                     </MudSelectItem>
                 }
             </MudSelect>
+
             <MudSwitch T="bool"
                        Color="Color.Primary"
                        @bind-Value="_showBalance"
-                       Label="Show balance" />
-            <MudSwitch T="bool" Color="Color.Primary" @bind-Value="_isArchived">Archived</MudSwitch>
+                       Label="@L["Accounts_ShowBalance"]" />
 
-            <MudNumericField T="decimal"
-                             Label="Balance Actual"
-                             @bind-Value="_balanceActual"
-                             Variant="Variant.Outlined"
-                             HideSpinButtons="true"
-                             Immediate="true"
-                             Culture="CultureInfo.CurrentCulture"
-                             Format="0.00"
-                             Adornment="Adornment.Start"
-                             AdornmentText="@_currency" />
+            <MudSwitch T="bool"
+                       Color="Color.Primary"
+                       @bind-Value="_isArchived">
+                @L["Accounts_Archived"]
+            </MudSwitch>
+
+            <MudTextField T="string"
+                          Label="@L["Accounts_BalanceActual"]"
+                          @bind-Value="_balanceActualText"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Adornment="Adornment.Start"
+                          AdornmentText="@_currency" />
         </MudStack>
     </DialogContent>
 
     <DialogActions>
-        <MudButton Variant="Variant.Text" OnClick="Cancel">Cancel</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveAsync">Save</MudButton>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">
+            @L["Cancel"]
+        </MudButton>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveAsync">
+            @L["Save"]
+        </MudButton>
     </DialogActions>
 </MudDialog>

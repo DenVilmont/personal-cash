@@ -4,18 +4,15 @@
 @using Domain.Contracts
 @using Domain.Enums
 
-<AuthorizeView>
-    <Authorized>
-        <MudContainer Class="pa-6" MaxWidth="MaxWidth.Medium">
+<div class="accounts-page">
+    <MudContainer MaxWidth="MaxWidth.False">
+        <div class="accounts-layout">
+            <MudPaper Elevation="2" Class="accounts-paper">
+                <MudText Typo="Typo.h6">@L["Accounts_Add_Title"]</MudText>
 
-            <MudText Typo="Typo.h5">Accounts</MudText>
-
-            <MudPaper Class="pa-6 mt-4">
-                <MudText Typo="Typo.h6">Add account</MudText>
-
-                <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
+                <MudGrid Spacing="3" Class="accounts-form-grid" alignitems="AlignItems.Stretch">
                     <MudItem xs="12" sm="6" Class="d-flex">
-                        <MudTextField Label="Name"
+                        <MudTextField Label="@L["Accounts_Name"]"
                                       Variant="Variant.Outlined"
                                       Margin="Margin.Dense"
                                       Class="w-100"
@@ -23,7 +20,7 @@
                     </MudItem>
 
                     <MudItem xs="12" sm="3" Class="d-flex">
-                        <MudTextField Label="Currency"
+                        <MudTextField Label="@L["Accounts_Currency"]"
                                       Variant="Variant.Outlined"
                                       Margin="Margin.Dense"
                                       Class="w-100"
@@ -32,7 +29,8 @@
                     </MudItem>
 
                     <MudItem xs="12" sm="3" Class="d-flex">
-                        <MudSelect T="string" Label="Icon"
+                        <MudSelect T="string"
+                                   Label="@L["Accounts_Icon"]"
                                    Variant="Variant.Outlined"
                                    Margin="Margin.Dense"
                                    Class="w-100"
@@ -48,59 +46,147 @@
                             }
                         </MudSelect>
                     </MudItem>
+
                     <MudItem xs="12">
                         <MudSwitch T="bool"
                                    Color="Color.Primary"
                                    @bind-Value="_showBalance"
-                                   Label="Show balance" />
+                                   Label="@L["Accounts_ShowBalance"]" />
                     </MudItem>
 
-                    <MudItem xs="12">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_busy" OnClick="AddAsync">
-                            Add
+                    <MudItem xs="12" Class="accounts-form-actions">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Disabled="_busy"
+                                   OnClick="AddAsync">
+                            @L["Add"]
                         </MudButton>
 
-                        <MudButton Class="ml-2" Variant="Variant.Outlined" Disabled="_busy" OnClick="LoadAsync">
-                            Refresh
+                        <MudButton Variant="Variant.Outlined"
+                                   Disabled="_busy"
+                                   OnClick="LoadAsync">
+                            @L["Refresh"]
                         </MudButton>
                     </MudItem>
                 </MudGrid>
             </MudPaper>
 
-            <MudPaper Class="pa-4 mt-4" Elevation="2">
-                <MudText Typo="Typo.subtitle1">My accounts (@_items.Count)</MudText>
+            <MudPaper Elevation="2" Class="accounts-paper">
+                <MudText Typo="Typo.subtitle1">
+                    @string.Format(L["Accounts_TableTitle"], _items.Count)
+                </MudText>
 
-                <MudTable Items="_items" Dense="true" Hover="true" Class="mt-2" RowsPerPage="20">
-                    <HeaderContent>
-                        <MudTh></MudTh>
-                        <MudTh>Name</MudTh>
-                        <MudTh>Currency</MudTh>
-                        <MudTh align="right">Balance</MudTh>
-                        <MudTh align="right">Expected</MudTh>
-                        <MudTh>Archived</MudTh>
-                        <MudTh align="right"></MudTh>
-                    </HeaderContent>
+                @if (_items.Count == 0)
+                {
+                    <MudText Typo="Typo.body2" Class="mud-secondary-text mt-3">
+                        @L["Accounts_NoItems"]
+                    </MudText>
+                }
+                else
+                {
+                    <div class="accounts-mobile-list">
+                        @foreach (var a in _items)
+                        {
+                            <MudPaper Class="accounts-mobile-card" Elevation="0" Outlined="true">
+                                <div class="accounts-mobile-card__top">
+                                    <div class="icon-option">
+                                        <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                        <span>@a.Name</span>
+                                    </div>
 
-                    <RowTemplate Context="a">
-                        <MudTd>
-                            <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
-                        </MudTd>
-                        <MudTd>@a.Name</MudTd>
-                        <MudTd>@a.Currency</MudTd>
-                        <MudTd align="right">@(a.ShowBalance ? a.BalanceActual : "****")</MudTd>
-                        <MudTd align="right">@(a.ShowBalance ? a.BalanceExpected : "****")</MudTd>
-                        <MudTd>@(a.IsArchived ? "Yes" : "No")</MudTd>
-                        <MudTd align="right">
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="_busy" OnClick="@(async () => await OpenEditAsync(a))" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Disabled="_busy" OnClick="@(async () => await ConfirmDeleteAsync(a))" />
-                        </MudTd>
-                    </RowTemplate>
+                                    @if (a.IsArchived)
+                                    {
+                                        <MudChip T="string" Size="Size.Small" Variant="Variant.Filled">
+                                            @L["Accounts_Archived"]
+                                        </MudChip>
+                                    }
+                                </div>
 
-                    <PagerContent>
-                        <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
-                    </PagerContent>
-                </MudTable>
+                                <div class="accounts-mobile-card__row">
+                                    <span>@L["Accounts_Currency"]</span>
+                                    <span>@a.Currency</span>
+                                </div>
+
+                                <div class="accounts-mobile-card__row">
+                                    <span>@L["Accounts_BalanceActual"]</span>
+                                    <span>@(a.ShowBalance ? $"{a.BalanceActual:N2} {a.Currency}" : "****")</span>
+                                </div>
+
+                                <div class="accounts-mobile-card__row">
+                                    <span>@L["Accounts_BalanceExpected"]</span>
+                                    <span>@(a.ShowBalance ? $"{a.BalanceExpected:N2} {a.Currency}" : "****")</span>
+                                </div>
+
+                                <div class="accounts-mobile-card__actions">
+                                    <MudButton Variant="Variant.Outlined"
+                                               Size="Size.Small"
+                                               Disabled="_busy"
+                                               OnClick="@(async () => await OpenEditAsync(a))">
+                                        @L["Edit"]
+                                    </MudButton>
+
+                                    <MudButton Variant="Variant.Outlined"
+                                               Size="Size.Small"
+                                               Color="Color.Error"
+                                               Disabled="_busy"
+                                               OnClick="@(async () => await ConfirmDeleteAsync(a))">
+                                        @L["Delete"]
+                                    </MudButton>
+                                </div>
+                            </MudPaper>
+                        }
+                    </div>
+
+                    <div class="accounts-desktop-table">
+                        <MudTable Items="_items" Dense="true" Hover="true" RowsPerPage="20">
+                            <ColGroup>
+                                <col style="width: 65px;" />
+                                <col />
+                                <col />
+                                <col />
+                                <col />
+                                <col />
+                                <col style="width: 135px;" />
+                            </ColGroup>
+                            <HeaderContent>
+                                <MudTh></MudTh>
+                                <MudTh>@L["Accounts_Name"]</MudTh>
+                                <MudTh>@L["Accounts_Currency"]</MudTh>
+                                <MudTh Class="pc-text-align-right">@L["Accounts_BalanceActual"]</MudTh>
+                                <MudTh Class="pc-text-align-right">@L["Accounts_BalanceExpected"]</MudTh>
+                                <MudTh>@L["Accounts_Archived"]</MudTh>
+                                <MudTh Class="pc-text-align-right"></MudTh>
+                            </HeaderContent>
+
+                            <RowTemplate Context="a">
+                                <MudTd>
+                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                </MudTd>
+                                <MudTd>@a.Name</MudTd>
+                                <MudTd>@a.Currency</MudTd>
+                                <MudTd Class="pc-text-align-right">@(a.ShowBalance ? $"{a.BalanceActual:N2} {a.Currency}" : "****")</MudTd>
+                                <MudTd Class="pc-text-align-right">@(a.ShowBalance ? $"{a.BalanceExpected:N2} {a.Currency}" : "****")</MudTd>
+                                <MudTd>@(a.IsArchived? L["Accounts_Yes"] : L["Accounts_No"])</MudTd>
+                                <MudTd Class="pc-text-align-right">
+                                    <div class="pc-inline-actions-nowrap">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                       Disabled="_busy"
+                                                       OnClick="@(async () => await OpenEditAsync(a))" />
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                       Color="Color.Error"
+                                                       Disabled="_busy"
+                                                       OnClick="@(async () => await ConfirmDeleteAsync(a))" />
+                                    </div>
+                                </MudTd>
+                            </RowTemplate>
+
+                            <PagerContent>
+                                <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
+                            </PagerContent>
+                        </MudTable>
+                    </div>
+                }
             </MudPaper>
-        </MudContainer>
-    </Authorized>
-</AuthorizeView>
+        </div>
+    </MudContainer>
+</div>

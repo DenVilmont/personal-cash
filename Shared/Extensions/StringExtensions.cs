@@ -28,12 +28,5 @@ namespace PersonalCash.Shared.Extensions
                 CultureInfo.CurrentCulture,
                 out value);
         }
-
-        public static decimal? ToDecimalOrNull(this string? text)
-        {
-            return text.TryParseDecimal(out var value)
-                ? value
-                : null;
-        }
     }
 }

@@ -76,12 +76,12 @@
                                         Name
                                     </MudTableSortLabel>
                                 </MudTh>
-                                <MudTh Class="align-right"></MudTh>
+                            <MudTh Class="pc-text-align-right"></MudTh>
                             </HeaderContent>
 
                             <RowTemplate Context="tx">
                                 <MudTd>@tx.Name</MudTd>
-                                <MudTd Class="align-right">
+                            <MudTd Class="pc-text-align-right">
                                     <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                                    Disabled="_busy"
                                                    OnClick="@(async () => await OpenEditAsync(tx))" />
