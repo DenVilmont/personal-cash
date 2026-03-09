@@ -23,6 +23,7 @@ public partial class AccountsPage : IDisposable
     protected string _currency = "EUR";
     protected bool _showBalance = true;
     protected string _iconKey = AccountIcon.Wallet.ToString();
+    protected int _sortOrder = 0;
 
     protected List<AccountDto> _items = new();
 
@@ -62,6 +63,12 @@ public partial class AccountsPage : IDisposable
             return;
         }
 
+        if (_sortOrder < 0)
+        {
+            Snackbar.Add(L["Accounts_SortOrderMustBeValidPositiveNumber_ValidationError"], Severity.Warning);
+            return;
+        }
+
         await RunAsync(async () =>
         {
             await AccountsService.AddAsync(
@@ -69,9 +76,11 @@ public partial class AccountsPage : IDisposable
                 name: name,
                 currency: _currency,
                 showBalance: _showBalance,
-                iconKey: _iconKey);
+                iconKey: _iconKey,
+                sortOrder: _sortOrder);
 
             _name = null;
+            _sortOrder = 0;
             await LoadCoreAsync();
         }, successMessage: L["Added"]);
     }
@@ -86,6 +95,7 @@ public partial class AccountsPage : IDisposable
             Currency = acc.Currency,
             ShowBalance = acc.ShowBalance,
             IconKey = acc.IconKey,
+            SortOrder = acc.SortOrder,
             BalanceActual = acc.BalanceActual,
             BalanceExpected = acc.BalanceExpected,
             IsArchived = acc.IsArchived,

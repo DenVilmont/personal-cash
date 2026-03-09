@@ -465,8 +465,8 @@
   <data name="Accounts_NameRequired_ValidationError" xml:space="preserve">
     <value>Please enter an account name</value>
   </data>
-  <data name="Accounts_AmountMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
-    <value>Amount must be a valid positive number</value>
+  <data name="Accounts_BalanceMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
+    <value>Balance must be a valid positive number</value>
   </data>
   <data name="Categories_Add_Title" xml:space="preserve">
     <value>Add category</value>
@@ -497,5 +497,11 @@
   </data>
   <data name="Categories_EditCategory_Title" xml:space="preserve">
     <value>Edit category</value>
+  </data>
+  <data name="Accounts_SortOrder" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="Accounts_SortOrderMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
+    <value>Sort order must be a valid positive number</value>
   </data>
 </root>

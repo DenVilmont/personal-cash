@@ -16,6 +16,8 @@ public sealed class AccountDto
 
     public decimal BalanceExpected { get; set; }
 
+    public int SortOrder { get; set; }
+
     public bool IsArchived { get; set; }
 
     public bool ShowBalance { get; set; } = true;

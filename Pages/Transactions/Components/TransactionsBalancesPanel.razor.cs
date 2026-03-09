@@ -10,7 +10,6 @@ namespace PersonalCash.Pages.Transactions.Components
         private List<AccountDto> VisibleAccounts =>
             Accounts?
             .Where(x => x.ShowBalance)
-            .OrderBy(x => x.Name)
             .ToList()
             ?? new List<AccountDto>();
     }

@@ -37,6 +37,12 @@
                 }
             </MudSelect>
 
+            <MudNumericField T="int"
+                             Label="@L["Accounts_SortOrder"]" 
+                             @bind-Value="_sortOrder"
+                             Variant="Variant.Outlined"
+                             Margin="Margin.Dense"/>
+
             <MudSwitch T="bool"
                        Color="Color.Primary"
                        @bind-Value="_showBalance"

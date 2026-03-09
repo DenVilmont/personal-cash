@@ -18,6 +18,9 @@ public class Account : BaseModel
     [Column("currency")]
     public string Currency { get; set; } = "EUR";
 
+    [Column("sort_order")]
+    public int SortOrder { get; set; }
+
     [Column("show_balance")]
     public bool ShowBalance { get; set; } = true;
 

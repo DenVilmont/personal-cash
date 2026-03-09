@@ -19,7 +19,7 @@
                                       @bind-Value="_name" />
                     </MudItem>
 
-                    <MudItem xs="12" sm="3" Class="d-flex">
+                    <MudItem xs="12" sm="2" Class="d-flex">
                         <MudTextField Label="@L["Accounts_Currency"]"
                                       Variant="Variant.Outlined"
                                       Margin="Margin.Dense"
@@ -28,7 +28,7 @@
                                       Disabled="true" />
                     </MudItem>
 
-                    <MudItem xs="12" sm="3" Class="d-flex">
+                    <MudItem xs="6" sm="2" Class="d-flex">
                         <MudSelect T="string"
                                    Label="@L["Accounts_Icon"]"
                                    Variant="Variant.Outlined"
@@ -45,6 +45,14 @@
                                 </MudSelectItem>
                             }
                         </MudSelect>
+                    </MudItem>
+                    <MudItem xs="6" sm="2" Class="d-flex">
+                        <MudNumericField T="int"
+                                         Label="@L["Accounts_SortOrder"]" 
+                                         Variant="Variant.Outlined"
+                                         Margin="Margin.Dense"
+                                         Class="w-100"
+                                         @bind-Value="_sortOrder"/>
                     </MudItem>
 
                     <MudItem xs="12">
@@ -90,6 +98,7 @@
                             <MudPaper Class="accounts-mobile-card" Elevation="0" Outlined="true">
                                 <div class="accounts-mobile-card__top">
                                     <div class="icon-option">
+                                        <span>#@a.SortOrder </span>
                                         <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
                                         <span>@a.Name</span>
                                     </div>
@@ -138,9 +147,10 @@
                     </div>
 
                     <div class="accounts-desktop-table">
-                        <MudTable Items="_items" Dense="true" Hover="true" RowsPerPage="20">
+                        <MudTable  Items="_items" Dense="true" Hover="true" RowsPerPage="20">
                             <ColGroup>
-                                <col style="width: 65px;" />
+                                <col style="width: 40px;" />
+                                <col style="width: 40px;" />
                                 <col />
                                 <col />
                                 <col />
@@ -150,16 +160,18 @@
                             </ColGroup>
                             <HeaderContent>
                                 <MudTh></MudTh>
+                                <MudTh></MudTh>
                                 <MudTh>@L["Accounts_Name"]</MudTh>
                                 <MudTh>@L["Accounts_Currency"]</MudTh>
                                 <MudTh Class="pc-text-align-right">@L["Accounts_BalanceActual"]</MudTh>
                                 <MudTh Class="pc-text-align-right">@L["Accounts_BalanceExpected"]</MudTh>
                                 <MudTh>@L["Accounts_Archived"]</MudTh>
-                                <MudTh Class="pc-text-align-right"></MudTh>
+                                <MudTh></MudTh>
                             </HeaderContent>
 
                             <RowTemplate Context="a">
-                                <MudTd>
+                                <MudTd Class="pl-1 pr-1">#@a.SortOrder</MudTd>
+                                <MudTd Class="pl-1 pr-1">
                                     <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
                                 </MudTd>
                                 <MudTd>@a.Name</MudTd>
@@ -167,7 +179,7 @@
                                 <MudTd Class="pc-text-align-right">@(a.ShowBalance ? $"{a.BalanceActual:N2} {a.Currency}" : "****")</MudTd>
                                 <MudTd Class="pc-text-align-right">@(a.ShowBalance ? $"{a.BalanceExpected:N2} {a.Currency}" : "****")</MudTd>
                                 <MudTd>@(a.IsArchived? L["Accounts_Yes"] : L["Accounts_No"])</MudTd>
-                                <MudTd Class="pc-text-align-right">
+                                <MudTd>
                                     <div class="pc-inline-actions-nowrap">
                                         <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                                        Disabled="_busy"

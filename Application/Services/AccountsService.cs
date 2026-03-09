@@ -13,17 +13,19 @@ namespace Application.Services
         public async Task<List<AccountDto>> GetSortedAsync()
             => (await _accountsRepo.ListAsync())
             .OrderBy(x => x.IsArchived)
+            .ThenBy(x => x.SortOrder)
             .ThenBy(x => x.Name)
             .ToList();
 
         public async Task<List<AccountDto>> GetActiveAsync()
             => (await _accountsRepo.ListAsync())
             .Where(x => !x.IsArchived)
-            .OrderBy(x => x.Name)
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Name)
             .ToList();
 
 
-        public async Task AddAsync(Guid userId, string name, string currency, bool showBalance, string iconKey)
+        public async Task AddAsync(Guid userId, string name, string currency, bool showBalance, string iconKey, int sortOrder)
         {
             var normalizedName = (name ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(normalizedName))
@@ -43,6 +45,7 @@ namespace Application.Services
                 ShowBalance = showBalance,
                 Currency = NormalizeCurrency(currency),
                 IconKey = NormalizeIconKey(iconKey),
+                SortOrder = sortOrder,
                 IsArchived = false,
                 BalanceActual = 0m,
                 BalanceExpected = 0m

@@ -46,9 +46,7 @@
 
             <section>
                 <MudPaper Elevation="2" Class="categories-paper">
-                    <MudText Typo="Typo.subtitle1">
-                        @string.Format(L["Categories_TableTitle"], _items.Count)
-                    </MudText>
+                    <MudText Typo="Typo.subtitle1">@L["Categories_TableTitle"]</MudText>
 
                     @if (_items.Count == 0)
                     {
@@ -106,6 +104,10 @@
                                       Hover="true"
                                       RowsPerPage="20"
                                       Filter="new Func<CategoryDto, bool>(SearchInTable)">
+                                <ColGroup>
+                                    <col />
+                                    <col style="width: 135px;" />
+                                </ColGroup>
                                 <HeaderContent>
                                     <MudTh>
                                         <MudTableSortLabel SortBy="new Func<CategoryDto, object>(x => x.Name)">
