@@ -2,105 +2,144 @@
 @inherits PersonalCash.Shared.UiComponentBase
 
 @using Domain.Contracts
+@using Domain.Enums
 @inject CurrentUserService CurrentUser
 @inject NavigationManager Nav
 @inject IDialogService DialogService
 
-<AuthorizeView>
-    <Authorized>
-        <MudContainer Class="pa-6" MaxWidth="MaxWidth.False">
+<div class="categories-page">
+    <MudContainer MaxWidth="MaxWidth.False">
+        <div class="categories-layout">
 
-            <MudText Typo="Typo.h5">Categories</MudText>
+            <section>
+                <MudPaper Elevation="2" Class="categories-paper">
+                    <MudText Typo="Typo.h6">@L["Categories_Add_Title"]</MudText>
 
-            <MudGrid Spacing="3" Class="mt-2" alignitems="AlignItems.Stretch">
-                <!-- LEFT: empty column (only on lg+) -->
-                <MudItem xs="12" lg="4" Class="d-none d-lg-block">
-                </MudItem>
+                    <MudGrid Spacing="3" Class="categories-form-grid" alignitems="AlignItems.Stretch">
+                        <MudItem xs="12" Class="d-flex">
+                            <MudTextField Label="@L["Categories_Name"]"
+                                          Required="true"
+                                          RequiredError="@L["Categories_NameRequired_ValidationError"]"
+                                          @bind-Value="_name"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Class="w-100" />
+                        </MudItem>
 
-                <!-- CENTER: 50% on lg+ (Add + Table stay here) -->
-                <MudItem xs="12" lg="4">
-                    <MudExpansionPanels Class="mb-6">
-                        <MudExpansionPanel Expanded="false" Class="pa-4" elevation="2" Style="position: sticky; top: 88px;">
-                            <TitleContent>
-                                <div class="d-flex">
-                                    <MudIcon Icon="@Icons.Material.Filled.AddCircle" class="mr-3"></MudIcon>
-                                    <MudText Typo="Typo.h5">Add category</MudText>
-                                </div>
-                            </TitleContent>
-                            <ChildContent>
-                                <MudGrid Class="mt-2">
-                                    <MudItem xs="12">
-                                        <MudTextField Label="Name"
-                                                      Required="true" RequiredError="Required"
-                                                      @bind-Value="_name"
-                                                      Variant="Variant.Outlined" />
-                                    </MudItem>
+                        <MudItem xs="12" Class="categories-form-actions">
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Disabled="_busy"
+                                       OnClick="AddAsync">
+                                @L["Add"]
+                            </MudButton>
 
-                                    <MudItem xs="12">
-                                        <MudButton Variant="Variant.Filled"
-                                                   Color="Color.Primary"
+                            <MudButton Variant="Variant.Outlined"
+                                       Disabled="_busy"
+                                       OnClick="LoadAsync">
+                                @L["Refresh"]
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </section>
+
+            <section>
+                <MudPaper Elevation="2" Class="categories-paper">
+                    <MudText Typo="Typo.subtitle1">
+                        @string.Format(L["Categories_TableTitle"], _items.Count)
+                    </MudText>
+
+                    @if (_items.Count == 0)
+                    {
+                        <MudText Typo="Typo.body2" Class="mud-secondary-text mt-3">
+                            @L["Categories_NoItems"]
+                        </MudText>
+                    }
+                    else
+                    {
+                        <div class="categories-toolbar">
+                            <MudSpacer />
+                            <MudTextField @bind-Value="_searchString"
+                                          Placeholder="@L["Search"]"
+                                          Variant="Variant.Text"
+                                          Margin="Margin.Dense"
+                                          Clearable="true"
+                                          OnClearButtonClick="ClearSearch"
+                                          Adornment="Adornment.Start"
+                                          AdornmentIcon="@Icons.Material.Filled.Search"
+                                          IconSize="Size.Medium"
+                                          Class="categories-search" />
+                        </div>
+
+                        <div class="categories-mobile-list">
+                            @foreach (var category in _items.Where(SearchInTable))
+                            {
+                                <MudPaper Class="categories-mobile-card" Elevation="0" Outlined="true">
+                                    <div class="categories-mobile-card__top">
+                                        <MudText Typo="Typo.subtitle1">@category.Name</MudText>
+                                    </div>
+
+                                    <div class="categories-mobile-card__actions">
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Size="Size.Small"
                                                    Disabled="_busy"
-                                                   OnClick="AddAsync">
-                                            Add
+                                                   OnClick="@(async () => await OpenEditAsync(category))">
+                                            @L["Edit"]
                                         </MudButton>
 
-                                        <MudButton Class="ml-2"
-                                                   Variant="Variant.Outlined"
-                                                   Disabled="_busy"
-                                                   OnClick="LoadAsync">
-                                            Refresh
-                                        </MudButton>
-                                    </MudItem>
-                                </MudGrid>
-                            </ChildContent>
-                        </MudExpansionPanel>
-                    </MudExpansionPanels>
-                    <MudTable Items="_items" Dense="true" Hover="true" Class="mt-2" RowsPerPage="20" Filter="new Func<CategoryDto, bool>(SearchInTable)">
-                        <ToolBarContent>
-                                <MudText Typo="Typo.h6">My categories</MudText>
-                                <MudSpacer />
-                                <MudTextField @bind-Value="_searchString"
-                                              Placeholder="Search"
-                                              Variant="Variant.Text"
-                                              Margin="Margin.Dense"
-                                              Clearable="true"
-                                              OnClearButtonClick="ClearSearch"
-                                              Adornment="Adornment.Start"
-                                              AdornmentIcon="@Icons.Material.Filled.Search"
-                                              IconSize="Size.Medium"
-                                              Class="mt-0" />
-                            </ToolBarContent>
-                            <HeaderContent>
-                                <MudTh>
-                                <MudTableSortLabel SortBy="new Func<CategoryDto, object>(x => x.Name)">
-                                        Name
-                                    </MudTableSortLabel>
-                                </MudTh>
-                            <MudTh Class="pc-text-align-right"></MudTh>
-                            </HeaderContent>
-
-                            <RowTemplate Context="tx">
-                                <MudTd>@tx.Name</MudTd>
-                            <MudTd Class="pc-text-align-right">
-                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                                   Disabled="_busy"
-                                                   OnClick="@(async () => await OpenEditAsync(tx))" />
-
-                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Size="Size.Small"
                                                    Color="Color.Error"
                                                    Disabled="_busy"
-                                                   OnClick="@(async () => await ConfirmDeleteAsync(tx))" />
-                                </MudTd>
-                            </RowTemplate>
-                            <PagerContent>
-                                <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
-                            </PagerContent>
-                        </MudTable>
-                </MudItem>
+                                                   OnClick="@(async () => await ConfirmDeleteAsync(category))">
+                                            @L["Delete"]
+                                        </MudButton>
+                                    </div>
+                                </MudPaper>
+                            }
+                        </div>
 
-                <MudItem xs="12" lg="4" Class="d-none d-lg-block">
-                </MudItem>
-            </MudGrid>
-        </MudContainer>
-    </Authorized>
-</AuthorizeView>
+                        <div class="categories-desktop-table">
+                            <MudTable Items="_items"
+                                      Dense="true"
+                                      Hover="true"
+                                      RowsPerPage="20"
+                                      Filter="new Func<CategoryDto, bool>(SearchInTable)">
+                                <HeaderContent>
+                                    <MudTh>
+                                        <MudTableSortLabel SortBy="new Func<CategoryDto, object>(x => x.Name)">
+                                            @L["Categories_Name"]
+                                        </MudTableSortLabel>
+                                    </MudTh>
+                                    <MudTh Class="pc-text-align-right"></MudTh>
+                                </HeaderContent>
+
+                                <RowTemplate Context="category">
+                                    <MudTd>@category.Name</MudTd>
+                                    <MudTd Class="pc-text-align-right">
+                                        <div class="pc-inline-actions-nowrap">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                           Disabled="_busy"
+                                                           OnClick="@(async () => await OpenEditAsync(category))" />
+
+                                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                           Color="Color.Error"
+                                                           Disabled="_busy"
+                                                           OnClick="@(async () => await ConfirmDeleteAsync(category))" />
+                                        </div>
+                                    </MudTd>
+                                </RowTemplate>
+
+                                <PagerContent>
+                                    <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
+                                </PagerContent>
+                            </MudTable>
+                        </div>
+                    }
+                </MudPaper>
+            </section>
+
+        </div>
+    </MudContainer>
+</div>

@@ -468,4 +468,34 @@
   <data name="Accounts_AmountMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
     <value>Amount must be a valid positive number</value>
   </data>
+  <data name="Categories_Add_Title" xml:space="preserve">
+    <value>Add category</value>
+  </data>
+  <data name="Categories_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Categories_NameRequired_ValidationError" xml:space="preserve">
+    <value>Please enter a category name</value>
+  </data>
+  <data name="Categories_TableTitle" xml:space="preserve">
+    <value>My categories</value>
+  </data>
+  <data name="Categories_NoItems" xml:space="preserve">
+    <value>No categories</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Categories_PageTitle" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="Categories_DeleteMessage" xml:space="preserve">
+    <value>Delete {0}? This cannot be undone.</value>
+  </data>
+  <data name="Categories_DeleteDialog_Title" xml:space="preserve">
+    <value>Delete category?</value>
+  </data>
+  <data name="Categories_EditCategory_Title" xml:space="preserve">
+    <value>Edit category</value>
+  </data>
 </root>

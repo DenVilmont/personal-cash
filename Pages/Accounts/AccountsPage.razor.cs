@@ -56,6 +56,12 @@ public partial class AccountsPage : IDisposable
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            Snackbar.Add(L["Accounts_NameRequired_ValidationError"], Severity.Warning);
+            return;
+        }
+
         await RunAsync(async () =>
         {
             await AccountsService.AddAsync(

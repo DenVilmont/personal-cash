@@ -23,9 +23,12 @@ namespace PersonalCash.Pages.Categories
             => RunAsync(() =>
             {
                 if (string.IsNullOrWhiteSpace(_name))
+                {
+                    Snackbar.Add(L["Categories_NameRequired_ValidationError"], Severity.Warning);
                     return Task.CompletedTask;
+                }
 
-                Tx.Name = _name;
+                Tx.Name = _name.Trim();
                 MudDialog.Close(DialogResult.Ok(Tx));
                 return Task.CompletedTask;
             });

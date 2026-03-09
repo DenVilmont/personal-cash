@@ -3,18 +3,25 @@ using Domain.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using PersonalCash.Shared;
 
 namespace PersonalCash.Pages.Categories
 {
     [Authorize]
-    public partial class CategoriesPage
+    public partial class CategoriesPage : IDisposable
     {
         [Inject] public CategoriesService CategoriesService { get; set; } = default!;
+        [Inject] private AppPageTitleState PageTitleState { get; set; } = default!;
 
         protected string? _name = null;
         private string _searchString = "";
 
         protected List<CategoryDto> _items = new();
+
+        protected override void OnParametersSet()
+        {
+            PageTitleState.Set(L["Categories_PageTitle"]);
+        }
 
         protected override async Task OnInitializedAsync()
         {
@@ -39,7 +46,13 @@ namespace PersonalCash.Pages.Categories
 
             if (!CurrentUser.TryGetUserId(out var userId))
             {
-                Snackbar.Add("Not authenticated", Severity.Error);
+                Snackbar.Add(L["NotAuthenticated_Error"], Severity.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Snackbar.Add(L["Categories_NameRequired_ValidationError"], Severity.Warning);
                 return;
             }
 
@@ -48,7 +61,7 @@ namespace PersonalCash.Pages.Categories
                 await CategoriesService.AddAsync(userId, name);
                 _name = null;
                 await LoadCoreAsync();
-            }, successMessage: "Added");
+            }, successMessage: L["Added"]);
         }
 
         protected async Task ConfirmDeleteAsync(CategoryDto category)
@@ -59,16 +72,13 @@ namespace PersonalCash.Pages.Categories
                 FullWidth = true
             };
 
-            MarkupString msg = (MarkupString)(
-                $"{category.Name}<br/><br/>" +
-                $"This cannot be undone.");
+            MarkupString msg = (MarkupString)(string.Format(L["Categories_DeleteMessage"], category.Name));
 
-            // returns Task<bool?> (true = Yes, null/false = Cancel/No) :contentReference[oaicite:0]{index=0}
             bool? confirmed = await DialogService.ShowMessageBoxAsync(
-                "Delete category?",
+                L["Categories_DeleteDialog_Title"],
                 msg,
-                yesText: "Delete",
-                cancelText: "Cancel",
+                yesText: L["Delete"],
+                cancelText: L["Cancel"],
                 options: options);
 
             if (confirmed == true)
@@ -79,7 +89,7 @@ namespace PersonalCash.Pages.Categories
             {
                 await CategoriesService.DeleteAsync(category);
                 await LoadCoreAsync();
-            }, successMessage: "Deleted");
+            }, successMessage: L["Deleted"]);
 
         protected async Task OpenEditAsync(CategoryDto category)
         {
@@ -103,7 +113,7 @@ namespace PersonalCash.Pages.Categories
                 CloseButton = true
             };
 
-            var dialog = await DialogService.ShowAsync<EditCategoryDialog>("Edit category", parameters, options);
+            var dialog = await DialogService.ShowAsync<EditCategoryDialog>(L["Categories_EditCategory_Title"], parameters, options);
             var result = await dialog.Result;
 
             if (result is null || result.Canceled)
@@ -116,7 +126,7 @@ namespace PersonalCash.Pages.Categories
             {
                 await CategoriesService.UpdateAsync(updated);
                 await LoadCoreAsync();
-            }, successMessage: "Updated");
+            }, successMessage: L["Updated"]);
         }
 
         private bool SearchInTable(CategoryDto category)
@@ -133,6 +143,9 @@ namespace PersonalCash.Pages.Categories
             await LoadAsync();
         }
 
-
+        public void Dispose()
+        {
+            PageTitleState.Clear();
+        }
     }
 }

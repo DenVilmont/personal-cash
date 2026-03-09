@@ -468,4 +468,34 @@
   <data name="Accounts_AmountMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
     <value>Сумма должна быть корректным положительным числом</value>
   </data>
+  <data name="Categories_Add_Title" xml:space="preserve">
+    <value>Добавить категорию</value>
+  </data>
+  <data name="Categories_Name" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="Categories_NameRequired_ValidationError" xml:space="preserve">
+    <value>Введите название категории</value>
+  </data>
+  <data name="Categories_TableTitle" xml:space="preserve">
+    <value>Мои категории</value>
+  </data>
+  <data name="Categories_NoItems" xml:space="preserve">
+    <value>Нет категорий</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="Categories_PageTitle" xml:space="preserve">
+    <value>Категории</value>
+  </data>
+  <data name="Categories_DeleteMessage" xml:space="preserve">
+    <value>Удалить {0}? Это действие нельзя отменить.</value>
+  </data>
+  <data name="Categories_DeleteDialog_Title" xml:space="preserve">
+    <value>Удалить категорию?</value>
+  </data>
+  <data name="Categories_EditCategory_Title" xml:space="preserve">
+    <value>Редактировать категорию</value>
+  </data>
 </root>

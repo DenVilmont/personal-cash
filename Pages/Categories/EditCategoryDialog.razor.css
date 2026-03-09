@@ -1,0 +1,32 @@
+﻿.edit-category-dialog__content {
+    padding-top: 8px;
+}
+
+.edit-category-dialog__stack {
+    min-width: min(100%, 420px);
+}
+
+.edit-category-dialog__actions {
+    gap: 8px;
+}
+
+@media (max-width: 599.98px) {
+    .edit-category-dialog__content {
+        padding-top: 4px;
+    }
+
+    .edit-category-dialog__stack {
+        min-width: 0;
+    }
+
+    .edit-category-dialog__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+        .edit-category-dialog__actions ::deep button {
+            min-width: 110px;
+        }
+}

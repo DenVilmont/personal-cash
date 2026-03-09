@@ -4,23 +4,27 @@
 @using MudBlazor
 @using Microsoft.AspNetCore.Components
 
-<MudDialog>
+<MudDialog Class="edit-category-dialog"
+           ContentClass="edit-category-dialog__content"
+           ActionsClass="edit-category-dialog__actions">
     <DialogContent>
-        <MudText Typo="Typo.subtitle1">Edit category</MudText>
-
-        <MudGrid Class="mt-2">
-            <MudItem xs="12">
-                <MudTextField Label="Name"
-                              @bind-Value="_name"
-                              Variant="Variant.Outlined" />
-            </MudItem>
-        </MudGrid>
+        <MudStack Spacing="2" Class="edit-category-dialog__stack">
+            <MudTextField Label="@L["Categories_Name"]"
+                          @bind-Value="_name"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Required="true"
+                          RequiredError="@L["Categories_NameRequired_ValidationError"]" />
+        </MudStack>
     </DialogContent>
 
     <DialogActions>
-        <MudButton Variant="Variant.Text" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">
+            @L["Cancel"]
+        </MudButton>
+
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_busy" OnClick="SaveAsync">
-            Save
+            @L["Save"]
         </MudButton>
     </DialogActions>
 </MudDialog>
