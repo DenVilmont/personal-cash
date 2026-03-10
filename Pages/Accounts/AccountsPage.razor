@@ -4,10 +4,10 @@
 @using Domain.Contracts
 @using Domain.Enums
 
-<div class="accounts-page">
+<div class="mt-3 mb-5 mt-sm-4 mb-sm-8">
     <MudContainer MaxWidth="MaxWidth.False">
-        <div class="accounts-layout">
-            <MudPaper Elevation="2" Class="accounts-paper">
+        <div class="d-flex flex-column gap-4 accounts-layout">
+            <MudPaper Elevation="2" Class="pa-3 pa-sm-4">
                 <MudText Typo="Typo.h6">@L["Accounts_Add_Title"]</MudText>
 
                 <MudGrid Spacing="3" Class="mt-2" AlignItems="AlignItems.Stretch">
@@ -81,7 +81,7 @@
                 </MudGrid>
             </MudPaper>
 
-            <MudPaper Elevation="2" Class="accounts-paper">
+            <MudPaper Elevation="2" Class="pa-3 pa-sm-4">
                 <MudText Typo="Typo.subtitle1">
                     @string.Format(L["Accounts_TableTitle"], _items.Count)
                 </MudText>
@@ -185,7 +185,7 @@
                             <MudTd Class="pc-text-align-right">@(a.ShowBalance ? $"{a.BalanceExpected:N2} {a.Currency}" : "****")</MudTd>
                             <MudTd>@(a.IsArchived? L["Accounts_Yes"] : L["Accounts_No"])</MudTd>
                             <MudTd>
-                                <div class="d-flex flex-nowrap">
+                                <div class="pc-flex-nowrap">
                                     <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                                    Disabled="_busy"
                                                    OnClick="@(async () => await OpenEditAsync(a))" />

@@ -102,7 +102,12 @@ a {
     text-align: right;
 }
 
-.pc-nowrap {
+.pc-text-nowrap {
     white-space: nowrap;
+}
+
+.pc-flex-nowrap {
+    display: flex;
+    flex-wrap: nowrap;
 }
 /* Helpers end */

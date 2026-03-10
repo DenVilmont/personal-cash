@@ -74,13 +74,13 @@
 
             <MudTd>@tx.EntryType.ToLocalizedString(L)</MudTd>
             <MudTd>
-                <span class="d-flex justify-end pc-nowrap">@($"{SignedAmount(tx):N2} {tx.Currency}")</span>
+                <span class="d-flex justify-end pc-text-nowrap">@($"{SignedAmount(tx):N2} {tx.Currency}")</span>
             </MudTd>
             <MudTd>@GetCategoryName(tx.CategoryId)</MudTd>
             <MudTd>@tx.Note</MudTd>
 
             <MudTd Class="pc-text-align-right">
-                <div class="d-flex flex-nowrap justify-end">
+                <div class="pc-flex-nowrap justify-end">
                     @if (tx.IsPlanned)
                     {
                         <MudIconButton Icon="@Icons.Material.Filled.AddTask"
