@@ -102,17 +102,6 @@ a {
     text-align: right;
 }
 
-.pc-inline-actions-nowrap {
-    display: flex;
-    width: fit-content;
-    margin-left: auto;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: nowrap;
-    gap: 4px;
-    white-space: nowrap;
-}
-
 .pc-nowrap {
     white-space: nowrap;
 }

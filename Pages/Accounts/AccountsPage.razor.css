@@ -15,27 +15,12 @@
     padding: 16px;
 }
 
-.accounts-form-grid {
-    margin-top: 8px;
+.accounts-page ::deep .accounts-mobile-card {
+    padding: 14px 14px 12px;
+    background: rgba(220, 251, 243, 0.5);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
 }
-
-.accounts-form-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.accounts-mobile-list {
-    display: none;
-    margin-top: 12px;
-}
-
-    .accounts-mobile-list ::deep .accounts-mobile-card {
-        padding: 14px 14px 12px;
-        background: rgba(220, 251, 243, 0.5);
-        border-color: rgba(0, 0, 0, 0.08);
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-    }
 
 .accounts-mobile-card__top {
     display: flex;
@@ -80,19 +65,6 @@
         background-color: rgba(0, 0, 0, 0.2);
     }
 
-.accounts-mobile-card__actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.accounts-desktop-table {
-    display: block;
-    margin-top: 12px;
-}
-
 @media (max-width: 599.98px) {
     .accounts-page {
         padding: 12px 0 20px;
@@ -104,16 +76,6 @@
 
     .accounts-page ::deep .accounts-paper {
         padding: 12px;
-    }
-
-    .accounts-mobile-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .accounts-desktop-table {
-        display: none;
     }
 }
 

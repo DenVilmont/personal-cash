@@ -6,10 +6,10 @@
     <MudExpansionPanels Class="transactions-mobile-panel-group" Elevation="2">
         <MudExpansionPanel Expanded="false" KeepContentAlive="true" Class="transactions-mobile-compact-panel">
             <TitleContent>
-                <div class="d-flex transactions-mobile-compact-panel__title">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
                     <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-2 transactions-mobile-compact-panel__icon"></MudIcon>
                     <MudText Typo="Typo.h6" Class="transactions-mobile-compact-panel__text">@L["Filters"]</MudText>
-                </div>
+                </MudStack>
             </TitleContent>
 
             <ChildContent>
@@ -142,7 +142,7 @@
 
                         <MudDivider Class="my-2" />
 
-                        <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2">
+                        <MudStack Row="true" Wrap="Wrap.NoWrap" Justify="Justify.FlexEnd" Spacing="2">
                             <MudButton Variant="Variant.Outlined"
                                        Color="Color.Secondary"
                                        Disabled="Busy"
@@ -172,10 +172,10 @@
 else
 {
     <MudPaper Class="pa-4" Elevation="2">
-        <div class="d-flex mb-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-4">
             <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-3"></MudIcon>
             <MudText Typo="Typo.h6">@L["Filters"]</MudText>
-        </div>
+        </MudStack>
 
         <MudStack Spacing="2" Class="mt-2">
 
@@ -306,7 +306,7 @@ else
 
             <MudDivider Class="my-2" />
 
-            <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2">
+            <MudStack Row="true" Wrap="Wrap.NoWrap" Spacing="2">
                 <MudButton Variant="Variant.Outlined"
                            Color="Color.Secondary"
                            Disabled="Busy"

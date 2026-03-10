@@ -5,10 +5,10 @@
 <MudExpansionPanels Class="transactions-add-form-root transactions-mobile-panel-group" Elevation="2">
     <MudExpansionPanel Expanded="false" Class="transactions-add-form-panel transactions-mobile-compact-panel">
         <TitleContent>
-            <div class="d-flex transactions-mobile-compact-panel__title">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
                 <MudIcon Icon="@Icons.Material.Filled.AddCircle" class="mr-2 transactions-mobile-compact-panel__icon"></MudIcon>
                 <MudText Typo="Typo.h6" Class="transactions-mobile-compact-panel__text">@L["Add_transaction"]</MudText>
-            </div>
+            </MudStack>
         </TitleContent>
 
         <ChildContent>

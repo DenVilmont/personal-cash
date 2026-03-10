@@ -7,7 +7,7 @@ public partial class Login
     protected string email {get; set;} = string.Empty;
     protected string password {get; set;} = string.Empty;
 
-    public async Task OnClickLogin()
+    public async Task OnSubmitLogin()
     {
         await RunAsync(async () =>
         {
@@ -15,9 +15,6 @@ public partial class Login
             NavigationManager.NavigateTo("transactions");
         }, successMessage: L["Login_successful"]);
     }
-
-    public Task OnSubmitLogin()
-    => OnClickLogin();
 
     public async Task OnClickDemoLogin()
     {

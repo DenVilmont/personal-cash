@@ -5,29 +5,30 @@
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
 
-<div class="login-page">
+<div class="d-flex justify-center login-page">
     <MudPaper Elevation="5" Class="login-card">
-        <form class="login-form" @onsubmit="OnSubmitLogin" @onsubmit:preventDefault="true">
-            <MudText Typo="Typo.h4" Align="Align.Center" Class="login-title">@L["Welcome"]</MudText>
+        <MudForm Class="py-6 px-4 py-sm-12 px-sm-14"
+                 Spacing="3"
+                 @onsubmit="OnSubmitLogin">
+            <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-3 mb-sm-5">@L["Welcome"]</MudText>
 
             <MudTextField Label="@L["Email"]"
                           @bind-Value="email"
                           Variant="Variant.Outlined"
                           Margin="Margin.Dense"
-                          Class="login-field" />
+                          Class="w-100" />
 
             <MudTextField Label="@L["Password"]"
                           @bind-Value="password"
                           Variant="Variant.Outlined"
                           Margin="Margin.Dense"
                           InputType="InputType.Password"
-                          Class="login-field" />
+                          Class="w-100" />
 
             <MudButton Variant="Variant.Filled"
                        FullWidth="true"
                        Color="Color.Primary"
-                       ButtonType="ButtonType.Submit"
-                       Class="login-button">
+                       ButtonType="ButtonType.Submit">
                 @L["Login"]
             </MudButton>
 
@@ -35,14 +36,13 @@
                        FullWidth="true"
                        Color="Color.Secondary"
                        ButtonType="ButtonType.Button"
-                       Class="login-button"
                        OnClick="OnClickDemoLogin">
                 @L["Demo_Login"]
             </MudButton>
 
-            <MudText Class="login-link" Typo="Typo.body2">
+            <MudText Class="mt-2" Typo="Typo.body2">
                 <MudLink Href="register">@L["Create_account"]</MudLink>
             </MudText>
-        </form>
+        </MudForm>
     </MudPaper>
 </div>

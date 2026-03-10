@@ -2,10 +2,6 @@
     overflow-x: auto;
 }
 
-.tx-actions-cell {
-    white-space: nowrap;
-}
-
 ::deep .tx-income > td {
     background-color: rgba(0, 200, 0, 0.08);
 }

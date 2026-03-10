@@ -79,8 +79,8 @@
             <MudTd>@GetCategoryName(tx.CategoryId)</MudTd>
             <MudTd>@tx.Note</MudTd>
 
-            <MudTd Class="pc-text-align-right tx-actions-cell">
-                <div class="pc-inline-actions-nowrap">
+            <MudTd Class="pc-text-align-right">
+                <div class="d-flex flex-nowrap justify-end">
                     @if (tx.IsPlanned)
                     {
                         <MudIconButton Icon="@Icons.Material.Filled.AddTask"

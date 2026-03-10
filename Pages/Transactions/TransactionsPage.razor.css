@@ -135,10 +135,6 @@
             padding: 6px 10px;
         }
 
-    ::deep .transactions-mobile-compact-panel__title {
-        align-items: center;
-    }
-
     ::deep .transactions-mobile-compact-panel__icon {
         font-size: 1rem;
     }
