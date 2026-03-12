@@ -24,7 +24,7 @@
                         }
                         else
                         {
-                            <MudGrid Spacing="2" Class="mt-4" justify="Justify.Center" alignitems="AlignItems.Start">
+                            <MudGrid Spacing="2" Class="mt-4" Justify="Justify.Center" AlignItems="AlignItems.Start">
                                 <MudItem xs="12" md="5" Class="d-flex justify-center">
                                     <MudChart T="double" ChartType="ChartType.Donut"
                                               ChartSeries="@_donutSeries"
@@ -54,7 +54,7 @@
                                     </MudChart>
                                 </MudItem>
                             </MudGrid>
-                            <MudItem xs="12" md="12" Class="d-flex justify-center">
+                            <div class="d-flex justify-center mt-2">
                                 <div style="width:300px; max-width:100%">
                                     <MudTable Items="@_donutLegend" Dense="true" Elevation="0">
                                         <HeaderContent>
@@ -70,7 +70,7 @@
                                         </RowTemplate>
                                     </MudTable>
                                 </div>
-                            </MudItem>
+                            </div>
                         }
                     </MudPaper>
                 </MudItem>
@@ -178,11 +178,11 @@
                                        Variant="Variant.Outlined"
                                        Margin="Margin.Dense"
                                        Class="w-100"
-                                       multiselection="true"
-                                       selectedvalues="@_lineSelectedMonths"
-                                       selectedvalueschanged="OnLineMonthsChanged"
-                                       tostringfunc="@((DateOnly m) => m.ToString("MMMM yyyy", System.Globalization.CultureInfo.CurrentUICulture))"
-                                       multiselectiontextfunc="@((IReadOnlyList<string> _) =>
+                                       MultiSelection="true"
+                                       SelectedValues="@_lineSelectedMonths"
+                                       SelectedValuesChanged="OnLineMonthsChanged"
+                                       ToStringFunc="@((DateOnly m) => m.ToString("MMMM yyyy", System.Globalization.CultureInfo.CurrentUICulture))"
+                                       MultiSelectionTextFunc="@((IReadOnlyList<string> _) =>
                                                                  string.Join(", ",
                                                                  _lineSelectedMonths
                                                                  .OrderByDescending(x => x)
@@ -198,9 +198,9 @@
                                        Variant="Variant.Outlined"
                                        Margin="Margin.Dense"
                                        Class="w-100"
-                                       multiselection="true"
-                                       selectedvalues="@_lineSelectedTypes"
-                                       selectedvalueschanged="OnLineTypesChanged">
+                                       MultiSelection="true"
+                                       SelectedValues="@_lineSelectedTypes"
+                                       SelectedValuesChanged="OnLineTypesChanged">
                                 <MudSelectItem Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
                                 <MudSelectItem Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
                             </MudSelect>
@@ -209,13 +209,13 @@
                                        Variant="Variant.Outlined"
                                        Margin="Margin.Dense"
                                        Class="w-100"
-                                       multiselection="true"
-                                       selectedvalues="@_lineSelectedCategoryIds"
-                                       selectedvalueschanged="OnLineCategoriesChanged"
+                                       MultiSelection="true"
+                                       SelectedValues="@_lineSelectedCategoryIds"
+                                       SelectedValuesChanged="OnLineCategoriesChanged"
                                        Clearable="true"
                                        OnClearButtonClick="ClearLineCategories"
-                                       tostringfunc="@((Guid id) => CategoryName(id))"
-                                       multiselectiontextfunc="@((IReadOnlyList<string> vals) => string.Join(", ", vals))">
+                                       ToStringFunc="@((Guid id) => CategoryName(id))"
+                                       MultiSelectionTextFunc="@((IReadOnlyList<string> vals) => string.Join(", ", vals))">
                                 @foreach (var c in _lineCategoryOptions)
                                 {
                                     <MudSelectItem Value="@c.Id">@c.Name</MudSelectItem>
