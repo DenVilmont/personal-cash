@@ -110,4 +110,8 @@ a {
     display: flex;
     flex-wrap: nowrap;
 }
+
+.table-layout-fixed {
+    table-layout: fixed;
+}
 /* Helpers end */

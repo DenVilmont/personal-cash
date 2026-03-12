@@ -1,0 +1,156 @@
+﻿@using Domain.Contracts
+
+@foreach (var loan in Items)
+{
+    var isExpanded = IsExpanded(loan.Id);
+
+    <MudPaper Elevation="9"
+              Class="@($"{IsFullyPaidClass(loan)} d-flex flex-column mb-3 pa-3")">
+        <MudStack Row="true"
+                  Spacing="4"
+                  Justify="Justify.SpaceBetween" 
+                  AlignItems="AlignItems.Center"
+                  Class="rounded-lg pa-2 debts-mobile-card__header">
+            <MudText Typo="Typo.subtitle2">@loan.Name</MudText>
+
+            <MudStack Spacing="0">
+                <MudStack Row="true" Spacing="1" Wrap="Wrap.NoWrap">
+                    <MudText Typo="Typo.body2">@L["Debts_Remaining"]</MudText>
+                    <MudText Typo="Typo.subtitle2">@PaymentsProgress(loan)</MudText>
+                </MudStack>
+                <MudText Typo="Typo.subtitle2" Align="Align.End" Class="pc-text-nowrap">
+                    @RemainingAmount(loan).ToString("N2") @loan.Currency
+                </MudText>
+            </MudStack>
+        </MudStack>
+
+        <MudStack Spacing="1" Class="pt-2 pl-1 pr-2">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" Spacing="3">
+                <MudText Typo="Typo.subtitle2">@L["Amount"]</MudText>
+                <MudText Typo="Typo.body2" Align="Align.End" Class="pc-text-nowrap">
+                    @loan.Amount.ToString("N2") @loan.Currency
+                </MudText>
+            </MudStack>
+            <MudDivider />
+            <MudStack Row="true" Justify="Justify.SpaceBetween" Spacing="3">
+                <MudText Typo="Typo.subtitle2">@L["Debts_NextOLastPaymentDate"]</MudText>
+                <MudText Typo="Typo.body2" Align="Align.End" Class="pc-text-nowrap">
+                    @FirstPaymentDateText(loan)
+                </MudText>
+            </MudStack>
+            <MudDivider />
+            @if (loan.HasInterest)
+            {
+                <MudStack Row="true" Justify="Justify.SpaceBetween" Spacing="3">
+                    <MudText Typo="Typo.subtitle2">@L["Debts_Interest"]</MudText>
+                    <MudText Typo="Typo.body2" Align="Align.End" Class="pc-text-nowrap">
+                        @InterestText(loan)
+                    </MudText>
+                </MudStack>
+                <MudDivider />
+            }
+            @if (!string.IsNullOrWhiteSpace(loan.Note))
+            {
+                <MudStack Row="true" Justify="Justify.SpaceBetween" Spacing="3">
+                    <MudText Typo="Typo.subtitle2">@L["Note"]</MudText>
+                    <MudText Typo="Typo.body2" Align="Align.Justify">
+                        @loan.Note
+                    </MudText>
+                </MudStack>
+                <MudDivider />
+            }
+            <MudStack Row="true"
+                      Justify="Justify.SpaceBetween"
+                      Wrap="Wrap.Wrap"
+                      Spacing="3"
+                      Class="pt-4">
+                <MudButton Variant="Variant.Outlined"
+                           Size="Size.Small"
+                           Color="Color.Error"
+                           Disabled="Busy"
+                           OnClick="() => OnDeleteLoan.InvokeAsync(loan)">
+                    @L["Delete"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined"
+                           Size="Size.Small"
+                           Disabled="Busy"
+                           OnClick="() => OnEditLoan.InvokeAsync(loan)">
+                    @L["Edit"]
+                </MudButton>
+            </MudStack>
+            <MudStack Row="true" 
+                      AlignItems="AlignItems.Center"
+                      Class="debts-row-clickable"
+                      @onclick="() => OnToggleLoan.InvokeAsync(loan)">
+                <MudIconButton Icon="@GetToggleIcon(loan.Id)"
+                               Disabled="Busy"
+                               OnClick="() => OnToggleLoan.InvokeAsync(loan)" />
+                <MudText>
+                    @L["Debts_Payments"]
+                </MudText>
+            </MudStack>
+            
+            <MudCollapse Expanded="isExpanded">
+                @if (GetPayments(loan.Id).Count == 0)
+                {
+                    <MudText Typo="Typo.body2" class="mud-secondary-text">
+                        @L["Debts_NoPayments"]
+                    </MudText>
+                }
+                else
+                {
+                    <MudStack Class="pl-9">
+                        @foreach (var payment in GetPayments(loan.Id))
+                        {
+                            <MudStack Row="true" 
+                                      AlignItems="AlignItems.Baseline"
+                                      Justify="Justify.SpaceBetween"
+                                      Wrap="Wrap.Wrap">
+                                <MudText Typo="Typo.body2" Align="Align.End" Class="pc-text-nowrap">
+                                    @payment.DueDate.ToString("yyyy-MM-dd")
+                                </MudText>
+                                <MudText Typo="Typo.subtitle2" Align="Align.End" Class="pc-text-nowrap">
+                                    @payment.Amount.ToString("N2") @loan.Currency
+                                </MudText>
+                                @if (payment.IsPaid)
+                                {
+                                    <MudChip T="string"
+                                             Size="Size.Small"
+                                             Color="Color.Success"
+                                             Variant="Variant.Filled">
+                                        @L["Debts_PaymentStatus_Paid"]
+                                    </MudChip>
+                                }
+                                else
+                                {
+                                    <MudChip T="string"
+                                             Size="Size.Small"
+                                             Color="Color.Warning"
+                                             Variant="Variant.Filled">
+                                        @L["Debts_PaymentStatus_NotPaid"]
+                                    </MudChip>
+                                }
+                                <MudButton Variant="Variant.Outlined"
+                                           Size="Size.Small"
+                                           Disabled="Busy"
+                                           OnClick="() => OnEditPayment.InvokeAsync((loan, payment))">
+                                    @L["Edit"]
+                                </MudButton>
+                            </MudStack>
+                            @if (!string.IsNullOrWhiteSpace(payment.Note))
+                            {
+                                <MudText Typo="Typo.body2" Align="Align.Justify" Class="pl-10">
+                                    <MudText Typo="Typo.subtitle2" Inline="true">
+                                        @L["Note"]:  
+                                    </MudText>
+                                    @payment.Note
+                                </MudText>
+                            }
+                            <MudDivider />
+                        }
+                    </MudStack>
+                }
+            </MudCollapse>
+        </MudStack>        
+    </MudPaper>
+}

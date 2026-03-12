@@ -504,4 +504,82 @@
   <data name="Accounts_SortOrderMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
     <value>El orden debe ser un número positivo válido</value>
   </data>
+  <data name="Debts_TableTitle" xml:space="preserve">
+    <value>Mis deudas</value>
+  </data>
+  <data name="Debts_AddDebt_Title" xml:space="preserve">
+    <value>Añadir deuda</value>
+  </data>
+  <data name="Debts_NoItems" xml:space="preserve">
+    <value>No hay deudas</value>
+  </data>
+  <data name="Debts_Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="Debts_Remaining" xml:space="preserve">
+    <value>Restante</value>
+  </data>
+  <data name="Debts_Amount" xml:space="preserve">
+    <value>Importe</value>
+  </data>
+  <data name="Debts_PaymentsProgress" xml:space="preserve">
+    <value>Progreso</value>
+  </data>
+  <data name="Debts_NextOLastPaymentDate" xml:space="preserve">
+    <value>Fecha de pago</value>
+  </data>
+  <data name="Debts_Interest" xml:space="preserve">
+    <value>Interés</value>
+  </data>
+  <data name="Debts_Note" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="Debts_NoPayments" xml:space="preserve">
+    <value>No hay pagos</value>
+  </data>
+  <data name="Debts_Status" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="Debts_PaymentStatus_Paid" xml:space="preserve">
+    <value>Pagado</value>
+  </data>
+  <data name="Debts_PaymentStatus_NotPaid" xml:space="preserve">
+    <value>No pagado</value>
+  </data>
+  <data name="Debts_NoInterest" xml:space="preserve">
+    <value>-</value>
+  </data>
+  <data name="Debts_WithInterest" xml:space="preserve">
+    <value>Con interés</value>
+  </data>
+  <data name="Debts_DeleteDialog_Title" xml:space="preserve">
+    <value>¿Eliminar deuda?</value>
+  </data>
+  <data name="Debts_DeleteDialog_Message" xml:space="preserve">
+    <value>Esta acción no se puede deshacer.</value>
+  </data>
+  <data name="Debts_SchedulePreview" xml:space="preserve">
+    <value>Vista previa del calendario de pagos</value>
+  </data>
+  <data name="Debts_HasInterest" xml:space="preserve">
+    <value>Tiene interés</value>
+  </data>
+  <data name="Debts_EditDebt_Title" xml:space="preserve">
+    <value>Editar deuda</value>
+  </data>
+  <data name="Debts_PaymentCount" xml:space="preserve">
+    <value>Número de pagos</value>
+  </data>
+  <data name="Debts_FirstPaymentDate" xml:space="preserve">
+    <value>Fecha del primer pago</value>
+  </data>
+  <data name="Debts_PaymentIsPaid" xml:space="preserve">
+    <value>Pago realizado</value>
+  </data>
+  <data name="Debts_DebtEditLocked_Info" xml:space="preserve">
+    <value>La edición de la deuda está bloqueada porque ya existen pagos.</value>
+  </data>
+  <data name="Debts_Payments" xml:space="preserve">
+    <value>Pagos</value>
+  </data>
 </root>

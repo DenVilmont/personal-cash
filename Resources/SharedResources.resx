@@ -504,4 +504,82 @@
   <data name="Accounts_SortOrderMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
     <value>Sort order must be a valid positive number</value>
   </data>
+  <data name="Debts_TableTitle" xml:space="preserve">
+    <value>My debts</value>
+  </data>
+  <data name="Debts_AddDebt_Title" xml:space="preserve">
+    <value>Add debt</value>
+  </data>
+  <data name="Debts_NoItems" xml:space="preserve">
+    <value>No debts</value>
+  </data>
+  <data name="Debts_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Debts_Remaining" xml:space="preserve">
+    <value>Remaining</value>
+  </data>
+  <data name="Debts_Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="Debts_PaymentsProgress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="Debts_NextOLastPaymentDate" xml:space="preserve">
+    <value>Payment date</value>
+  </data>
+  <data name="Debts_Interest" xml:space="preserve">
+    <value>Interest</value>
+  </data>
+  <data name="Debts_Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Debts_NoPayments" xml:space="preserve">
+    <value>No payments</value>
+  </data>
+  <data name="Debts_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Debts_PaymentStatus_Paid" xml:space="preserve">
+    <value>Paid</value>
+  </data>
+  <data name="Debts_PaymentStatus_NotPaid" xml:space="preserve">
+    <value>Not paid</value>
+  </data>
+  <data name="Debts_NoInterest" xml:space="preserve">
+    <value>-</value>
+  </data>
+  <data name="Debts_WithInterest" xml:space="preserve">
+    <value>With interest</value>
+  </data>
+  <data name="Debts_DeleteDialog_Title" xml:space="preserve">
+    <value>Delete debt?</value>
+  </data>
+  <data name="Debts_DeleteDialog_Message" xml:space="preserve">
+    <value>This cannot be undone.</value>
+  </data>
+  <data name="Debts_SchedulePreview" xml:space="preserve">
+    <value>Schedule preview</value>
+  </data>
+  <data name="Debts_HasInterest" xml:space="preserve">
+    <value>Has interest</value>
+  </data>
+  <data name="Debts_EditDebt_Title" xml:space="preserve">
+    <value>Edit debt</value>
+  </data>
+  <data name="Debts_PaymentCount" xml:space="preserve">
+    <value>Payment count</value>
+  </data>
+  <data name="Debts_FirstPaymentDate" xml:space="preserve">
+    <value>First payment date</value>
+  </data>
+  <data name="Debts_PaymentIsPaid" xml:space="preserve">
+    <value>Payment paid</value>
+  </data>
+  <data name="Debts_DebtEditLocked_Info" xml:space="preserve">
+    <value>Debt editing is locked because payments already exist.</value>
+  </data>
+  <data name="Debts_Payments" xml:space="preserve">
+    <value>Payments</value>
+  </data>
 </root>

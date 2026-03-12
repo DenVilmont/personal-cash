@@ -63,6 +63,30 @@ namespace Application.Services
             await _loansRepo.UpdateAsync(updated);
         }
 
+        public async Task UpdateAsync(LoanDto loan,
+                                      IReadOnlyList<LoanPaymentDto> paymentsToInsert,
+                                      IReadOnlyList<LoanPaymentDto> paymentsToDelete)
+        {
+            var name = (loan.Name ?? "").Trim();
+            if (string.IsNullOrWhiteSpace(name))
+                throw new AppValidationException("Enter loan name");
+
+            loan.Name = name;
+            loan.Currency = NormalizeCurrency(loan.Currency);
+
+            await _loansRepo.UpdateAsync(loan);
+
+            foreach (var payment in paymentsToDelete)
+                await _paymentsRepo.DeleteAsync(payment);
+
+            foreach (var payment in paymentsToInsert)
+            {
+                payment.LoanId = loan.Id;
+                payment.UserId = loan.UserId;
+                await _paymentsRepo.InsertAsync(payment);
+            }
+        }
+
         public async Task UpdatePaymentAsync(LoanPaymentDto payment)
             => await _paymentsRepo.UpdateAsync(payment);
 

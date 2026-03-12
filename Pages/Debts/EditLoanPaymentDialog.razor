@@ -1,6 +1,5 @@
 ﻿@inherits PersonalCash.Shared.UiComponentBase
 
-@using MudBlazor
 @using Domain.Contracts
 
 <MudDialog>
@@ -26,9 +25,9 @@
             <MudSwitch T="bool"
                        Color="Color.Primary"
                        @bind-Value="_isPaid"
-                       Label="@L["Paid"]" />
+                       Label="@L["Debts_PaymentIsPaid"]" />
 
-            <MudTextField Label="@L[" Comment"]"
+            <MudTextField Label="@L["Note"]"
                           Variant="Variant.Outlined"
                           Margin="Margin.Dense"
                           Lines="2"

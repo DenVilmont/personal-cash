@@ -1,26 +1,36 @@
-﻿using Application.Services;
+﻿using System.Net;
+using Application.Services;
 using Domain.Contracts;
 using Infrastructure.Auth;
 using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using PersonalCash.Pages.Debts.State;
+using PersonalCash.Shared;
 
 namespace PersonalCash.Pages.Debts;
 
 [Authorize]
-public partial class DebtsPage
+public partial class DebtsPage : IDisposable
 {
     [Inject] private LoansService LoansService { get; set; } = default!;
     [Inject] private CurrentUserService CurrentUser { get; set; } = default!;
     [Inject] private IDialogService DialogService { get; set; } = default!;
     [Inject] private UserSettingsStore UserSettingsStore { get; set; } = default!;
+    [Inject] private DebtsUiRestoreService DebtsUiRestoreService { get; set; } = default!;
+    [Inject] private AppPageTitleState PageTitleState { get; set; } = default!;
 
     private string _defaultCurrency = "EUR";
 
     private List<LoanDto> _loans = new();
-    private List<LoanPaymentDto> _payments = new();
     private readonly Dictionary<Guid, List<LoanPaymentDto>> _paymentsByLoanId = new();
+    private HashSet<Guid> _expandedLoanIds = new();
+
+    protected override void OnParametersSet()
+    {
+        PageTitleState.Set(L["Debts_PageTitle"]);
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,79 +44,79 @@ public partial class DebtsPage
         await LoadAsync();
     }
 
-    protected Task LoadAsync() => RunAsync(LoadCoreAsync);
+    protected Task LoadAsync()
+        => RunAsync(LoadCoreAsync);
 
     private async Task LoadCoreAsync()
     {
         var (loansRaw, payments) = await LoansService.GetRawAsync();
-        _payments = payments;
 
-        _paymentsByLoanId.Clear();
-        foreach (var p in _payments)
-        {
-            if (!_paymentsByLoanId.TryGetValue(p.LoanId, out var list))
-            {
-                list = new List<LoanPaymentDto>();
-                _paymentsByLoanId[p.LoanId] = list;
-            }
-            list.Add(p);
-        }
-
-        foreach (var kv in _paymentsByLoanId)
-            kv.Value.Sort((a, b) => a.DueDate.CompareTo(b.DueDate));
-
-        DateOnly FirstPaymentDate(LoanDto l)
-        {
-            var list = PaymentsFor(l.Id);
-            return list.Count > 0 ? list.Min(x => x.DueDate) : l.StartDate;
-        }
+        RebuildPaymentsIndex(payments);
 
         _loans = loansRaw
-            .OrderBy(l => IsFullyPaid(l) ? 1 : 0)              // paid -> end
-            .ThenByDescending(l => FirstPaymentDate(l))        // newer first payment -> first
-            .ThenByDescending(l => l.CreatedAt)
+            .OrderBy(loan => IsFullyPaid(loan) ? 1 : 0)
+            .ThenByDescending(loan => FirstPaymentDate(loan))
+            .ThenByDescending(loan => loan.CreatedAt)
             .ToList();
+
+        await TryApplyTransientRestoreAsync();
     }
 
-    private string LoanCardClass(LoanDto loan) => IsFullyPaid(loan) ? "loan-card loan-paid" : "loan-card loan-open";
+    private void RebuildPaymentsIndex(IEnumerable<LoanPaymentDto> payments)
+    {
+        _paymentsByLoanId.Clear();
+
+        foreach (var payment in payments)
+        {
+            if (!_paymentsByLoanId.TryGetValue(payment.LoanId, out var list))
+            {
+                list = new List<LoanPaymentDto>();
+                _paymentsByLoanId[payment.LoanId] = list;
+            }
+
+            list.Add(payment);
+        }
+
+        foreach (var pair in _paymentsByLoanId)
+            pair.Value.Sort((left, right) => left.DueDate.CompareTo(right.DueDate));
+    }
+
+    private Task ToggleLoanAsync(LoanDto loan)
+    {
+        if (!_expandedLoanIds.Add(loan.Id))
+            _expandedLoanIds.Remove(loan.Id);
+
+        return Task.CompletedTask;
+    }
+
+    private IReadOnlyList<LoanPaymentDto> PaymentsFor(Guid loanId)
+        => _paymentsByLoanId.TryGetValue(loanId, out var list)
+            ? list
+            : Array.Empty<LoanPaymentDto>();
 
     private bool IsFullyPaid(LoanDto loan)
     {
         var payments = PaymentsFor(loan.Id);
-        return payments.Count > 0 && payments.All(p => p.IsPaid);
+        return payments.Count > 0 && payments.All(payment => payment.IsPaid);
     }
 
-    private IReadOnlyList<LoanPaymentDto> PaymentsFor(Guid loanId)
-        => _paymentsByLoanId.TryGetValue(loanId, out var list) ? list : Array.Empty<LoanPaymentDto>();
-
-    private LoanSummaryModel LoanSummary(LoanDto loan)
+    private DateOnly FirstPaymentDate(LoanDto loan)
     {
-        var list = PaymentsFor(loan.Id);
-        var total = list.Sum(x => x.Amount);
-        var remaining = list.Where(x => !x.IsPaid).Sum(x => x.Amount);
-        var paidCount = list.Count(x => x.IsPaid);
-        var totalCount = list.Count;
-
-        var interestText = loan.HasInterest
-            ? (loan.InterestRate == 0m ? L["Interest"].Value : $"{loan.InterestRate:0.##}%")
-            : L["No interest"].Value;
-
-        var meta = $"{L["Total"].Value}: {total:N2} {loan.Currency} · {L["Payments"].Value}: {totalCount} · {interestText} · {L["Paid"].Value}: {paidCount} / {totalCount}";
-
-        return new LoanSummaryModel(remaining, meta);
+        var payments = PaymentsFor(loan.Id);
+        return payments.Count > 0 ? payments.Min(payment => payment.DueDate) : loan.StartDate;
     }
 
     private async Task OpenAddLoanAsync()
     {
         if (!CurrentUser.IsAuthenticated)
         {
-            Snackbar.Add("Not authenticated", Severity.Error);
+            Snackbar.Add(L["NotAuthenticated_Error"], Severity.Error);
             return;
         }
 
         if (!CurrentUser.TryGetUserId(out var userId))
         {
-            Snackbar.Add("Invalid user id", Severity.Error);
+            Snackbar.Add(L["InvalidUserId_Error"], Severity.Error);
             return;
         }
 
@@ -123,10 +133,16 @@ public partial class DebtsPage
             CloseButton = true
         };
 
-        var dialog = await DialogService.ShowAsync<EditLoanDialog>(L["Add loan"].Value, parameters, options);
+        var dialog = await DialogService.ShowAsync<EditLoanDialog>(
+            L["Debts_AddDebt_Title"].Value,
+            parameters,
+            options);
+
         var result = await dialog.Result;
+
         if (result is null || result.Canceled)
             return;
+
         if (result.Data is not LoanEditorResult data)
             return;
 
@@ -134,14 +150,61 @@ public partial class DebtsPage
         {
             await LoansService.AddAsync(data.Loan, data.PaymentsToInsert);
             await LoadCoreAsync();
-        }, successMessage: "Loan saved");
+        }, successMessage: L["Added"]);
     }
 
-    private async Task OpenRenameLoanAsync(LoanDto loan)
+    private async Task OpenEditLoanAsync(LoanDto loan)
     {
+        var loanCopy = CloneLoan(loan);
+        var paymentCopies = PaymentsFor(loan.Id)
+            .Select(ClonePayment)
+            .ToList();
+
         var parameters = new DialogParameters
         {
-            ["Name"] = loan.Name
+            ["Loan"] = loanCopy,
+            ["Payments"] = paymentCopies,
+            ["UserId"] = loan.UserId,
+            ["Currency"] = loan.Currency
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var dialog = await DialogService.ShowAsync<EditLoanDialog>(
+            L["Debts_EditDebt_Title"].Value,
+            parameters,
+            options);
+
+        var result = await dialog.Result;
+
+        if (result is null || result.Canceled)
+            return;
+
+        if (result.Data is not LoanEditorResult data)
+            return;
+
+        await RunAsync(async () =>
+        {
+            await PersistExpandedLoansForRestoreAsync();
+            await LoansService.UpdateAsync(data.Loan, data.PaymentsToInsert, data.PaymentsToDelete);
+            await LoadCoreAsync();
+        }, successMessage: L["Updated"]);
+    }
+
+    private async Task OpenEditPaymentAsync((LoanDto Loan, LoanPaymentDto Payment) args)
+    {
+        var loan = args.Loan;
+        var paymentCopy = ClonePayment(args.Payment);
+
+        var parameters = new DialogParameters
+        {
+            ["Payment"] = paymentCopy,
+            ["Currency"] = loan.Currency
         };
 
         var options = new DialogOptions
@@ -151,26 +214,110 @@ public partial class DebtsPage
             CloseButton = true
         };
 
-        var dialog = await DialogService.ShowAsync<RenameLoanDialog>(L["Rename loan"].Value, parameters, options);
+        var dialog = await DialogService.ShowAsync<EditLoanPaymentDialog>(
+            L["Debts_EditPayment_Title"].Value,
+            parameters,
+            options);
+
         var result = await dialog.Result;
 
         if (result is null || result.Canceled)
             return;
-        if (result.Data is not string newName)
-            return;
 
-        newName = newName.Trim();
+        if (result.Data is not LoanPaymentDto updatedPayment)
+            return;
 
         await RunAsync(async () =>
         {
-            await LoansService.RenameAsync(loan, newName);
+            await PersistExpandedLoansForRestoreAsync();
+            await LoansService.UpdatePaymentAsync(updatedPayment);
             await LoadCoreAsync();
-        }, successMessage: "Updated");
+        }, successMessage: L["Updated"]);
     }
 
-    private async Task OpenEditPaymentAsync(LoanDto loan, LoanPaymentDto payment)
+    private async Task ConfirmDeleteLoanAsync(LoanDto loan)
     {
-        var copy = new LoanPaymentDto
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        var encodedName = WebUtility.HtmlEncode(loan.Name);
+        var message = (MarkupString)string.Format(L["Debts_DeleteDialog_Message"].Value, encodedName);
+
+        var confirmed = await DialogService.ShowMessageBoxAsync(
+            L["Debts_DeleteDialog_Title"],
+            message,
+            yesText: L["Delete"],
+            cancelText: L["Cancel"],
+            options: options);
+
+        if (confirmed == true)
+            await DeleteLoanAsync(loan);
+    }
+
+    private Task DeleteLoanAsync(LoanDto loan)
+        => RunAsync(async () =>
+        {
+            await PersistExpandedLoansForRestoreAsync();
+            await LoansService.DeleteAsync(loan);
+            await LoadCoreAsync();
+        }, successMessage: L["Deleted"]);
+
+    private async Task PersistExpandedLoansForRestoreAsync()
+    {
+        if (_expandedLoanIds.Count == 0)
+        {
+            await DebtsUiRestoreService.ClearAsync();
+            return;
+        }
+
+        var state = new DebtsUiRestoreState
+        {
+            ExpandedLoanIds = _expandedLoanIds.ToList()
+        };
+
+        await DebtsUiRestoreService.SaveAsync(state);
+    }
+
+    private async Task TryApplyTransientRestoreAsync()
+    {
+        var state = await DebtsUiRestoreService.GetAsync();
+
+        if (state is null || state.ExpandedLoanIds.Count == 0)
+            return;
+
+        var existingLoanIds = _loans
+            .Select(loan => loan.Id)
+            .ToHashSet();
+
+        _expandedLoanIds = state.ExpandedLoanIds
+            .Where(existingLoanIds.Contains)
+            .ToHashSet();
+
+        await DebtsUiRestoreService.ClearAsync();
+    }
+
+    private static LoanDto CloneLoan(LoanDto loan)
+        => new()
+        {
+            Id = loan.Id,
+            UserId = loan.UserId,
+            Name = loan.Name,
+            Currency = loan.Currency,
+            Amount = loan.Amount,
+            PaymentsCount = loan.PaymentsCount,
+            StartDate = loan.StartDate,
+            HasInterest = loan.HasInterest,
+            InterestRate = loan.InterestRate,
+            Note = loan.Note,
+            CreatedAt = loan.CreatedAt,
+            UpdatedAt = loan.UpdatedAt
+        };
+
+    private static LoanPaymentDto ClonePayment(LoanPaymentDto payment)
+        => new()
         {
             Id = payment.Id,
             UserId = payment.UserId,
@@ -183,59 +330,8 @@ public partial class DebtsPage
             UpdatedAt = payment.UpdatedAt
         };
 
-        var parameters = new DialogParameters
-        {
-            ["Payment"] = copy,
-            ["Currency"] = loan.Currency
-        };
-
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.ExtraSmall,
-            FullWidth = true,
-            CloseButton = true
-        };
-
-        var dialog = await DialogService.ShowAsync<EditLoanPaymentDialog>(L["Edit payment"].Value, parameters, options);
-        var result = await dialog.Result;
-        if (result is null || result.Canceled)
-            return;
-        if (result.Data is not LoanPaymentDto updated)
-            return;
-
-        await RunAsync(async () =>
-        {
-            await LoansService.UpdatePaymentAsync(updated);
-            await LoadCoreAsync();
-        }, successMessage: "Updated");
-    }
-
-    private async Task ConfirmDeleteLoanAsync(LoanDto loan)
+    public void Dispose()
     {
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Small,
-            FullWidth = true
-        };
-
-        var msg = (MarkupString)($"{L["Delete"].Value}: {loan.Name}?<br/><br/>{L["This cannot be undone."].Value}");
-        var confirmed = await DialogService.ShowMessageBoxAsync(
-            L["Delete loan?"].Value,
-            msg,
-            yesText: L["Delete"].Value,
-            cancelText: L["Cancel"].Value,
-            options: options);
-
-        if (confirmed == true)
-            await DeleteLoanAsync(loan);
+        PageTitleState.Clear();
     }
-
-    private Task DeleteLoanAsync(LoanDto loan) 
-        => RunAsync(async () =>
-        {
-            await LoansService.DeleteAsync(loan);
-            await LoadCoreAsync();
-        }, successMessage: "Deleted");
-
-    private sealed record LoanSummaryModel(decimal Remaining, string MetaText);
 }

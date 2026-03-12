@@ -1,190 +1,62 @@
 ﻿@page "/debts"
 @inherits PersonalCash.Shared.UiComponentBase
 
-@using MudBlazor
-@using Domain.Contracts
+@using PersonalCash.Pages.Debts.Components
 
-<AuthorizeView>
-    <Authorized>
-        <MudContainer Class="pa-6" MaxWidth="MaxWidth.False">
+<MudContainer MaxWidth="MaxWidth.Large" Class="pt-4 px-6 pb-6 pt-md-6">
+    <MudStack Spacing="6">
+        <MudStack Row="true"
+                  Spacing="2"
+                  Justify="Justify.SpaceBetween"
+                  AlignItems="AlignItems.Center"
+                  Wrap="Wrap.Wrap">
 
-            <MudGrid Spacing="3">
-                <!-- left gutter (only on lg+) -->
-                <MudItem xs="12" lg="2" Class="d-none d-lg-block"></MudItem>
+            <MudText Typo="Typo.h6">
+                @string.Format(L["Debts_TableTitle"], _loans.Count)
+            </MudText>
 
-                <!-- center column -->
-                <MudItem xs="12" lg="8" xl="6">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Disabled="_busy"
+                       OnClick="OpenAddLoanAsync">
+                @L["Debts_AddDebt_Title"]
+            </MudButton>
+        </MudStack>
 
-                    <MudStack Row="true" Class="align-center" Justify="Justify.SpaceBetween">
-                        <MudText Typo="Typo.h5">@L["Debts"]</MudText>
+        @if (_busy)
+        {
+            <MudProgressLinear Indeterminate="true" />
+        }
 
-                        <MudButton Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   Disabled="_busy"
-                                   OnClick="OpenAddLoanAsync">
-                            @L["Add loan"]
-                        </MudButton>
-                    </MudStack>
+        @if (!_busy && _loans.Count == 0)
+        {
+            <MudPaper Class="pa-5" Elevation="1">
+                <MudText Typo="Typo.body1">@L["Debts_NoItems"]</MudText>
+            </MudPaper>
+        }
+        else if (_loans.Count > 0)
+        {
+            <div class="d-block d-md-none">
+                <DebtsMobileList Items="_loans"
+                                 PaymentsByLoanId="_paymentsByLoanId"
+                                 ExpandedLoanIds="_expandedLoanIds"
+                                 Busy="_busy"
+                                 OnToggleLoan="ToggleLoanAsync"
+                                 OnEditLoan="OpenEditLoanAsync"
+                                 OnDeleteLoan="ConfirmDeleteLoanAsync"
+                                 OnEditPayment="OpenEditPaymentAsync" />
+            </div>
 
-                    @if (_busy)
-                    {
-                        <MudProgressLinear Indeterminate="true" Class="mt-4" />
-                    }
-                    else if (_loans.Count == 0)
-                    {
-                        <MudText Class="mt-4">@L["No loans"]</MudText>
-                    }
-                    else
-                    {
-                        <MudTable Items="@_loans"
-                                  Dense="true"
-                                  Hover="false"
-                                  Elevation="0"
-                                  Class="mt-4"
-                                  RowsPerPage="20"
-                                  Breakpoint="Breakpoint.Xs">
-
-                            <RowTemplate Context="loan">
-                                <MudTd Class="pa-0">
-                                    @{
-                                        var summary = LoanSummary(loan);
-                                        var cardClass = LoanCardClass(loan);
-                                    }
-
-                                    <div class="@cardClass">
-                                        <MudExpansionPanels MultiExpansion="false" Elevation="1">
-                                            <MudExpansionPanel Expanded="false" Class="pa-2 loan-expansion">
-
-                                                <TitleContent>
-                                                    <MudGrid Class="w-100 align-center" Spacing="1">
-                                                        <MudItem xs="12" sm="8">
-                                                            <MudText Typo="Typo.subtitle1" Class="loan-title">
-                                                                @loan.Name
-                                                                @if (!string.IsNullOrEmpty(loan.Note))
-                                                                {
-                                                                    <span class="loan-note"> (@loan.Note)</span>
-                                                                }
-                                                            </MudText>
-                                                        </MudItem>
-
-                                                        <MudItem xs="12" sm="4" Class="d-flex justify-end">
-                                                            <MudText Typo="Typo.subtitle2" Align="Align.Right">
-                                                                @L["Remaining"]: @summary.Remaining.ToString("N2") @loan.Currency
-                                                            </MudText>
-                                                        </MudItem>
-
-                                                        <MudItem xs="12">
-                                                            <MudText Typo="Typo.caption" Class="text-muted">
-                                                                @summary.MetaText
-                                                            </MudText>
-                                                        </MudItem>
-                                                    </MudGrid>
-                                                </TitleContent>
-
-                                                <ChildContent>
-                                                    <MudStack Row="true" Spacing="2" Class="mb-2">
-                                                        <MudButton Variant="Variant.Outlined"
-                                                                   Disabled="_busy"
-                                                                   OnClick="() => OpenRenameLoanAsync(loan)">
-                                                            @L["Rename"]
-                                                        </MudButton>
-                                                        <!--<MudButton Variant="Variant.Outlined" Disabled="_busy" OnClick="() => OpenEditLoanAsync(loan)"> @L["Edit"] </MudButton>-->
-                                                        <MudButton Variant="Variant.Outlined"
-                                                                   Color="Color.Error"
-                                                                   Disabled="_busy"
-                                                                   OnClick="() => ConfirmDeleteLoanAsync(loan)">
-                                                            @L["Delete"]
-                                                        </MudButton>
-                                                    </MudStack>
-
-                                                    <MudTable Items="@PaymentsFor(loan.Id)"
-                                                              Dense="true"
-                                                              Hover="true"
-                                                              Elevation="0"
-                                                              Breakpoint="Breakpoint.Xs">
-                                                        <HeaderContent>
-                                                            <MudTh>@L["Due date"]</MudTh>
-                                                            <MudTh Class="pc-text-align-right">@L["Amount"]</MudTh>
-                                                            <MudTh>@L["Status"]</MudTh>
-                                                            <MudTh></MudTh>
-                                                        </HeaderContent>
-
-                                                        <RowTemplate Context="p">
-                                                            <MudTd>@p.DueDate.ToString("yyyy-MM-dd")</MudTd>
-                                                            <MudTd Class="pc-text-align-right">@p.Amount.ToString("N2")</MudTd>
-                                                            <MudTd>
-                                                                @if (p.IsPaid)
-                                                                {
-                                                                    <MudChip T="string" Size="Size.Small" Color="Color.Success" Variant="Variant.Outlined">
-                                                                        @L["Paid"]
-                                                                    </MudChip>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <MudChip T="string" Size="Size.Small" Color="Color.Default" Variant="Variant.Outlined">
-                                                                        @L["Not paid"]
-                                                                    </MudChip>
-                                                                }
-                                                            </MudTd>
-                                                            <MudTd Class="pc-text-align-right">
-                                                                <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                                                               Disabled="_busy"
-                                                                               OnClick="() => OpenEditPaymentAsync(loan, p)" />
-                                                            </MudTd>
-                                                        </RowTemplate>
-                                                    </MudTable>
-                                                </ChildContent>
-
-                                            </MudExpansionPanel>
-                                        </MudExpansionPanels>
-                                    </div>
-                                </MudTd>
-                            </RowTemplate>
-
-                            <PagerContent>
-                                <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
-                            </PagerContent>
-
-                        </MudTable>
-                    }
-
-                </MudItem>
-
-                <!-- right gutter (only on lg+) -->
-                <MudItem xs="12" lg="2" Class="d-none d-lg-block"></MudItem>
-            </MudGrid>
-
-        </MudContainer>
-
-        <style>
-            .loan-card {
-                border-radius: 12px;
-                padding: 6px;
-                margin-bottom: 10px;
-            }
-
-            /* green = not fully paid */
-            .loan-open {
-                background-color: rgba(76, 175, 80, 0.10);
-            }
-
-            /* gray = fully paid */
-            .loan-paid {
-                background-color: rgba(0, 0, 0, 0.06);
-            }
-
-            /* make the panel transparent so wrapper background is visible */
-            .loan-expansion {
-                background-color: transparent !important;
-            }
-
-            .loan-title {
-                overflow-wrap: anywhere;
-            }
-
-            .loan-note {
-                opacity: .75;
-            }
-        </style>
-    </Authorized>
-</AuthorizeView>
+            <div class="d-none d-md-block">
+                <DebtsTable Items="_loans"
+                            PaymentsByLoanId="_paymentsByLoanId"
+                            ExpandedLoanIds="_expandedLoanIds"
+                            Busy="_busy"
+                            OnToggleLoan="ToggleLoanAsync"
+                            OnEditLoan="OpenEditLoanAsync"
+                            OnDeleteLoan="ConfirmDeleteLoanAsync"
+                            OnEditPayment="OpenEditPaymentAsync" />
+            </div>
+        }
+    </MudStack>
+</MudContainer>

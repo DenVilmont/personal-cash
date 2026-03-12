@@ -504,4 +504,82 @@
   <data name="Accounts_SortOrderMustBeValidPositiveNumber_ValidationError" xml:space="preserve">
     <value>Порядок сортировки должен быть корректным положительным числом</value>
   </data>
+  <data name="Debts_TableTitle" xml:space="preserve">
+    <value>Мои долги</value>
+  </data>
+  <data name="Debts_AddDebt_Title" xml:space="preserve">
+    <value>Добавить долг</value>
+  </data>
+  <data name="Debts_NoItems" xml:space="preserve">
+    <value>Нет долгов</value>
+  </data>
+  <data name="Debts_Name" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="Debts_Remaining" xml:space="preserve">
+    <value>Осталось</value>
+  </data>
+  <data name="Debts_Amount" xml:space="preserve">
+    <value>Сумма</value>
+  </data>
+  <data name="Debts_PaymentsProgress" xml:space="preserve">
+    <value>Прогресс</value>
+  </data>
+  <data name="Debts_NextOLastPaymentDate" xml:space="preserve">
+    <value>Дата платежа</value>
+  </data>
+  <data name="Debts_Interest" xml:space="preserve">
+    <value>Проценты</value>
+  </data>
+  <data name="Debts_Note" xml:space="preserve">
+    <value>Примечание</value>
+  </data>
+  <data name="Debts_NoPayments" xml:space="preserve">
+    <value>Нет платежей</value>
+  </data>
+  <data name="Debts_Status" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="Debts_PaymentStatus_Paid" xml:space="preserve">
+    <value>Оплачен</value>
+  </data>
+  <data name="Debts_PaymentStatus_NotPaid" xml:space="preserve">
+    <value>Не оплачен</value>
+  </data>
+  <data name="Debts_NoInterest" xml:space="preserve">
+    <value>-</value>
+  </data>
+  <data name="Debts_WithInterest" xml:space="preserve">
+    <value>С процентами</value>
+  </data>
+  <data name="Debts_DeleteDialog_Title" xml:space="preserve">
+    <value>Удалить долг?</value>
+  </data>
+  <data name="Debts_DeleteDialog_Message" xml:space="preserve">
+    <value>Это действие нельзя отменить.</value>
+  </data>
+  <data name="Debts_SchedulePreview" xml:space="preserve">
+    <value>Предварительный график платежей</value>
+  </data>
+  <data name="Debts_HasInterest" xml:space="preserve">
+    <value>Есть проценты</value>
+  </data>
+  <data name="Debts_EditDebt_Title" xml:space="preserve">
+    <value>Редактировать долг</value>
+  </data>
+  <data name="Debts_PaymentCount" xml:space="preserve">
+    <value>Количество платежей</value>
+  </data>
+  <data name="Debts_FirstPaymentDate" xml:space="preserve">
+    <value>Дата первого платежа</value>
+  </data>
+  <data name="Debts_PaymentIsPaid" xml:space="preserve">
+    <value>Платёж оплачен</value>
+  </data>
+  <data name="Debts_DebtEditLocked_Info" xml:space="preserve">
+    <value>Редактирование долга заблокировано, потому что уже существуют платежи.</value>
+  </data>
+  <data name="Debts_Payments" xml:space="preserve">
+    <value>Платежи</value>
+  </data>
 </root>

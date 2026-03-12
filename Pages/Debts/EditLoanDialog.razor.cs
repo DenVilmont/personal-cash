@@ -28,7 +28,9 @@ public partial class EditLoanDialog
     private DateTime? StartDatePicker
     {
         get => _startDate.ToDateTime(TimeOnly.MinValue);
-        set => _startDate = value.HasValue ? DateOnly.FromDateTime(value.Value) : DateOnly.FromDateTime(DateTime.Today);
+        set => _startDate = value.HasValue
+            ? DateOnly.FromDateTime(value.Value)
+            : DateOnly.FromDateTime(DateTime.Today);
     }
 
     protected override void OnParametersSet()
@@ -45,17 +47,15 @@ public partial class EditLoanDialog
             _hasInterest = Loan.HasInterest;
             _note = Loan.Note;
 
-            _amountLocked = Payments?.Any(p => p.IsPaid) == true;
+            _amountLocked = Payments?.Any(payment => payment.IsPaid) == true;
 
-            // For edit: preview current schedule
             _previewPayments = (Payments ?? Array.Empty<LoanPaymentDto>())
-                .OrderBy(p => p.DueDate)
-                .Select(p => new LoanPaymentPreview(p.DueDate, p.Amount))
+                .OrderBy(payment => payment.DueDate)
+                .Select(payment => new LoanPaymentPreview(payment.DueDate, payment.Amount))
                 .ToList();
         }
         else
         {
-            // Defaults for new
             _name ??= "";
             _amount = 0m;
             _paymentsCount = 4;
@@ -67,15 +67,13 @@ public partial class EditLoanDialog
         }
     }
 
-    private void Cancel() => MudDialog.Cancel();
+    private void Cancel()
+        => MudDialog.Cancel();
 
     private void RebuildPreview()
     {
         if (Loan is not null)
-        {
-            // Edit dialog shows DB-loaded schedule; we only rebuild for new loans.
             return;
-        }
 
         _previewPayments = BuildSchedulePreview(_amount, _paymentsCount, _startDate);
         StateHasChanged();
@@ -88,15 +86,15 @@ public partial class EditLoanDialog
         if (amount <= 0 || paymentsCount <= 0)
             return list;
 
-        var baseAmt = Math.Round(amount / paymentsCount, 2, MidpointRounding.AwayFromZero);
-        var sumBase = baseAmt * Math.Max(0, paymentsCount - 1);
-        var lastAmt = Math.Round(amount - sumBase, 2, MidpointRounding.AwayFromZero);
+        var baseAmount = Math.Round(amount / paymentsCount, 2, MidpointRounding.AwayFromZero);
+        var sumBase = baseAmount * Math.Max(0, paymentsCount - 1);
+        var lastAmount = Math.Round(amount - sumBase, 2, MidpointRounding.AwayFromZero);
 
-        for (var i = 0; i < paymentsCount; i++)
+        for (var index = 0; index < paymentsCount; index++)
         {
-            var due = startDate.AddMonths(i);
-            var a = (i == paymentsCount - 1) ? lastAmt : baseAmt;
-            list.Add(new LoanPaymentPreview(due, a));
+            var dueDate = startDate.AddMonths(index);
+            var currentAmount = index == paymentsCount - 1 ? lastAmount : baseAmount;
+            list.Add(new LoanPaymentPreview(dueDate, currentAmount));
         }
 
         return list;
@@ -110,12 +108,13 @@ public partial class EditLoanDialog
         if (_amount <= 0 || _paymentsCount <= 0)
             return;
 
-        if (UserId == Guid.Empty)
+        if (Loan is null && UserId == Guid.Empty)
             return;
 
         if (Loan is null)
         {
             var loanId = Guid.NewGuid();
+
             var loan = new LoanDto
             {
                 Id = loanId,
@@ -132,13 +131,13 @@ public partial class EditLoanDialog
             };
 
             var schedule = BuildSchedulePreview(_amount, _paymentsCount, _startDate)
-                .Select(p => new LoanPaymentDto
+                .Select(payment => new LoanPaymentDto
                 {
                     Id = Guid.NewGuid(),
                     UserId = UserId,
                     LoanId = loanId,
-                    DueDate = p.DueDate,
-                    Amount = p.Amount,
+                    DueDate = payment.DueDate,
+                    Amount = payment.Amount,
                     IsPaid = false,
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
@@ -149,12 +148,11 @@ public partial class EditLoanDialog
                 IsNew: true,
                 Loan: loan,
                 PaymentsToInsert: schedule,
-                PaymentsToDelete: new List<LoanPaymentDto>()
-            )));
+                PaymentsToDelete: new List<LoanPaymentDto>())));
+
             return;
         }
 
-        // Edit: allow editing loan meta always; schedule editing only if no paid payments.
         var updated = new LoanDto
         {
             Id = Loan.Id,
@@ -164,34 +162,39 @@ public partial class EditLoanDialog
             Amount = Loan.Amount,
             PaymentsCount = Loan.PaymentsCount,
             StartDate = Loan.StartDate,
-            HasInterest = Loan.HasInterest,
+            HasInterest = _hasInterest,
+            InterestRate = Loan.InterestRate,
             Note = string.IsNullOrWhiteSpace(_note) ? null : _note.Trim(),
             CreatedAt = Loan.CreatedAt,
             UpdatedAt = DateTimeOffset.UtcNow
         };
 
-        // If nothing is paid, allow changing amount/count/start date by regenerating.
         var paymentsToDelete = new List<LoanPaymentDto>();
-        var paymentsToUpsert = new List<LoanPaymentDto>();
+        var paymentsToInsert = new List<LoanPaymentDto>();
 
         if (!_amountLocked)
         {
-            var needRegen = _amount != Loan.Amount || _paymentsCount != Loan.PaymentsCount || _startDate != Loan.StartDate;
-            if (needRegen)
+            var needRebuildSchedule =
+                _amount != Loan.Amount ||
+                _paymentsCount != Loan.PaymentsCount ||
+                _startDate != Loan.StartDate;
+
+            if (needRebuildSchedule)
             {
                 updated.Amount = _amount;
                 updated.PaymentsCount = _paymentsCount;
                 updated.StartDate = _startDate;
 
                 paymentsToDelete = (Payments ?? Array.Empty<LoanPaymentDto>()).ToList();
-                paymentsToUpsert = BuildSchedulePreview(_amount, _paymentsCount, _startDate)
-                    .Select(p => new LoanPaymentDto
+
+                paymentsToInsert = BuildSchedulePreview(_amount, _paymentsCount, _startDate)
+                    .Select(payment => new LoanPaymentDto
                     {
                         Id = Guid.NewGuid(),
                         UserId = Loan.UserId,
                         LoanId = Loan.Id,
-                        DueDate = p.DueDate,
-                        Amount = p.Amount,
+                        DueDate = payment.DueDate,
+                        Amount = payment.Amount,
                         IsPaid = false,
                         CreatedAt = DateTimeOffset.UtcNow,
                         UpdatedAt = DateTimeOffset.UtcNow
@@ -203,9 +206,8 @@ public partial class EditLoanDialog
         MudDialog.Close(DialogResult.Ok(new LoanEditorResult(
             IsNew: false,
             Loan: updated,
-            PaymentsToInsert: paymentsToUpsert,
-            PaymentsToDelete: paymentsToDelete
-        )));
+            PaymentsToInsert: paymentsToInsert,
+            PaymentsToDelete: paymentsToDelete)));
     }
 
     private sealed record LoanPaymentPreview(DateOnly DueDate, decimal Amount);

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using MudBlazor.Services;
 using PersonalCash.Shared;
+using PersonalCash.Pages.Debts.State;
 
 namespace PersonalCash.Composition;
 
@@ -21,6 +22,7 @@ internal static class ServiceCollectionExtensions
         services.AddScoped<CultureService>();
         services.AddBlazoredLocalStorage();
         services.AddScoped<AppPageTitleState>();
+        services.AddScoped<DebtsUiRestoreService>();
 
         services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(baseAddress) });
 

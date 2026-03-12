@@ -1,13 +1,12 @@
 ﻿@inherits PersonalCash.Shared.UiComponentBase
 
-@using MudBlazor
 @using Domain.Contracts
 
 <MudDialog>
     <DialogContent>
         <MudStack Spacing="2">
 
-            <MudTextField Label="@L["Name"]"
+            <MudTextField Label="@L["Debts_Name"]"
                           Variant="Variant.Outlined"
                           Margin="Margin.Dense"
                           Required="true"
@@ -27,7 +26,7 @@
                              Disabled="@_amountLocked" />
 
             <MudNumericField T="int"
-                             Label="@L["Payments"]"
+                             Label="@L["Debts_PaymentCount"]"
                              Variant="Variant.Outlined"
                              Margin="Margin.Dense"
                              @bind-Value="_paymentsCount"
@@ -35,7 +34,7 @@
                              Immediate="true"
                              Disabled="@_amountLocked" />
 
-            <MudDatePicker Label="@L[" First payment date"]"
+            <MudDatePicker Label="@L["Debts_FirstPaymentDate"]"
                            Variant="Variant.Outlined"
                            Margin="Margin.Dense"
                            Class="w-100"
@@ -46,20 +45,20 @@
 
             <MudSwitch T="bool"
                        Color="Color.Primary"
-                       Label="@L["Has interest"]"
+                       Label="@L["Debts_HasInterest"]"
                        @bind-Value="_hasInterest"
                        Disabled="@_amountLocked" />
 
-            <MudTextField Label="@L[" Comment"]"
+            <MudTextField Label="@L["Note"]"
                           Variant="Variant.Outlined"
                           Margin="Margin.Dense"
-                          Lines="2"
+                          Lines="5"
                           @bind-Value="_note" />
 
             @if (_amountLocked)
             {
                 <MudAlert Severity="Severity.Info" Dense="true">
-                    @L["Amount / schedule editing is disabled because some payments are marked as paid."]
+                    @L["Debts_ScheduleEditLocked_Info"]
                 </MudAlert>
             }
 
@@ -67,15 +66,17 @@
             {
                 <MudDivider Class="my-2" />
 
-                <MudText Typo="Typo.subtitle2">@L["Schedule preview"]</MudText>
+                <MudText Typo="Typo.subtitle2">@L["Debts_SchedulePreview"]</MudText>
+
                 <MudTable Items="@_previewPayments" Dense="true" Elevation="0">
                     <HeaderContent>
-                        <MudTh>@L["Due date"]</MudTh>
-                        <MudTh Class="pc-text-align-right">@L["Amount"]</MudTh>
+                        <MudTh>@L["Date"]</MudTh>
+                        <MudTh class="pc-text-align-right">@L["Amount"]</MudTh>
                     </HeaderContent>
-                    <RowTemplate Context="p">
-                        <MudTd>@p.DueDate.ToString("yyyy-MM-dd")</MudTd>
-                        <MudTd Class="pc-text-align-right">@p.Amount.ToString("N2")</MudTd>
+
+                    <RowTemplate Context="payment">
+                        <MudTd>@payment.DueDate.ToString("yyyy-MM-dd")</MudTd>
+                        <MudTd class="pc-text-align-right">@payment.Amount.ToString("N2")</MudTd>
                     </RowTemplate>
                 </MudTable>
             }
