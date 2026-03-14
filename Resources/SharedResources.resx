@@ -630,4 +630,10 @@
   <data name="Reports_Distribution" xml:space="preserve">
     <value>Distribution</value>
   </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
 </root>

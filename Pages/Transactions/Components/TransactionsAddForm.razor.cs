@@ -1,6 +1,8 @@
 ﻿using Domain.Contracts;
 using Domain.Enums;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using System.Reflection;
 
 namespace PersonalCash.Pages.Transactions.Components;
 
@@ -46,4 +48,31 @@ public partial class TransactionsAddForm
 
     private Task OnAddClicked() => OnAdd.InvokeAsync();
     private Task OnRefreshClicked() => OnRefresh.InvokeAsync();
+
+    private MudDatePicker? _mobileOccurredOnPicker;
+
+    private async Task SetTodayAsync()
+    {
+        if (_mobileOccurredOnPicker is null)
+            return;
+
+        await _mobileOccurredOnPicker.GoToDate(DateTime.Today, submitDate: true);
+        await _mobileOccurredOnPicker.CloseAsync(true);
+    }
+
+    private async Task CancelOccurredOnPickerAsync()
+    {
+        if (_mobileOccurredOnPicker is null)
+            return;
+
+        await _mobileOccurredOnPicker.CloseAsync(false);
+    }
+
+    private async Task SubmitOccurredOnPickerAsync()
+    {
+        if (_mobileOccurredOnPicker is null)
+            return;
+
+        await _mobileOccurredOnPicker.CloseAsync(true);
+    }
 }
