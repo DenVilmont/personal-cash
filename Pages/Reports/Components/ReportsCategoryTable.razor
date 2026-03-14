@@ -1,0 +1,68 @@
+﻿@using PersonalCash.Pages.Reports
+
+<div>
+    <MudPaper Class="reports-table-panel pa-4" Elevation="1">
+        <MudText Typo="Typo.h6">@L["Reports_CategoryTableTitle"]</MudText>
+
+        @if (Busy)
+        {
+            <MudProgressLinear Indeterminate="true" Class="mt-4" />
+        }
+        else if (Rows.Count == 0)
+        {
+            <MudText Typo="Typo.body1" Class="reports-table-empty">
+                @L["Reports_NoData"]
+            </MudText>
+        }
+        else
+        {
+            <MudTable T="ReportsCategoryRow"
+                      Items="Rows"
+                      Dense="true"
+                      Hover="true"
+                      Elevation="0"
+                      Class="mt-3">
+                <HeaderContent>
+                    <MudTh>@L["Category"]</MudTh>
+                    <MudTh Class="pc-text-align-right">@L["Amount"]</MudTh>
+                    <MudTh>@L["Reports_Distribution"]</MudTh>
+                </HeaderContent>
+
+                <RowTemplate Context="row">
+                    <MudTd>
+                        <div class="reports-category-table__name">
+                            <span class="reports-category-table__swatch" style="background-color:@row.Color"></span>
+                            <span class="reports-category-table__label">@row.Label</span>
+                        </div>
+                    </MudTd>
+
+                    <MudTd Class="pc-text-align-right pc-text-nowrap">
+                        @FormatAmount((decimal)row.Amount)
+                    </MudTd>
+
+                    <MudTd Class="reports-category-table__share">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <MudProgressLinear Value="@row.Share"
+                                               Max="100"
+                                               Rounded="true"
+                                               Color="Color.Primary"
+                                               Class="flex-grow-1" />
+                            <span class="reports-category-table__share-value">@row.Share.ToString("0.0")%</span>
+                        </MudStack>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudPaper>
+</div>
+
+@code {
+    [Parameter] public bool Busy { get; set; }
+    [Parameter] public string Currency { get; set; } = string.Empty;
+    [Parameter] public IReadOnlyList<ReportsCategoryRow> Rows { get; set; } = Array.Empty<ReportsCategoryRow>();
+
+    private string FormatAmount(decimal value)
+        => string.IsNullOrWhiteSpace(Currency)
+            ? value.ToString("N2")
+            : $"{value:N2} {Currency}";
+}

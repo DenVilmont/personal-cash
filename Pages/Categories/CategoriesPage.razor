@@ -42,7 +42,10 @@
                 </MudGrid>
             </MudPaper>
         </section>
-
+        @if (_busy)
+        {
+            <MudProgressLinear Indeterminate="true" />
+        }
         <section>
             <MudPaper Elevation="2" Class="pa-3 pa-sm-5">
                 <MudText Typo="Typo.subtitle1">@L["Categories_TableTitle"]</MudText>
@@ -100,7 +103,7 @@
                               Dense="true"
                               Hover="true"
                               RowsPerPage="20"
-                              Class="d-none d-sm-block mt-3"
+                              Class="d-none d-sm-block mt-3 table-layout-fixed"
                               Filter="new Func<CategoryDto, bool>(SearchInTable)">
                         <ColGroup>
                             <col />

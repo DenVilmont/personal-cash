@@ -61,7 +61,7 @@
 
         <MudTd Class="pc-text-nowrap">
             <MudText Typo="Typo.body2" Class="pc-text-nowrap">
-                @FirstPaymentDateText(loan)
+                @NextOLastPaymentDateText(loan)
             </MudText>
         </MudTd>
 
@@ -90,93 +90,95 @@
             </MudStack>
         </MudTd>
     </RowTemplate>
-
+    
     <ChildRowContent Context="loan">
         @if (IsExpanded(loan.Id))
         {
             <MudTr>
                 <td colspan="8">
-                    @if (GetPayments(loan.Id).Count == 0)
-                    {
-                        <MudText Typo="Typo.body2" class="mud-secondary-text">
-                            @L["Debts_NoPayments"]
-                        </MudText>
-                    }
-                    else
-                    {
-                        <MudTable Items="GetPayments(loan.Id)"
-                                  Dense="true"
-                                  Hover="true"
-                                  Elevation="4"
-                                  ContainerClass="@IsFullyPaidClass(loan, 0)"
-                                  Class="table-layout-fixed debts-table__child-content ml-16 mb-6">
-                            <ColGroup>
-                                <col style="width: 1%" />
-                                <col style="width: 1%;" />
-                                <col style="width: 1%;" />
-                                <col />
-                                <col style="width: 128px; min-width: 128px" />
-                            </ColGroup>
-                            <HeaderContent>
-                                <MudTh>@L["Debts_NextOLastPaymentDate"]</MudTh>
-                                <MudTh>@L["Debts_Amount"]</MudTh>
-                                <MudTh>@L["Debts_Status"]</MudTh>
-                                <MudTh>@L["Debts_Note"]</MudTh>
-                                <MudTh></MudTh>
-                            </HeaderContent>
+                    <MudTable Items="GetPaymentsByLoanId(loan.Id)"
+                              Dense="true"
+                              Hover="true"
+                              Elevation="4"
+                              ContainerClass="@IsFullyPaidClass(loan, 0)"
+                              Class="table-layout-fixed debts-table__child-content ml-16 mb-6">
+                        <ColGroup>
+                            <col style="width: 1%" />
+                            <col style="width: 1%;" />
+                            <col style="width: 1%;" />
+                            <col />
+                            <col style="width: 128px; min-width: 128px" />
+                        </ColGroup>
+                        <HeaderContent>
+                            <MudTh>@L["Debts_NextOLastPaymentDate"]</MudTh>
+                            <MudTh>@L["Debts_Amount"]</MudTh>
+                            <MudTh>@L["Debts_Status"]</MudTh>
+                            <MudTh>@L["Debts_Note"]</MudTh>
+                            <MudTh></MudTh>
+                        </HeaderContent>
 
-                            <RowTemplate Context="payment">
-                                <MudTd>
-                                    <MudText Typo="Typo.body2" Class="pc-text-nowrap">
-                                        @payment.DueDate.ToString("yyyy-MM-dd")
-                                    </MudText>
-                                </MudTd>
+                        <RowTemplate Context="payment">
+                            <MudTd>
+                                <MudText Typo="Typo.body2" Class="pc-text-nowrap">
+                                    @payment.DueDate.ToString("yyyy-MM-dd")
+                                </MudText>
+                            </MudTd>
 
-                                <MudTd>
-                                    <MudText Typo="Typo.body2" Align="Align.End" Class="pc-text-nowrap">
-                                        @payment.Amount.ToString("N2") @loan.Currency
-                                    </MudText>
-                                    
-                                </MudTd>
+                            <MudTd>
+                                <MudText Typo="Typo.body2" Align="Align.End" Class="pc-text-nowrap">
+                                    @payment.Amount.ToString("N2") @loan.Currency
+                                </MudText>
 
-                                <MudTd>
-                                    @if (payment.IsPaid)
-                                    {
-                                        <MudChip T="string"
-                                                 Size="Size.Small"
-                                                 Color="Color.Success"
-                                                 Variant="Variant.Filled"
-                                                 Text="@L["Debts_PaymentStatus_Paid"]" />
-                                    }
-                                    else
-                                    {
-                                        <MudChip T="string"
-                                                 Size="Size.Small"
-                                                 Color="Color.Warning"
-                                                 Variant="Variant.Filled" 
-                                                 Text="@L["Debts_PaymentStatus_NotPaid"]" />
-                                    }
-                                </MudTd>
+                            </MudTd>
 
-                                <MudTd>
-                                    <MudText Typo="Typo.body2" Align="Align.Left">
-                                        @(string.IsNullOrWhiteSpace(payment.Note) ? "—" : payment.Note)
-                                    </MudText>
-                                </MudTd>
+                            <MudTd>
+                                @if (payment.IsPaid)
+                                {
+                                    <MudChip T="string"
+                                             Size="Size.Small"
+                                             Color="Color.Success"
+                                             Variant="Variant.Filled"
+                                             Text="@L["Debts_PaymentStatus_Paid"]" />
+                                }
+                                else
+                                {
+                                    <MudChip T="string"
+                                             Size="Size.Small"
+                                             Color="Color.Warning"
+                                             Variant="Variant.Filled"
+                                             Text="@L["Debts_PaymentStatus_NotPaid"]" />
+                                }
+                            </MudTd>
 
-                                <MudTd>
-                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                                   Disabled="Busy"
-                                                   OnClick="() => OnEditPayment.InvokeAsync((loan, payment))" />
-                                </MudTd>
-                            </RowTemplate>
-                        </MudTable>
-                    }
+                            <MudTd>
+                                <MudText Typo="Typo.body2" Align="Align.Left">
+                                    @(string.IsNullOrWhiteSpace(payment.Note) ? "—" : payment.Note)
+                                </MudText>
+                            </MudTd>
+
+                            <MudTd>
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                               Disabled="Busy"
+                                               OnClick="() => OnEditPayment.InvokeAsync((loan, payment))" />
+                            </MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            <MudText>@L["Debts_NoPayments"]</MudText>
+                        </NoRecordsContent>
+                        <LoadingContent>
+                            <MudText>@L["Loading"]</MudText>
+                        </LoadingContent>
+                    </MudTable>
                 </td>
             </MudTr>
         }
     </ChildRowContent>
-
+    <NoRecordsContent>
+        <MudText>@L["Debts_NoDebts"]</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>@L["Loading"]</MudText>
+    </LoadingContent>
     <PagerContent>
         <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
     </PagerContent>

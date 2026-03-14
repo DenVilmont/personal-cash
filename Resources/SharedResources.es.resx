@@ -510,7 +510,7 @@
   <data name="Debts_AddDebt_Title" xml:space="preserve">
     <value>Añadir deuda</value>
   </data>
-  <data name="Debts_NoItems" xml:space="preserve">
+  <data name="Debts_NoDebts" xml:space="preserve">
     <value>No hay deudas</value>
   </data>
   <data name="Debts_Name" xml:space="preserve">
@@ -581,5 +581,53 @@
   </data>
   <data name="Debts_Payments" xml:space="preserve">
     <value>Pagos</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Cargando...</value>
+  </data>
+  <data name="Debts_PageTitle" xml:space="preserve">
+    <value>Deudas</value>
+  </data>
+  <data name="Reports_MonthSummaryTitle" xml:space="preserve">
+    <value>Resumen mensual</value>
+  </data>
+  <data name="Reports_MonthSummary_Income" xml:space="preserve">
+    <value>Ingresos</value>
+  </data>
+  <data name="Reports_MonthSummary_Expenses" xml:space="preserve">
+    <value>Gastos</value>
+  </data>
+  <data name="Reports_MonthSummary_CurrentBalances" xml:space="preserve">
+    <value>Saldos actuales</value>
+  </data>
+  <data name="Reports_TabCategories" xml:space="preserve">
+    <value>Categorías</value>
+  </data>
+  <data name="Reports_CategoryChartTitle" xml:space="preserve">
+    <value>Desglose por categorías</value>
+  </data>
+  <data name="Reports_CategoryTableTitle" xml:space="preserve">
+    <value>Tabla de categorías</value>
+  </data>
+  <data name="Reports_TabLineChart" xml:space="preserve">
+    <value>Gráfico de líneas</value>
+  </data>
+  <data name="Filter_Months" xml:space="preserve">
+    <value>Meses</value>
+  </data>
+  <data name="Reports_LineChart_TrendHint" xml:space="preserve">
+    <value>Muestra los totales por mes para el período seleccionado (últimos 12 meses por defecto)</value>
+  </data>
+  <data name="Reports_TabBarChart" xml:space="preserve">
+    <value>Gráfico de barras</value>
+  </data>
+  <data name="Filter_Categories" xml:space="preserve">
+    <value>Categorías</value>
+  </data>
+  <data name="Reports_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Reports_Distribution" xml:space="preserve">
+    <value>Distribución</value>
   </data>
 </root>

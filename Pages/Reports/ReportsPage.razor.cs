@@ -4,367 +4,467 @@ using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using PersonalCash.Shared;
 using PersonalCash.Shared.Extensions;
+using System.Globalization;
 
 namespace PersonalCash.Pages.Reports;
 
 [Authorize]
-public partial class ReportsPage
+public partial class ReportsPage : IDisposable
 {
     [Inject] private AccountsService AccountsService { get; set; } = default!;
     [Inject] private CategoriesService CategoriesService { get; set; } = default!;
     [Inject] private TransactionService TransactionService { get; set; } = default!;
+    [Inject] private AppPageTitleState PageTitleState { get; set; } = default!;
 
     private List<AccountDto> _accounts = new();
     private List<CategoryDto> _categories = new();
+
     private readonly Dictionary<Guid, AccountDto> _accountById = new();
     private readonly Dictionary<Guid, CategoryDto> _categoryById = new();
 
     private List<TransactionDto> _allItems = new();
+
+    private readonly ChartOptions _donutOptions = new()
+    {
+        ShowLegend = false,
+        ChartPalette = new[]
+        {
+            Colors.Blue.Default,
+            Colors.Green.Default,
+            Colors.Orange.Default,
+            Colors.Red.Default,
+            Colors.Purple.Default,
+            Colors.Teal.Default,
+            Colors.Cyan.Default,
+            Colors.Brown.Default,
+            Colors.Indigo.Default,
+            Colors.Pink.Default,
+            Colors.Blue.Darken2,
+            Colors.Green.Darken2,
+            Colors.Orange.Darken2,
+            Colors.Red.Darken2,
+            Colors.Purple.Darken2,
+            Colors.Teal.Darken2,
+            Colors.Cyan.Darken2,
+            Colors.Brown.Darken2,
+            Colors.Indigo.Darken2,
+            Colors.Pink.Darken2
+        }
+    };
 
     private readonly LineChartOptions _lineOptions = new()
     {
         ShowDataMarkers = true
     };
 
-    // ---------------------------
-    // DONUT filters (same as Transactions, but without EntryType; Pie always uses Outcome)
-    // ---------------------------
-    private DateOnly? _pFrom;
-    private DateOnly? _pTo;
-    private Guid? _pAccountId;
-    private DateOnly? _pMonth;
-    private bool _pMonthInitDone;
-    private List<DateOnly> _pMonthOptions = new();
-    private sealed record DonutLegendRow(string Label, double Value, string Color);
-
-    private readonly ChartOptions _donutOptions = new()
+    private readonly ChartOptions _barOptions = new()
     {
-        ShowLegend = false,
-        ChartPalette = new[]
-    {
-        Colors.Blue.Default,
-        Colors.Green.Default,
-        Colors.Orange.Default,
-        Colors.Red.Default,
-        Colors.Purple.Default,
-        Colors.Teal.Default,
-        Colors.Cyan.Default,
-        Colors.Brown.Default,
-        Colors.Indigo.Default,
-        Colors.Pink.Default,
-        Colors.Blue.Darken2,
-        Colors.Green.Darken2,
-        Colors.Orange.Darken2,
-        Colors.Red.Darken2,
-        Colors.Purple.Darken2,
-        Colors.Teal.Darken2,
-        Colors.Cyan.Darken2,
-        Colors.Brown.Darken2,
-        Colors.Indigo.Darken2,
-        Colors.Pink.Darken2,
-    }
+        ShowLegend = true
     };
 
-    private List<DonutLegendRow> _donutLegend = new();
-    private double DonutTotal => _donutLegend.Sum(x => x.Value);
+    // Primary filters (Tab 1)
+    private DateOnly? _primaryFrom;
+    private DateOnly? _primaryTo;
+    private Guid? _primaryAccountId;
+    private DateOnly? _primaryMonth;
+    private bool _primaryMonthInitDone;
+    private List<DateOnly> _primaryMonthOptions = new();
 
-    protected List<ChartSeries<double>> _donutSeries = new();
-    protected string[] _donutLabels = Array.Empty<string>();
+    // Trend filters (Tab 2/3)
+    private List<DateOnly> _trendMonthOptions = new();
+    private HashSet<DateOnly> _trendSelectedMonths = new();
+    private HashSet<EntryType> _trendSelectedTypes = new() { EntryType.Income, EntryType.Outcome };
+    private List<CategoryDto> _trendCategoryOptions = new();
+    private HashSet<Guid> _trendSelectedCategoryIds = new();
 
-    // ---------------------------
-    // LINE filters
-    // ---------------------------
-    private List<DateOnly> _lineMonthOptions = new();
-    private HashSet<DateOnly> _lineSelectedMonths = new();
-    private HashSet<EntryType> _lineSelectedTypes = new() { EntryType.Outcome };
-    private List<CategoryDto> _lineCategoryOptions = new();
-    private HashSet<Guid> _lineSelectedCategoryIds = new();
+    // Summary (current month + current balance)
+    private Dictionary<string, string> _summaryIncome = new();
+    private Dictionary<string, string> _summaryExpenses = new();
+    private Dictionary<string, string> _summaryBalance = new();
+    private string _summaryCurrency = string.Empty;
+    private string _summaryMonthCaption = string.Empty;
 
-    protected List<ChartSeries<double>> _lineSeries = new();
-    protected string[] _lineXAxisLabels = Array.Empty<string>();
+    // Category tab
+    private List<ReportsCategoryRow> _categoryRows = new();
+    private decimal _categoryTotal;
+    private string _primaryReportCurrency = string.Empty;
+    private List<ChartSeries<double>> _donutSeries = new();
+    private string[] _donutLabels = Array.Empty<string>();
 
-    protected override async Task OnInitializedAsync() => await RunAsync(LoadCoreAsync);
+    // Trend tabs
+    private List<ChartSeries<double>> _trendSeries = new();
+    private string[] _trendXAxisLabels = Array.Empty<string>();
+
+    protected override void OnParametersSet()
+    {
+        PageTitleState.Set(L["Reports_PageTitle"]);
+    }
+
+    protected override async Task OnInitializedAsync()
+        => await RunAsync(LoadCoreAsync);
 
     private async Task LoadCoreAsync()
     {
         _accounts = await AccountsService.GetSortedAsync();
-
         _categories = await CategoriesService.GetSortedAsync();
-
         _allItems = await TransactionService.GetActualAsync();
 
         _accountById.Clear();
-        foreach (var a in _accounts)
-            _accountById[a.Id] = a;
+        foreach (var account in _accounts)
+            _accountById[account.Id] = account;
 
         _categoryById.Clear();
-        foreach (var c in _categories)
-            _categoryById[c.Id] = c;
+        foreach (var category in _categories)
+            _categoryById[category.Id] = category;
 
-        RebuildDonutMonthOptions();
-        InitDonutDefaults();
-        ApplyDonutFilters();
+        RebuildPrimaryMonthOptions();
+        InitPrimaryDefaults();
+        InitTrendMonths();
 
-        InitLineMonths();
-        RebuildLineCategoryOptions();
-        RebuildLineChart();
+        RebuildSummaryForCurrentMonth();
+        ApplyPrimaryFilters();
+        ApplyTrendFilters();
     }
 
-
-    // ---------------------------
-    // DONUT helpers
-    // ---------------------------
-    private DateTime? DonutFilterFromDateTime
+    private DateTime? PrimaryFromDateTime
     {
-        get => _pFrom.HasValue ? _pFrom.Value.ToDateTime(TimeOnly.MinValue) : null;
-        set => _pFrom = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
+        get => _primaryFrom?.ToDateTime(TimeOnly.MinValue);
+        set => _primaryFrom = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
     }
 
-    private DateTime? DonutFilterToDateTime
+    private DateTime? PrimaryToDateTime
     {
-        get => _pTo.HasValue ? _pTo.Value.ToDateTime(TimeOnly.MinValue) : null;
-        set => _pTo = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
+        get => _primaryTo?.ToDateTime(TimeOnly.MinValue);
+        set => _primaryTo = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
     }
 
-    private void RebuildDonutMonthOptions()
+    private void RebuildPrimaryMonthOptions()
     {
         var months = _allItems
-            .Select(t => new DateOnly(t.OccurredOn.Year, t.OccurredOn.Month, 1))
+            .Where(x => !x.IsPlanned)
+            .Select(x => new DateOnly(x.OccurredOn.Year, x.OccurredOn.Month, 1))
             .Distinct()
-            .OrderByDescending(m => m)
+            .OrderByDescending(x => x)
             .ToList();
 
-        // Always include current month
         var today = DateOnly.FromDateTime(DateTime.Today);
         var currentMonth = new DateOnly(today.Year, today.Month, 1);
+
         if (!months.Contains(currentMonth))
             months.Insert(0, currentMonth);
 
-        _pMonthOptions = months;
+        _primaryMonthOptions = months;
     }
 
-    private void InitDonutDefaults()
+    private void InitPrimaryDefaults()
     {
-        if (_pMonthInitDone)
+        if (_primaryMonthInitDone)
             return;
 
         var today = DateOnly.FromDateTime(DateTime.Today);
-        _pMonth = new DateOnly(today.Year, today.Month, 1);
-        _pMonthInitDone = true;
+        _primaryMonth = new DateOnly(today.Year, today.Month, 1);
+        _primaryMonthInitDone = true;
     }
 
-    private void ClearDonutDates()
-    {
-        _pMonth = null;
-        _pFrom = null;
-        _pTo = null;
-        ApplyDonutFilters();
-    }
-
-    private void ResetDonutFilters()
-    {
-        _pFrom = null;
-        _pTo = null;
-        _pAccountId = null;
-
-        var today = DateOnly.FromDateTime(DateTime.Today);
-        _pMonth = new DateOnly(today.Year, today.Month, 1);
-
-        ApplyDonutFilters();
-    }
-
-    private void ApplyDonutFilters()
-    {
-        IEnumerable<TransactionDto> q = _allItems;
-
-        // month overrides from/to
-        if (_pMonth is not null)
-        {
-            _pFrom = new DateOnly(_pMonth.Value.Year, _pMonth.Value.Month, 1);
-            _pTo = _pFrom.Value.AddMonths(1).AddDays(-1);
-        }
-
-        if (_pFrom is not null)
-            q = q.Where(x => x.OccurredOn >= _pFrom.Value);
-
-        if (_pTo is not null)
-            q = q.Where(x => x.OccurredOn <= _pTo.Value);
-
-        if (_pAccountId is not null)
-            q = q.Where(x => x.AccountId == _pAccountId.Value);
-
-        q = q.Where(x => !x.IsPlanned);
-        q = q.Where(x => x.EntryType == EntryType.Outcome);
-
-        RebuildDonutChart(q);
-    }
-
-    private void RebuildDonutChart(IEnumerable<TransactionDto> filtered)
-    {
-        var groups = filtered
-            .GroupBy(t => t.CategoryId)
-            .Select(g => new
-            {
-                CategoryId = g.Key,
-                Sum = g.Sum(x => x.Amount)
-            })
-            .Where(x => x.Sum > 0)
-            .OrderByDescending(x => x.Sum)
-            .ToList();
-
-        var palette = _donutOptions.ChartPalette;
-
-        _donutLegend = groups.Select((x, i) => new DonutLegendRow(
-            Label: CategoryName(x.CategoryId),
-            Value: (double)x.Sum,
-            Color: palette[i % palette.Length]
-        )).ToList();
-
-        _donutLabels = _donutLegend.Select(r => $"{r.Label} ({r.Value})").ToArray();
-        _donutSeries = new List<ChartSeries<double>>
-        {
-            new ChartSeries<double>
-            {
-                Data = _donutLegend.Select(r => r.Value).ToArray<double>()
-            }
-        };
-    }
-
-    private string CategoryName(Guid id)
-        => _categoryById.TryGetValue(id, out var c) ? c.Name : "Category";
-
-    // ---------------------------
-    // LINE helpers
-    // ---------------------------
-    private void InitLineMonths()
+    private void InitTrendMonths()
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
         var currentMonth = new DateOnly(today.Year, today.Month, 1);
 
-        // Show last 24 months in selector, default select last 12
-        _lineMonthOptions = Enumerable.Range(0, 24)
-            .Select(i => currentMonth.AddMonths(-i))
+        _trendMonthOptions = Enumerable.Range(0, 24)
+            .Select(index => currentMonth.AddMonths(-index))
             .ToList();
 
-        _lineSelectedMonths = _lineMonthOptions
+        _trendSelectedMonths = _trendMonthOptions
             .Take(12)
             .ToHashSet();
     }
 
-    private Task OnLineMonthsChanged(IEnumerable<DateOnly> values)
+    private void RebuildSummaryForCurrentMonth()
     {
-        _lineSelectedMonths = values?.ToHashSet() ?? new HashSet<DateOnly>();
-        RebuildLineChart();
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        var monthStart = new DateOnly(today.Year, today.Month, 1);
+        var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+
+        var currentMonthItems = _allItems
+            .Where(x => !x.IsPlanned)
+            .Where(x => x.OccurredOn >= monthStart && x.OccurredOn <= monthEnd)
+            .ToList();
+
+        _summaryIncome = currentMonthItems
+            .Where(x => x.EntryType == EntryType.Income)
+            .GroupBy(x => x.AccountId)
+            .Where(g => _accountById.ContainsKey(g.Key))
+            .OrderBy(g => _accountById[g.Key].SortOrder)
+            .ThenBy(g => _accountById[g.Key].Name)
+            .ToDictionary(
+                g => _accountById[g.Key].Name,
+                g => $"{g.Sum(x => x.Amount)} {_accountById[g.Key].Currency}"
+            );
+
+        _summaryExpenses = currentMonthItems
+            .Where(x => x.EntryType == EntryType.Outcome)
+            .GroupBy(x => x.AccountId)
+            .Where(g => _accountById.ContainsKey(g.Key))
+            .OrderBy(g => _accountById[g.Key].SortOrder)
+            .ThenBy(g => _accountById[g.Key].Name)
+            .ToDictionary(
+                g => _accountById[g.Key].Name,
+                g => $"{g.Sum(x => x.Amount)} {_accountById[g.Key].Currency}"
+            );
+
+        _summaryBalance = _accounts
+            .Where(x => !x.IsArchived)
+            .Where (x => x.ShowBalance)
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Name)
+            .ToDictionary(x => x.Name, y => y.BalanceActual + " " + y.Currency);
+    }
+
+    private void ClearPrimaryDates()
+    {
+        _primaryMonth = null;
+        _primaryFrom = null;
+        _primaryTo = null;
+        ApplyPrimaryFilters();
+    }
+
+    private void ResetPrimaryFilters()
+    {
+        _primaryAccountId = null;
+
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        _primaryMonth = new DateOnly(today.Year, today.Month, 1);
+        _primaryFrom = null;
+        _primaryTo = null;
+
+        ApplyPrimaryFilters();
+    }
+
+    private void ApplyPrimaryFilters()
+    {
+        if (_primaryMonth is not null)
+        {
+            _primaryFrom = new DateOnly(_primaryMonth.Value.Year, _primaryMonth.Value.Month, 1);
+            _primaryTo = _primaryFrom.Value.AddMonths(1).AddDays(-1);
+        }
+
+        var filtered = GetPrimaryFilteredTransactions().ToList();
+
+        RebuildCategoryRows(filtered);
+        RebuildDonutChart();
+    }
+
+    private IEnumerable<TransactionDto> GetPrimaryFilteredTransactions()
+    {
+        IEnumerable<TransactionDto> query = _allItems.Where(x => !x.IsPlanned);
+
+        if (_primaryFrom is not null)
+            query = query.Where(x => x.OccurredOn >= _primaryFrom.Value);
+
+        if (_primaryTo is not null)
+            query = query.Where(x => x.OccurredOn <= _primaryTo.Value);
+
+        if (_primaryAccountId is not null)
+            query = query.Where(x => x.AccountId == _primaryAccountId.Value);
+
+        return query;
+    }
+
+    private void RebuildCategoryRows(IReadOnlyCollection<TransactionDto> filtered)
+    {
+        var palette = _donutOptions.ChartPalette;
+
+        var grouped = filtered
+            .Where(x => x.EntryType == EntryType.Outcome)
+            .GroupBy(x => x.CategoryId)
+            .Select(group => new
+            {
+                CategoryId = group.Key,
+                Amount = group.Sum(x => x.Amount)
+            })
+            .Where(x => x.Amount > 0)
+            .OrderByDescending(x => x.Amount)
+            .ToList();
+
+        _categoryTotal = grouped.Sum(x => x.Amount);
+        _primaryReportCurrency = ResolvePrimaryReportCurrency(filtered);
+
+        _categoryRows = grouped
+            .Select((row, index) => new ReportsCategoryRow(
+                CategoryId: row.CategoryId,
+                Label: CategoryName(row.CategoryId),
+                Amount: (double)row.Amount,
+                Share: _categoryTotal > 0
+                    ? Math.Round((double)(row.Amount / _categoryTotal * 100m), 1)
+                    : 0d,
+                Color: palette[index % palette.Length]))
+            .ToList();
+    }
+
+    private void RebuildDonutChart()
+    {
+        if (_categoryRows.Count == 0)
+        {
+            _donutSeries = new();
+            _donutLabels = Array.Empty<string>();
+            return;
+        }
+
+        _donutLabels = _categoryRows
+            .Select(x => x.Label)
+            .ToArray();
+
+        _donutSeries = new List<ChartSeries<double>>
+        {
+            new()
+            {
+                Data = _categoryRows.Select(x => x.Amount).ToArray()
+            }
+        };
+    }
+
+    private string ResolvePrimaryReportCurrency(IEnumerable<TransactionDto> filtered)
+    {
+        if (_primaryAccountId is not null &&
+            _accountById.TryGetValue(_primaryAccountId.Value, out var selectedAccount))
+        {
+            return selectedAccount.Currency;
+        }
+
+        var currencies = filtered
+            .Select(x => x.Currency)
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        return currencies.Count == 1 ? currencies[0] : string.Empty;
+    }
+
+    private Task OnTrendMonthsChanged(IEnumerable<DateOnly> values)
+    {
+        _trendSelectedMonths = values?.ToHashSet() ?? new HashSet<DateOnly>();
+        ApplyTrendFilters();
         return Task.CompletedTask;
     }
 
-    private Task OnLineTypesChanged(IEnumerable<EntryType> values)
+    private Task OnTrendTypesChanged(IEnumerable<EntryType> values)
     {
-        _lineSelectedTypes = values?.ToHashSet() ?? new HashSet<EntryType>();
+        _trendSelectedTypes = values?.ToHashSet() ?? new HashSet<EntryType>();
 
-        // Prevent empty selection
-        if (_lineSelectedTypes.Count == 0)
-            _lineSelectedTypes.Add(EntryType.Outcome);
+        if (_trendSelectedTypes.Count == 0)
+            _trendSelectedTypes.Add(EntryType.Outcome);
 
-        RebuildLineCategoryOptions();
-        RebuildLineChart();
+        ApplyTrendFilters();
         return Task.CompletedTask;
     }
 
-    private Task OnLineCategoriesChanged(IEnumerable<Guid> values)
+    private Task OnTrendCategoriesChanged(IEnumerable<Guid> values)
     {
-        _lineSelectedCategoryIds = values?.ToHashSet() ?? new HashSet<Guid>();
-        RebuildLineChart();
+        _trendSelectedCategoryIds = values?.ToHashSet() ?? new HashSet<Guid>();
+        ApplyTrendFilters();
         return Task.CompletedTask;
     }
 
-    private void ClearLineCategories()
+    private void ClearTrendCategories()
     {
-        _lineSelectedCategoryIds.Clear();
-        RebuildLineChart();
+        _trendSelectedCategoryIds.Clear();
+        ApplyTrendFilters();
     }
 
-    private void ResetLineFilters()
+    private void ResetTrendFilters()
     {
-        InitLineMonths();
-        _lineSelectedTypes = new HashSet<EntryType> { EntryType.Outcome };
-        _lineSelectedCategoryIds.Clear();
+        InitTrendMonths();
+        _trendSelectedTypes = new HashSet<EntryType> { EntryType.Income, EntryType.Outcome };
+        _trendSelectedCategoryIds.Clear();
 
-        RebuildLineCategoryOptions();
-        RebuildLineChart();
+        ApplyTrendFilters();
     }
 
-    private void RebuildLineCategoryOptions()
+    private void ApplyTrendFilters()
     {
-        var allowedCategoryIds = _allItems
-            .Where(t => _lineSelectedTypes.Contains(t.EntryType))
-            .Select(t => t.CategoryId)
+        RebuildTrendCategoryOptions();
+        RebuildTrendSeries();
+    }
+
+    private void RebuildTrendCategoryOptions()
+    {
+        var allowedCategoryIds = GetTrendBaseTransactions()
+            .Where(x => _trendSelectedTypes.Contains(x.EntryType))
+            .Select(x => x.CategoryId)
             .Distinct()
             .ToHashSet();
 
-        _lineCategoryOptions = _categories
-            .Where(c => allowedCategoryIds.Contains(c.Id))
-            .OrderBy(c => c.Name)
+        _trendCategoryOptions = _categories
+            .Where(x => allowedCategoryIds.Contains(x.Id))
+            .OrderBy(x => x.Name)
             .ToList();
 
-        // Drop invalid selections
-        _lineSelectedCategoryIds.IntersectWith(allowedCategoryIds);
+        _trendSelectedCategoryIds.IntersectWith(allowedCategoryIds);
     }
 
-    private void RebuildLineChart()
+    private IEnumerable<TransactionDto> GetTrendBaseTransactions()
+        => _allItems.Where(x => !x.IsPlanned);
+
+    private void RebuildTrendSeries()
     {
-        var months = _lineSelectedMonths
-            .OrderBy(m => m)
+        var months = _trendSelectedMonths
+            .OrderBy(x => x)
             .ToList();
 
-        _lineXAxisLabels = months
-            .Select(m => m.ToString("MMM yyyy"))
+        _trendXAxisLabels = months
+            .Select(x => x.ToString("MMM yyyy", CultureInfo.CurrentUICulture))
             .ToArray();
 
         if (months.Count == 0)
         {
-            _lineSeries = new List<ChartSeries<double>>();
+            _trendSeries = new();
             return;
         }
 
-        var baseTx = _allItems.Where(t => _lineSelectedTypes.Contains(t.EntryType));
+        var baseTransactions = GetTrendBaseTransactions()
+            .Where(x => _trendSelectedTypes.Contains(x.EntryType));
 
-        // If categories are selected -> one line per category
-        if (_lineSelectedCategoryIds.Count > 0)
+        if (_trendSelectedCategoryIds.Count > 0)
         {
             var series = new List<ChartSeries<double>>();
 
-            foreach (var catId in _lineSelectedCategoryIds)
+            foreach (var categoryId in _trendSelectedCategoryIds)
             {
-                var byMonth = baseTx
-                    .Where(t => t.CategoryId == catId)
-                    .GroupBy(t => new DateOnly(t.OccurredOn.Year, t.OccurredOn.Month, 1))
-                    .ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
+                var byMonth = baseTransactions
+                    .Where(x => x.CategoryId == categoryId)
+                    .GroupBy(x => new DateOnly(x.OccurredOn.Year, x.OccurredOn.Month, 1))
+                    .ToDictionary(group => group.Key, group => group.Sum(x => x.Amount));
 
-                var data = months.Select(m => byMonth.TryGetValue(m, out var v) ? (double)v : 0d).ToArray();
+                var data = months
+                    .Select(month => byMonth.TryGetValue(month, out var value) ? (double)value : 0d)
+                    .ToArray();
 
                 series.Add(new ChartSeries<double>
                 {
-                    Name = CategoryName(catId),
+                    Name = CategoryName(categoryId),
                     Data = data
                 });
             }
 
-            _lineSeries = series;
+            _trendSeries = series;
             return;
         }
 
-        // Otherwise -> totals (one line per selected type)
         var totalSeries = new List<ChartSeries<double>>();
-        foreach (var type in _lineSelectedTypes.OrderBy(t => t))
-        {
-            var byMonth = _allItems
-                .Where(t => t.EntryType == type)
-                .GroupBy(t => new DateOnly(t.OccurredOn.Year, t.OccurredOn.Month, 1))
-                .ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
 
-            var data = months.Select(m => byMonth.TryGetValue(m, out var v) ? (double)v : 0d).ToArray();
+        foreach (var type in _trendSelectedTypes.OrderBy(x => x))
+        {
+            var byMonth = baseTransactions
+                .Where(x => x.EntryType == type)
+                .GroupBy(x => new DateOnly(x.OccurredOn.Year, x.OccurredOn.Month, 1))
+                .ToDictionary(group => group.Key, group => group.Sum(x => x.Amount));
+
+            var data = months
+                .Select(month => byMonth.TryGetValue(month, out var value) ? (double)value : 0d)
+                .ToArray();
 
             totalSeries.Add(new ChartSeries<double>
             {
@@ -373,6 +473,16 @@ public partial class ReportsPage
             });
         }
 
-        _lineSeries = totalSeries;
+        _trendSeries = totalSeries;
+    }
+
+    private string CategoryName(Guid id)
+        => _categoryById.TryGetValue(id, out var category)
+            ? category.Name
+            : L["Category"];
+
+    public void Dispose()
+    {
+        PageTitleState.Clear();
     }
 }

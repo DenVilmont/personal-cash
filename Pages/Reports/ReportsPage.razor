@@ -2,241 +2,300 @@
 @inherits PersonalCash.Shared.UiComponentBase
 
 @using Domain.Enums
+@using PersonalCash.Pages.Reports.Components
 
-<AuthorizeView>
-    <Authorized>
-        <MudContainer Class="pa-6" MaxWidth="MaxWidth.False">
-            <MudText Typo="Typo.h5">@L["Reports"]</MudText>
+<div>
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4 mb-6">
+        <MudStack Spacing="3">
+            <ReportsSummaryPanel Busy="_busy"
+                                 Income="_summaryIncome"
+                                 Expenses="_summaryExpenses"
+                                 Balances="_summaryBalance" />
 
-            <!-- Pie: expenses by category -->
-            <MudGrid Spacing="3" Class="mt-2">
-                <MudItem xs="12" lg="8">
-                    <MudPaper Class="pa-4">
-                        <MudText Typo="Typo.h6">@L["Expenses by category"]</MudText>
+            <MudTabs Rounded="true"
+                     ApplyEffectsToContainer="true"
+                     Elevation="1"
+                     TabPanelsClass="pa-4">
 
-                        @if (_busy)
-                        {
-                            <MudProgressLinear Indeterminate="true" Class="mt-4" />
-                        }
-                        else if (_donutSeries.Count == 0)
-                        {
-                            <MudText Class="mt-4">@L["No data for selected filters"]</MudText>
-                        }
-                        else
-                        {
-                            <MudGrid Spacing="2" Class="mt-4" Justify="Justify.Center" AlignItems="AlignItems.Start">
-                                <MudItem xs="12" md="5" Class="d-flex justify-center">
-                                    <MudChart T="double" ChartType="ChartType.Donut"
-                                              ChartSeries="@_donutSeries"
-                                              ChartLabels="@_donutLabels"
-                                              ChartOptions="@_donutOptions"
-                                              Width="400px"
-                                              Height="400px"
-                                              Class="mt-4">
-                                        <CustomGraphics>
-                                            <text class="donut-inner-text" x="50%" y="35%" 
-                                                  dominant-baseline="middle" 
-                                                  text-anchor="middle" 
-                                                  fill="black" 
-                                                  font-family="Helvetica" 
-                                                  font-size="20">
-                                                  Total
-                                              </text>
-                                            <text class="donut-inner-text" x="50%" y="50%" 
-                                                  dominant-baseline="middle" 
-                                                  text-anchor="middle" 
-                                                  fill="black" 
-                                                  font-family="Helvetica" 
-                                                  font-size="50">
-                                                  @DonutTotal.ToString("N2")
-                                            </text>
-                                        </CustomGraphics>
-                                    </MudChart>
+                <MudTabPanel Text="@L["Reports_TabCategories"]">
+                    <MudStack Spacing="3">
+
+                        <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+                            <MudGrid Spacing="2" Class="mt-2">
+                                <MudItem xs="12" sm="6" md="3">
+                                    <MudDatePicker Label="@L["Filter_Date_From"]"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Date="PrimaryFromDateTime"
+                                                   @bind-Date:after="ApplyPrimaryFilters"
+                                                   Clearable="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6" md="3">
+                                    <MudDatePicker Label="@L["Filter_Date_To"]"
+                                                   Variant="Variant.Outlined"
+                                                   Margin="Margin.Dense"
+                                                   Class="w-100"
+                                                   @bind-Date="PrimaryToDateTime"
+                                                   @bind-Date:after="ApplyPrimaryFilters"
+                                                   Clearable="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6" md="3">
+                                    <MudSelect T="DateOnly?"
+                                               Label="@L["Filter_Month"]"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               @bind-Value="_primaryMonth"
+                                               @bind-Value:after="ApplyPrimaryFilters"
+                                               Clearable="true"
+                                               OnClearButtonClick="ClearPrimaryDates">
+                                        <MudSelectItem Value="@((DateOnly?)null)">
+                                            @L["Filter_Month_All"]
+                                        </MudSelectItem>
+
+                                        @foreach (var month in _primaryMonthOptions)
+                                        {
+                                            <MudSelectItem Value="@((DateOnly?)month)">
+                                                @month.ToString("MMMM yyyy", CultureInfo.CurrentUICulture)
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6" md="3">
+                                    <MudSelect T="Guid?"
+                                               Label="@L["Filter_Account"]"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               @bind-Value="_primaryAccountId"
+                                               @bind-Value:after="ApplyPrimaryFilters"
+                                               Clearable="true"
+                                               OnClearButtonClick="ApplyPrimaryFilters">
+                                        <MudSelectItem Value="@((Guid?)null)">
+                                            @L["Filter_Account_All"]
+                                        </MudSelectItem>
+
+                                        @foreach (var account in _accounts)
+                                        {
+                                            <MudSelectItem Value="@((Guid?)account.Id)">
+                                                @account.Name
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+
+                                <MudItem xs="12">
+                                    <MudButton Variant="Variant.Outlined"
+                                               Disabled="_busy"
+                                               OnClick="ResetPrimaryFilters">
+                                        @L["Filter_Reset"]
+                                    </MudButton>
                                 </MudItem>
                             </MudGrid>
-                            <div class="d-flex justify-center mt-2">
-                                <div style="width:300px; max-width:100%">
-                                    <MudTable Items="@_donutLegend" Dense="true" Elevation="0">
-                                        <HeaderContent>
-                                            <MudTh>@L["Category"]</MudTh>
-                                            <MudTh Class="pc-text-align-right">@L["Amount"]</MudTh>
-                                        </HeaderContent>
-                                        <RowTemplate Context="row">
-                                            <MudTd>
-                                                <span class="legend-swatch" style="background-color:@row.Color"></span>
-                                                @row.Label
-                                            </MudTd>
-                                            <MudTd Class="pc-text-align-right">@row.Value.ToString("N2")</MudTd>
-                                        </RowTemplate>
-                                    </MudTable>
-                                </div>
-                            </div>
-                        }
-                    </MudPaper>
-                </MudItem>
+                        </MudPaper>
 
-                <MudItem xs="12" lg="4">
-                    <MudPaper Class="pa-4" Style="position: sticky; top: 88px;">
-                        <MudText Typo="Typo.h6">@L["Filters"]</MudText>
+                        <ReportsCategoryChart Busy="_busy"
+                                              Total="_categoryTotal"
+                                              Currency="_primaryReportCurrency"
+                                              ChartSeries="_donutSeries"
+                                              ChartLabels="_donutLabels"
+                                              ChartOptions="_donutOptions"
+                                              HasData="_categoryRows.Count > 0" />
 
-                        <MudStack Spacing="2" Class="mt-2">
+                        <ReportsCategoryTable Busy="_busy"
+                                              Rows="_categoryRows"
+                                              Currency="_primaryReportCurrency" />
+                    </MudStack>
+                </MudTabPanel>
 
-                            <MudDatePicker Label="@L["From"]"
-                                           Variant="Variant.Outlined"
-                                           Margin="Margin.Dense"
-                                           Class="w-100"
-                                           @bind-Date="DonutFilterFromDateTime"
-                                           @bind-Date:after="ApplyDonutFilters"
-                                           Clearable="true" />
+                <MudTabPanel Text="@L["Reports_TabLineChart"]">
+                    <MudStack Spacing="3">
 
-                            <MudDatePicker Label="@L["To"]"
-                                           Variant="Variant.Outlined"
-                                           Margin="Margin.Dense"
-                                           Class="w-100"
-                                           @bind-Date="DonutFilterToDateTime"
-                                           @bind-Date:after="ApplyDonutFilters"
-                                           Clearable="true" />
+                        <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+                            <MudGrid Spacing="2" Class="mt-2">
+                                <MudItem xs="12" md="4">
+                                    <MudSelect T="DateOnly"
+                                               Label="@L["Filter_Months"]"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               MultiSelection="true"
+                                               SelectedValues="_trendSelectedMonths"
+                                               SelectedValuesChanged="OnTrendMonthsChanged"
+                                               ToStringFunc="@(m => m.ToString("MMMM yyyy", CultureInfo.CurrentUICulture))"
+                                               MultiSelectionTextFunc="@(values => string.Join(", ", values))">
+                                        @foreach (var month in _trendMonthOptions)
+                                        {
+                                            <MudSelectItem Value="@month">
+                                                @month.ToString("MMMM yyyy", CultureInfo.CurrentUICulture)
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
 
-                            <MudSelect T="DateOnly?" Label="@L["Month"]"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense"
-                                       Class="w-100"
-                                       @bind-Value="_pMonth"
-                                       @bind-Value:after="ApplyDonutFilters"
-                                       Clearable="true"
-                                       OnClearButtonClick="ClearDonutDates">
-                                <MudSelectItem Value="@((DateOnly?)null)">@L["All"]</MudSelectItem>
+                                <MudItem xs="12" md="4">
+                                    <MudSelect T="EntryType"
+                                               Label="@L["Filter_Type"]"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               MultiSelection="true"
+                                               SelectedValues="_trendSelectedTypes"
+                                               SelectedValuesChanged="OnTrendTypesChanged"
+                                               ToStringFunc="@(value => value.ToLocalizedString(L))"
+                                               MultiSelectionTextFunc="@(values => string.Join(", ", values))">
+                                        <MudSelectItem Value="@EntryType.Income">
+                                            @EntryType.Income.ToLocalizedString(L)
+                                        </MudSelectItem>
+                                        <MudSelectItem Value="@EntryType.Outcome">
+                                            @EntryType.Outcome.ToLocalizedString(L)
+                                        </MudSelectItem>
+                                    </MudSelect>
+                                </MudItem>
 
-                                @foreach (var m in _pMonthOptions)
-                                {
-                                    <MudSelectItem Value="@((DateOnly?)m)">@m.ToString("MMMM yyyy")</MudSelectItem>
-                                }
-                            </MudSelect>
+                                <MudItem xs="12" md="4">
+                                    <MudSelect T="Guid"
+                                               Label="@L["Filter_Categories"]"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               MultiSelection="true"
+                                               SelectedValues="_trendSelectedCategoryIds"
+                                               SelectedValuesChanged="OnTrendCategoriesChanged"
+                                               Clearable="true"
+                                               OnClearButtonClick="ClearTrendCategories"
+                                               ToStringFunc="@(id => CategoryName(id))"
+                                               MultiSelectionTextFunc="@(values => string.Join(", ", values))">
+                                        @foreach (var category in _trendCategoryOptions)
+                                        {
+                                            <MudSelectItem Value="@category.Id">
+                                                @category.Name
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
 
-                            <MudSelect T="Guid?" Label="@L["Account"]"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense"
-                                       Class="w-100"
-                                       @bind-Value="_pAccountId"
-                                       @bind-Value:after="ApplyDonutFilters"
-                                       Clearable="true"
-                                       OnClearButtonClick="ApplyDonutFilters">
-                                <MudSelectItem Value="@((Guid?)null)">@L["All"]</MudSelectItem>
-                                @foreach (var a in _accounts)
-                                {
-                                    <MudSelectItem Value="@((Guid?)a.Id)">@a.Name</MudSelectItem>
-                                }
-                            </MudSelect>
+                                <MudItem xs="12">
+                                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Disabled="_busy"
+                                                   OnClick="ResetTrendFilters">
+                                            @L["Filter_Reset"]
+                                        </MudButton>
 
-                            <MudButton Variant="Variant.Outlined"
-                                       Disabled="_busy"
-                                       OnClick="ResetDonutFilters">
-                                @L["Reset"]
-                            </MudButton>
-                        </MudStack>
-                    </MudPaper>
-                </MudItem>
-            </MudGrid>
+                                        <MudText Typo="Typo.caption">
+                                            @L["Reports_LineChart_TrendHint"]
+                                        </MudText>
+                                    </MudStack>
+                                </MudItem>
+                            </MudGrid>
+                        </MudPaper>
 
-            <!-- Line chart -->
-            <MudGrid Spacing="3" Class="mt-6">
-                <MudItem xs="12" lg="8">
-                    <MudPaper Class="pa-4">
-                        <MudText Typo="Typo.h6">@L["Monthly trend"]</MudText>
+                        <ReportsMonthlyChart Busy="_busy"
+                                             ChartSeries="_trendSeries"
+                                             ChartLabels="_trendXAxisLabels"
+                                             ChartOptions="_lineOptions"
+                                             HasData="_trendSeries.Count > 0 && _trendXAxisLabels.Length > 0" />
+                    </MudStack>
+                </MudTabPanel>
 
-                        @if (_busy)
-                        {
-                            <MudProgressLinear Indeterminate="true" Class="mt-4" />
-                        }
-                        else if (_lineSeries.Count == 0 || _lineXAxisLabels.Length == 0)
-                        {
-                            <MudText Class="mt-4">@L["No data for selected filters"]</MudText>
-                        }
-                        else
-                        {
-                            <div class="reports-linechart">
-                                <MudChart T="double"
-                                          ChartType="ChartType.Line"
-                                          ChartOptions="@_lineOptions"
-                                          ChartSeries="@_lineSeries"
-                                          ChartLabels="@_lineXAxisLabels"
-                                          Width="100%"
-                                          Height="360px"
-                                          Class="mt-4" />
-                            </div>
-                        }
-                    </MudPaper>
-                </MudItem>
+                <MudTabPanel Text="@L["Reports_TabBarChart"]">
+                    <MudStack Spacing="3">
 
-                <MudItem xs="12" lg="4">
-                    <MudPaper Class="pa-4">
-                        <MudText Typo="Typo.h6">@L["Trend filters"]</MudText>
+                        <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+                            <MudGrid Spacing="2" Class="mt-2">
+                                <MudItem xs="12" md="4">
+                                    <MudSelect T="DateOnly"
+                                               Label="@L["Filter_Months"]"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               MultiSelection="true"
+                                               SelectedValues="_trendSelectedMonths"
+                                               SelectedValuesChanged="OnTrendMonthsChanged"
+                                               ToStringFunc="@(m => m.ToString("MMMM yyyy", CultureInfo.CurrentUICulture))"
+                                               MultiSelectionTextFunc="@(values => string.Join(", ", values))">
+                                        @foreach (var month in _trendMonthOptions)
+                                        {
+                                            <MudSelectItem Value="@month">
+                                                @month.ToString("MMMM yyyy", CultureInfo.CurrentUICulture)
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
 
-                        <MudStack Spacing="2" Class="mt-2">
+                                <MudItem xs="12" md="4">
+                                    <MudSelect T="EntryType"
+                                               Label="@L["Filter_Type"]"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               MultiSelection="true"
+                                               SelectedValues="_trendSelectedTypes"
+                                               SelectedValuesChanged="OnTrendTypesChanged"
+                                               ToStringFunc="@(value => value.ToLocalizedString(L))"
+                                               MultiSelectionTextFunc="@(values => string.Join(", ", values))">
+                                        <MudSelectItem Value="@EntryType.Income">
+                                            @EntryType.Income.ToLocalizedString(L)
+                                        </MudSelectItem>
+                                        <MudSelectItem Value="@EntryType.Outcome">
+                                            @EntryType.Outcome.ToLocalizedString(L)
+                                        </MudSelectItem>
+                                    </MudSelect>
+                                </MudItem>
 
-                            <MudSelect T="DateOnly" Label="@L["Months"]"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense"
-                                       Class="w-100"
-                                       MultiSelection="true"
-                                       SelectedValues="@_lineSelectedMonths"
-                                       SelectedValuesChanged="OnLineMonthsChanged"
-                                       ToStringFunc="@((DateOnly m) => m.ToString("MMMM yyyy", System.Globalization.CultureInfo.CurrentUICulture))"
-                                       MultiSelectionTextFunc="@((IReadOnlyList<string> _) =>
-                                                                 string.Join(", ",
-                                                                 _lineSelectedMonths
-                                                                 .OrderByDescending(x => x)
-                                                                 .Select(x => x.ToString("MMMM yyyy", System.Globalization.CultureInfo.CurrentUICulture))
-                                                                 ))">
-                                @foreach (var m in _lineMonthOptions)
-                                {
-                                    <MudSelectItem Value="@m">@m.ToString("MMMM yyyy")</MudSelectItem>
-                                }
-                            </MudSelect>
+                                <MudItem xs="12" md="4">
+                                    <MudSelect T="Guid"
+                                               Label="@L["Filter_Categories"]"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="w-100"
+                                               MultiSelection="true"
+                                               SelectedValues="_trendSelectedCategoryIds"
+                                               SelectedValuesChanged="OnTrendCategoriesChanged"
+                                               Clearable="true"
+                                               OnClearButtonClick="ClearTrendCategories"
+                                               ToStringFunc="@(id => CategoryName(id))"
+                                               MultiSelectionTextFunc="@(values => string.Join(", ", values))">
+                                        @foreach (var category in _trendCategoryOptions)
+                                        {
+                                            <MudSelectItem Value="@category.Id">
+                                                @category.Name
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
 
-                            <MudSelect T="EntryType" Label="@L["Type"]"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense"
-                                       Class="w-100"
-                                       MultiSelection="true"
-                                       SelectedValues="@_lineSelectedTypes"
-                                       SelectedValuesChanged="OnLineTypesChanged">
-                                <MudSelectItem Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
-                                <MudSelectItem Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
-                            </MudSelect>
+                                <MudItem xs="12">
+                                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Disabled="_busy"
+                                                   OnClick="ResetTrendFilters">
+                                            @L["Filter_Reset"]
+                                        </MudButton>
 
-                            <MudSelect T="Guid" Label="@L["Categories"]"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense"
-                                       Class="w-100"
-                                       MultiSelection="true"
-                                       SelectedValues="@_lineSelectedCategoryIds"
-                                       SelectedValuesChanged="OnLineCategoriesChanged"
-                                       Clearable="true"
-                                       OnClearButtonClick="ClearLineCategories"
-                                       ToStringFunc="@((Guid id) => CategoryName(id))"
-                                       MultiSelectionTextFunc="@((IReadOnlyList<string> vals) => string.Join(", ", vals))">
-                                @foreach (var c in _lineCategoryOptions)
-                                {
-                                    <MudSelectItem Value="@c.Id">@c.Name</MudSelectItem>
-                                }
-                            </MudSelect>
+                                        <MudText Typo="Typo.caption">
+                                            @L["Reports_LineChart_TrendHint"]
+                                        </MudText>
+                                    </MudStack>
+                                </MudItem>
+                            </MudGrid>
+                        </MudPaper>
 
-                            <MudButton Variant="Variant.Outlined"
-                                       Disabled="_busy"
-                                       OnClick="ResetLineFilters">
-                                @L["Reset"]
-                            </MudButton>
+                        <ReportsMonthlyBarChart Busy="_busy"
+                                                ChartSeries="_trendSeries"
+                                                ChartLabels="_trendXAxisLabels"
+                                                ChartOptions="_barOptions"
+                                                HasData="_trendSeries.Count > 0 && _trendXAxisLabels.Length > 0" />
+                    </MudStack>
+                </MudTabPanel>
 
-                            <MudText Typo="Typo.caption" Class="mt-2">
-                                @L["If no categories selected, totals are shown (one line per selected type)."]
-                            </MudText>
+            </MudTabs>
 
-                        </MudStack>
-                    </MudPaper>
-                </MudItem>
-            </MudGrid>
-
-        </MudContainer>
-    </Authorized>
-</AuthorizeView>
+        </MudStack>
+    </MudContainer>
+</div>

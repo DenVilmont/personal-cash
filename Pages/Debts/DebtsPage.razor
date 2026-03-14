@@ -28,35 +28,26 @@
             <MudProgressLinear Indeterminate="true" />
         }
 
-        @if (!_busy && _loans.Count == 0)
-        {
-            <MudPaper Class="pa-5" Elevation="1">
-                <MudText Typo="Typo.body1">@L["Debts_NoItems"]</MudText>
-            </MudPaper>
-        }
-        else if (_loans.Count > 0)
-        {
-            <div class="d-block d-md-none">
-                <DebtsMobileList Items="_loans"
-                                 PaymentsByLoanId="_paymentsByLoanId"
-                                 ExpandedLoanIds="_expandedLoanIds"
-                                 Busy="_busy"
-                                 OnToggleLoan="ToggleLoanAsync"
-                                 OnEditLoan="OpenEditLoanAsync"
-                                 OnDeleteLoan="ConfirmDeleteLoanAsync"
-                                 OnEditPayment="OpenEditPaymentAsync" />
-            </div>
+        <div class="d-block d-md-none">
+            <DebtsMobileList Items="_loans"
+                             PaymentsByLoanId="_paymentsByLoanId"
+                             ExpandedLoanIds="_expandedLoanIds"
+                             Busy="_busy"
+                             OnToggleLoan="ToggleLoanAsync"
+                             OnEditLoan="OpenEditLoanAsync"
+                             OnDeleteLoan="ConfirmDeleteLoanAsync"
+                             OnEditPayment="OpenEditPaymentAsync" />
+        </div>
 
-            <div class="d-none d-md-block">
-                <DebtsTable Items="_loans"
-                            PaymentsByLoanId="_paymentsByLoanId"
-                            ExpandedLoanIds="_expandedLoanIds"
-                            Busy="_busy"
-                            OnToggleLoan="ToggleLoanAsync"
-                            OnEditLoan="OpenEditLoanAsync"
-                            OnDeleteLoan="ConfirmDeleteLoanAsync"
-                            OnEditPayment="OpenEditPaymentAsync" />
-            </div>
-        }
+        <div class="d-none d-md-block">
+            <DebtsTable Items="_loans"
+                        PaymentsByLoanId="_paymentsByLoanId"
+                        ExpandedLoanIds="_expandedLoanIds"
+                        Busy="_busy"
+                        OnToggleLoan="ToggleLoanAsync"
+                        OnEditLoan="OpenEditLoanAsync"
+                        OnDeleteLoan="ConfirmDeleteLoanAsync"
+                        OnEditPayment="OpenEditPaymentAsync" />
+        </div>
     </MudStack>
 </MudContainer>

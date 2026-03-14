@@ -1,0 +1,56 @@
+﻿<div>
+    <MudPaper Class="pa-4 reports-summary" Elevation="1">
+        <MudStack Row="true" Spacing="6" AlignItems="AlignItems.Center" Class="mb-3">
+            <MudText Typo="Typo.h5" Class="reports-summary-title">
+                @L["Reports_MonthSummaryTitle"]
+            </MudText>
+
+            <MudText Typo="Typo.h5" Class="reports-summary-caption">
+                @MonthCaption
+            </MudText>
+        </MudStack>
+
+        @if (Busy)
+        {
+            <MudProgressLinear Indeterminate="true" Class="mt-4" />
+        }
+        else
+        {
+            <MudStack Spacing="3"
+                      Justify="Justify.FlexStart"
+                      Wrap="Wrap.Wrap"
+                      Breakpoint="Breakpoint.SmAndUp">
+                @foreach (var section in SummarySections)
+                {
+                    <MudPaper @key="section.TitleKey"
+                              Class="pa-4 reports-summary-card"
+                              Elevation="0">
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.h6">
+                                @L[section.TitleKey]
+                            </MudText>
+
+                            <MudDivider />
+
+                            @if (section.Items != null && section.Items.Count > 0)
+                            {
+                                @foreach (var item in section.Items)
+                                {
+                                    <MudStack Row="true"
+                                              Spacing="4"
+                                              Justify="Justify.SpaceBetween"
+                                              Wrap="Wrap.Wrap">
+                                        <MudText>@item.Key</MudText>
+                                        <MudText>@item.Value</MudText>
+                                    </MudStack>
+
+                                    <MudDivider />
+                                }
+                            }
+                        </MudStack>
+                    </MudPaper>
+                }
+            </MudStack>
+        }
+    </MudPaper>
+</div>

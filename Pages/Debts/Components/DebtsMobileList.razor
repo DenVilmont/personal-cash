@@ -1,5 +1,13 @@
 ﻿@using Domain.Contracts
 
+@if (Items.Count == 0)
+{
+    <MudPaper Elevation="9"
+              Class="@("pa-3")">
+        <MudText Typo="Typo.body1">@L["Debts_NoDebts"]</MudText>
+    </MudPaper>
+}
+
 @foreach (var loan in Items)
 {
     var isExpanded = IsExpanded(loan.Id);
@@ -35,7 +43,7 @@
             <MudStack Row="true" Justify="Justify.SpaceBetween" Spacing="3">
                 <MudText Typo="Typo.subtitle2">@L["Debts_NextOLastPaymentDate"]</MudText>
                 <MudText Typo="Typo.body2" Align="Align.End" Class="pc-text-nowrap">
-                    @FirstPaymentDateText(loan)
+                    @NextOLastPaymentDateText(loan)
                 </MudText>
             </MudStack>
             <MudDivider />
@@ -91,7 +99,7 @@
             </MudStack>
             
             <MudCollapse Expanded="isExpanded">
-                @if (GetPayments(loan.Id).Count == 0)
+                @if (GetPaymentsByLoanId(loan.Id).Count == 0)
                 {
                     <MudText Typo="Typo.body2" class="mud-secondary-text">
                         @L["Debts_NoPayments"]
@@ -100,7 +108,7 @@
                 else
                 {
                     <MudStack Class="pl-9">
-                        @foreach (var payment in GetPayments(loan.Id))
+                        @foreach (var payment in GetPaymentsByLoanId(loan.Id))
                         {
                             <MudStack Row="true" 
                                       AlignItems="AlignItems.Baseline"
@@ -143,7 +151,7 @@
                                     <MudText Typo="Typo.subtitle2" Inline="true">
                                         @L["Note"]:  
                                     </MudText>
-                                    @payment.Note
+                                    @payment.IsPaid.ToString() @payment.Note
                                 </MudText>
                             }
                             <MudDivider />

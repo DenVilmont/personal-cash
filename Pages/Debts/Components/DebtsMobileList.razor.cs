@@ -25,28 +25,41 @@ namespace PersonalCash.Pages.Debts.Components
                 ? Icons.Material.Filled.KeyboardArrowDown
                 : Icons.Material.Filled.KeyboardArrowRight;
 
-        private IReadOnlyList<LoanPaymentDto> GetPayments(Guid loanId)
+        private IReadOnlyList<LoanPaymentDto> GetPaymentsByLoanId(Guid loanId)
             => PaymentsByLoanId.TryGetValue(loanId, out var payments)
                 ? payments
                 : Array.Empty<LoanPaymentDto>();
 
         private decimal RemainingAmount(LoanDto loan)
-            => GetPayments(loan.Id)
+            => GetPaymentsByLoanId(loan.Id)
                 .Where(x => !x.IsPaid)
                 .Sum(x => x.Amount);
 
         private string PaymentsProgress(LoanDto loan)
         {
-            var payments = GetPayments(loan.Id);
+            var payments = GetPaymentsByLoanId(loan.Id);
             var paidCount = payments.Count(x => x.IsPaid);
             return $"{paidCount}/{payments.Count}";
         }
 
-        private string FirstPaymentDateText(LoanDto loan)
+        private string NextOLastPaymentDateText(LoanDto loan)
         {
-            var payments = GetPayments(loan.Id);
-            var firstDate = payments.Count > 0 ? payments.Min(x => x.DueDate) : loan.StartDate;
-            return firstDate.ToString("yyyy-MM-dd");
+            var payments = GetPaymentsByLoanId(loan.Id);
+
+            DateOnly date;
+            if (payments.Count > 0)
+            {
+                var unpaid = payments.Where(x => !x.IsPaid).ToList();
+
+                date = unpaid.Count > 0
+                    ? unpaid.Min(x => x.DueDate)
+                    : payments.Max(x => x.DueDate);
+            }
+            else
+            {
+                date = loan.StartDate;
+            }
+            return date.ToString("yyyy-MM-dd");
         }
 
         private string InterestText(LoanDto loan)
@@ -62,7 +75,7 @@ namespace PersonalCash.Pages.Debts.Components
 
         private string IsFullyPaidClass(LoanDto loan)
         {
-            if (GetPayments(loan.Id).Any(x => x.IsPaid == false))
+            if (GetPaymentsByLoanId(loan.Id).Any(x => x.IsPaid == false))
                 return "debts-mobile-card-not_paid";
 
             return "debts-mobile-card-paid";

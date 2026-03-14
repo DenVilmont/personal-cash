@@ -1,0 +1,34 @@
+﻿<div>
+    <MudPaper Class="reports-chart-panel pa-4" Elevation="1">
+        @if (Busy)
+        {
+            <MudProgressLinear Indeterminate="true" Class="mt-4" />
+        }
+        else if (!HasData)
+        {
+            <MudText Typo="Typo.body1" Class="reports-chart-empty">
+                @L["Reports_NoData"]
+            </MudText>
+        }
+        else
+        {
+            <div class="reports-linechart mt-3">
+                <MudChart T="double"
+                          ChartType="ChartType.Line"
+                          ChartOptions="ChartOptions"
+                          ChartSeries="ChartSeries"
+                          ChartLabels="ChartLabels"
+                          Width="100%"
+                          Height="360px" />
+            </div>
+        }
+    </MudPaper>
+</div>
+
+@code {
+    [Parameter] public bool Busy { get; set; }
+    [Parameter] public bool HasData { get; set; }
+    [Parameter] public List<ChartSeries<double>> ChartSeries { get; set; } = new();
+    [Parameter] public string[] ChartLabels { get; set; } = Array.Empty<string>();
+    [Parameter] public LineChartOptions ChartOptions { get; set; } = new();
+}

@@ -1,19 +1,71 @@
-﻿.legend-swatch {
-    display: inline-block;
+﻿::deep .reports-chart-panel,
+::deep .reports-table-panel {
+    height: 100%;
+}
+
+::deep .reports-chart-empty,
+::deep .reports-table-empty {
+    padding: 24px 0;
+    color: var(--mud-palette-text-secondary);
+}
+
+::deep .reports-category-chart__total {
+    color: var(--mud-palette-text-secondary);
+}
+
+::deep .reports-category-table__name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+::deep .reports-category-table__swatch {
     width: 12px;
     height: 12px;
     border-radius: 3px;
-    margin-right: 8px;
-    vertical-align: middle;
+    flex: 0 0 auto;
 }
 
-.reports-linechart ::deep .mud-chart-line {
-    overflow: visible;
+::deep .reports-category-table__label {
+    min-width: 0;
+    word-break: break-word;
 }
 
-.reports-linechart ::deep .mud-charts-xaxis text {
-    transform: rotate(-45deg);
-    transform-box: fill-box;
-    transform-origin: 0 100%;
-    text-anchor: end;
+::deep .reports-category-table__share {
+    min-width: 120px;
+}
+
+::deep .reports-category-table__share-value {
+    display: inline-block;
+    width: 52px;
+    text-align: right;
+}
+
+::deep .reports-linechart,
+::deep .reports-barchart {
+    overflow-x: auto;
+}
+
+    ::deep .reports-linechart .mud-chart-line {
+        overflow: visible;
+    }
+
+    ::deep .reports-linechart .mud-charts-xaxis text,
+    ::deep .reports-barchart .mud-charts-xaxis text {
+        transform: rotate(-45deg);
+        transform-box: fill-box;
+        transform-origin: 0 100%;
+        text-anchor: end;
+    }
+
+@media (max-width: 599.98px) {
+
+    ::deep .reports-summary-card {
+        min-height: 92px;
+    }
+
+    ::deep .reports-category-table__share {
+        min-width: 96px;
+    }
 }

@@ -1,0 +1,36 @@
+﻿<div>
+    <MudPaper Class="reports-chart-panel pa-4" Elevation="1">
+        <MudStack Spacing="2">
+            <MudText Typo="Typo.h6">@L["Reports_CategoryChartTitle"]</MudText>
+
+            @if (!Busy)
+            {
+                <MudText Typo="Typo.body2" Class="reports-category-chart__total">
+                    @L["Reports_Total"]: @FormatAmount(Total)
+                </MudText>
+            }
+        </MudStack>
+
+        @if (Busy)
+        {
+            <MudProgressLinear Indeterminate="true" Class="mt-4" />
+        }
+        else if (!HasData)
+        {
+            <MudText Typo="Typo.body1" Class="reports-chart-empty">
+                @L["Reports_NoData"]
+            </MudText>
+        }
+        else
+        {
+            <MudChart T="double"
+                      ChartType="ChartType.Donut"
+                      ChartSeries="ChartSeries"
+                      ChartLabels="ChartLabels"
+                      ChartOptions="ChartOptions"
+                      Width="100%"
+                      Height="340px"
+                      Class="mt-2" />
+        }
+    </MudPaper>
+</div>

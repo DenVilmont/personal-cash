@@ -100,7 +100,12 @@
                 </div>
             </MudTd>
         </RowTemplate>
-
+        <NoRecordsContent>
+            <MudText>@L["Transactions_Empty"]</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>@L["Loading"]</MudText>
+        </LoadingContent>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[] { 20, 50, 100 }" />
         </PagerContent>

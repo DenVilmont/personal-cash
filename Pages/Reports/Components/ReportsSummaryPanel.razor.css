@@ -1,0 +1,92 @@
+﻿::deep .reports-summary {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 30px;
+    border: 1px solid rgba(170, 190, 255, 0.28) !important;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 249, 255, 0.96) 34%, rgba(243, 248, 255, 0.98) 100%) !important;
+    box-shadow: 0 8px 24px rgba(31, 41, 55, 0.05), 0 24px 60px rgba(96, 130, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px) saturate(125%);
+    -webkit-backdrop-filter: blur(12px) saturate(125%);
+}
+
+    ::deep .reports-summary::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background: radial-gradient( circle at 0% 0%, rgba(120, 150, 255, 0.14) 0%, rgba(120, 150, 255, 0.00) 34% ), radial-gradient( circle at 100% 0%, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.00) 30% ), radial-gradient( circle at 50% 100%, rgba(56, 189, 248, 0.10) 0%, rgba(56, 189, 248, 0.00) 34% ), linear-gradient( 135deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.08) 42%, rgba(255, 255, 255, 0.00) 70% );
+    }
+
+    ::deep .reports-summary::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        border-radius: 29px;
+        pointer-events: none;
+        z-index: 0;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.10) 100%);
+    }
+
+    ::deep .reports-summary > * {
+        position: relative;
+        z-index: 1;
+    }
+
+::deep .reports-summary-title {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #182033;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+::deep .reports-summary-caption {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: rgba(74, 85, 120, 0.88) !important;
+}
+/****************************************************************************/
+
+::deep .reports-summary-card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 24px;
+    border: 1px solid rgba(120, 160, 255, 0.22) !important;
+    background: linear-gradient(140deg, rgba(99, 102, 241, 0.22) 0%, rgba(168, 85, 247, 0.18) 30%, rgba(56, 189, 248, 0.18) 65%, rgba(255, 255, 255, 0.82) 100%) !important;
+    box-shadow: 0 2px 6px rgba(31, 41, 55, 0.06), 0 14px 30px rgba(80, 120, 255, 0.10), 0 24px 60px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+    ::deep .reports-summary-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background: radial-gradient( circle at 18% 12%, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0.45) 14%, rgba(255, 255, 255, 0.00) 38% ), linear-gradient( 155deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.10) 34%, rgba(255, 255, 255, 0.00) 58% );
+    }
+
+    ::deep .reports-summary-card::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        border-radius: 23px;
+        pointer-events: none;
+        z-index: 0;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.06) 100%);
+    }
+
+    ::deep .reports-summary-card > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    ::deep .reports-summary-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(130, 180, 255, 0.34) !important;
+        box-shadow: 0 4px 10px rgba(31, 41, 55, 0.07), 0 18px 36px rgba(80, 120, 255, 0.14), 0 30px 72px rgba(168, 85, 247, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(255, 255, 255, 0.34);
+    }
