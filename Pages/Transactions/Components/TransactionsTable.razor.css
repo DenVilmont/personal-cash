@@ -1,16 +1,235 @@
-﻿.table-scroll {
+﻿.table-scroll.transactions-table-shell {
     overflow-x: auto;
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 250, 255, 0.98) 100%);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.035), 0 18px 42px rgba(99, 102, 241, 0.045), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    --mud-palette-table-lines: rgba(148, 163, 184, 0.12);
+    --mud-palette-table-hover: rgba(99, 102, 241, 0.032);
+    --mud-palette-table-striped: transparent;
 }
 
-::deep .tx-income > td {
-    background-color: rgba(0, 200, 0, 0.08);
+::deep .transactions-table {
+    margin-top: 0;
 }
 
-::deep .tx-outcome > td {
-    background-color: rgba(255, 0, 0, 0.06);
+    ::deep .transactions-table .mud-table-toolbar {
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.10);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.68) 0%, rgba(247, 249, 253, 0.88) 100%);
+    }
+
+::deep .transactions-table__title {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #0f172a;
 }
 
-::deep .tx-planned > td:not(:last-child) {
-    filter: grayscale(1);
-    opacity: 0.65;
+::deep .transactions-table .mud-table-head .mud-table-cell {
+    padding: 10px 12px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.015em;
+    color: rgba(71, 85, 105, 0.82);
+    background: rgba(246, 248, 252, 0.72);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+::deep .transactions-table .mud-table-head .mud-table-sort-label {
+    font-weight: 700;
+    color: inherit;
+}
+
+    ::deep .transactions-table .mud-table-head .mud-table-sort-label:hover {
+        color: #1e293b;
+    }
+
+::deep .transactions-table .mud-table-body .mud-table-cell {
+    padding: 9px 12px;
+    border-bottom-color: rgba(148, 163, 184, 0.10);
+    color: #1f2937;
+    vertical-align: middle;
+}
+
+/* base row tone */
+::deep .transactions-table .mud-table-body .mud-table-row {
+    background-color: transparent;
+}
+
+/* no hard row fills */
+::deep .tx-income > td,
+::deep .tx-outcome > td,
+::deep .tx-planned > td {
+    background-color: transparent;
+}
+
+    /* thin semantic accent */
+    ::deep .tx-income > td:first-child {
+        box-shadow: inset 2px 0 0 rgba(16, 185, 129, 0.52);
+    }
+
+    ::deep .tx-outcome > td:first-child {
+        box-shadow: inset 2px 0 0 rgba(244, 63, 94, 0.44);
+    }
+
+    ::deep .tx-planned > td:first-child {
+        box-shadow: inset 2px 0 0 rgba(129, 140, 248, 0.36);
+    }
+
+    /* planned should be muted, not disabled-looking */
+    ::deep .tx-planned > td:not(:last-child) {
+        filter: none;
+        opacity: 0.82;
+    }
+
+/* date */
+::deep .transactions-table__date-cell {
+    white-space: nowrap;
+    color: rgba(51, 65, 85, 0.86);
+    font-variant-numeric: tabular-nums;
+}
+
+/* account */
+::deep .transactions-table__account {
+    font-weight: 600;
+    color: #1f2937;
+    gap: 8px;
+    min-width: 0;
+}
+
+    ::deep .transactions-table__account .mud-icon-root {
+        color: rgba(99, 102, 241, 0.55);
+        font-size: 1rem;
+        flex: 0 0 auto;
+    }
+
+::deep .transactions-table__type-cell,
+::deep .transactions-table__amount-cell {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    white-space: nowrap;
+}
+
+::deep .transactions-table__amount-cell {
+    width: 1%;
+}
+
+/* type */
+::deep .tx-type-chip {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent !important;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+/* amount */
+::deep .tx-amount-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 20px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.1;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+/* income */
+::deep .tx-income .tx-type-chip {
+    color: #0f8a63;
+}
+
+::deep .tx-income .tx-amount-pill {
+    color: #0f8a63;
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%);
+    border-color: rgba(16, 185, 129, 0.16);
+}
+
+/* outcome */
+::deep .tx-outcome .tx-type-chip {
+    color: #d94b70;
+}
+
+::deep .tx-outcome .tx-amount-pill {
+    color: #d94b70;
+    background: linear-gradient(180deg, rgba(244, 63, 94, 0.12) 0%, rgba(244, 63, 94, 0.08) 100%);
+    border-color: rgba(244, 63, 94, 0.16);
+}
+
+/* planned */
+::deep .tx-planned .tx-type-chip {
+    color: #667085;
+}
+
+::deep .tx-planned .tx-amount-pill {
+    color: #667085;
+    background: linear-gradient(180deg, rgba(129, 140, 248, 0.10) 0%, rgba(129, 140, 248, 0.06) 100%);
+    border-color: rgba(129, 140, 248, 0.12);
+}
+
+/* category */
+::deep .transactions-table__category-cell {
+    color: rgba(30, 41, 59, 0.84);
+}
+
+/* note */
+::deep .transactions-table__note {
+    display: block;
+    max-width: 190px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgba(51, 65, 85, 0.66);
+}
+
+/* actions */
+::deep .transactions-table__actions {
+    gap: 2px;
+}
+
+::deep .tx-action-btn {
+    border-radius: 10px;
+    color: rgba(71, 85, 105, 0.88);
+}
+
+    ::deep .tx-action-btn:hover {
+        background-color: rgba(99, 102, 241, 0.08);
+        color: #4f46e5;
+    }
+
+::deep .tx-action-btn--delete:hover {
+    background-color: rgba(244, 63, 94, 0.09);
+    color: #e11d48;
+}
+
+/* pager */
+::deep .transactions-table .mud-table-pagination {
+    border-top: 1px solid rgba(148, 163, 184, 0.08);
+    background: rgba(255, 255, 255, 0.42);
+}
+
+/* slightly tighter on medium widths */
+@media (max-width: 1200px) {
+    ::deep .transactions-table .mud-table-head .mud-table-cell,
+    ::deep .transactions-table .mud-table-body .mud-table-cell {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    ::deep .transactions-table__note {
+        max-width: 150px;
+    }
 }

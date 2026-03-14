@@ -2,11 +2,11 @@
 @using Domain.Enums
 @using PersonalCash.Presentation.Icons
 
-<div class="table-scroll">
+<div class="table-scroll  transactions-table-shell">
     <MudTable Items="Items"
               Dense="true"
               Hover="true"
-              Class="mt-2"
+              Class="transactions-table"
               RowsPerPage="20"
               RowClassFunc="TxRowClass">
         <ColGroup>
@@ -19,42 +19,44 @@
             <col style="width: 185px;" />
         </ColGroup>
         <ToolBarContent>
-            <MudText Typo="Typo.h6">@L["Transactions_TableTitle"]</MudText>
+            <MudText Typo="Typo.h6" Class="transactions-table__title">
+                @L["Transactions_TableTitle"]
+            </MudText>
         </ToolBarContent>
 
         <HeaderContent>
             <MudTh>
-                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => x.OccurredOn))">
+                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => x.OccurredOn))">
                     @L["Date"]
                 </MudTableSortLabel>
             </MudTh>
 
             <MudTh>
-                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => GetAccountName(x.AccountId)))">
+                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => GetAccountName(x.AccountId)))">
                     @L["Account"]
                 </MudTableSortLabel>
             </MudTh>
 
-            <MudTh>
-                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => x.EntryType))">
+            <MudTh Class="transactions-table__type-cell">
+                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => x.EntryType))">
                     @L["Type"]
                 </MudTableSortLabel>
             </MudTh>
 
-            <MudTh>
-                <MudTableSortLabel Class="d-flex justify-end" SortBy="@(new Func<TransactionDto, object>(x => SignedAmount(x)))">
+            <MudTh Class="transactions-table__amount-cell">
+                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => SignedAmount(x)))">
                     @L["Amount"]
                 </MudTableSortLabel>
             </MudTh>
 
             <MudTh>
-                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => GetCategoryName(x.CategoryId)))">
+                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => GetCategoryName(x.CategoryId)))">
                     @L["Category"]
                 </MudTableSortLabel>
             </MudTh>
 
             <MudTh>
-                <MudTableSortLabel SortBy="@(new Func<TransactionDto, object>(x => x.Note ?? string.Empty))">
+                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => x.Note ?? string.Empty))">
                     @L["Note"]
                 </MudTableSortLabel>
             </MudTh>
@@ -63,37 +65,57 @@
         </HeaderContent>
 
         <RowTemplate Context="tx">
-            <MudTd>@tx.OccurredOn.ToString("yyyy-MM-dd")</MudTd>
+            <MudTd Class="transactions-table__date-cell">
+                @tx.OccurredOn.ToString("yyyy-MM-dd")
+            </MudTd>
 
-            <MudTd>
-                <div class="icon-option">
+            <MudTd Class="transactions-table__account-cell">
+                <div class="icon-option transactions-table__account">
                     <MudIcon Icon="@GetAccountIcon(tx.AccountId).GetIcon()" />
                     @GetAccountName(tx.AccountId)
                 </div>
             </MudTd>
 
-            <MudTd>@tx.EntryType.ToLocalizedString(L)</MudTd>
-            <MudTd>
-                <span class="d-flex justify-end pc-text-nowrap">@($"{SignedAmount(tx):N2} {tx.Currency}")</span>
+            <MudTd Class="transactions-table__type-cell">
+                <span class="tx-type-chip">
+                    @tx.EntryType.ToLocalizedString(L)
+                </span>
             </MudTd>
-            <MudTd>@GetCategoryName(tx.CategoryId)</MudTd>
-            <MudTd>@tx.Note</MudTd>
+
+            <MudTd Class="transactions-table__amount-cell">
+                <span class="tx-amount-pill">
+                    @($"{SignedAmount(tx):N2} {tx.Currency}")
+                </span>
+            </MudTd>
+
+            <MudTd Class="transactions-table__category-cell">
+                @GetCategoryName(tx.CategoryId)
+            </MudTd>
+
+            <MudTd Class="transactions-table__note-cell">
+                <span class="transactions-table__note" title="@tx.Note">
+                    @tx.Note
+                </span>
+            </MudTd>
 
             <MudTd Class="pc-text-align-right">
-                <div class="pc-flex-nowrap justify-end">
+                <div class="pc-flex-nowrap justify-end transactions-table__actions">
                     @if (tx.IsPlanned)
                     {
-                        <MudIconButton Icon="@Icons.Material.Filled.AddTask"
+                        <MudIconButton Class="tx-action-btn"
+                                       Icon="@Icons.Material.Filled.AddTask"
                                        Color="Color.Success"
                                        Disabled="Busy"
                                        OnClick="@(async () => await OnRealizePlanned.InvokeAsync(tx))" />
                     }
 
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                    <MudIconButton Class="tx-action-btn"
+                                   Icon="@Icons.Material.Filled.Edit"
                                    Disabled="Busy"
                                    OnClick="@(async () => await OnEdit.InvokeAsync(tx))" />
 
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                    <MudIconButton Class="tx-action-btn tx-action-btn--delete"
+                                   Icon="@Icons.Material.Filled.Delete"
                                    Color="Color.Error"
                                    Disabled="Busy"
                                    OnClick="@(async () => await OnDelete.InvokeAsync(tx))" />
