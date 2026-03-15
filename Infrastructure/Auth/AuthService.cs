@@ -33,7 +33,13 @@ public class AuthService(
 
     public async Task Register(string email, string password)
     {
-        await client.Auth.SignUp(email, password);
+        await client.Auth.SignUp(
+            email,
+            password,
+            new Supabase.Gotrue.SignUpOptions
+            {
+                RedirectTo = "https://denvilmont.github.io/personal-cash/"
+            });
 
         logger.LogInformation($"client.Auth.CurrentUser.Email {client?.Auth?.CurrentUser?.Email}");
 
