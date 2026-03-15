@@ -1,0 +1,56 @@
+﻿@using MudBlazor
+
+@if (ShowMobileActions)
+{
+    <MudDatePicker @ref="_picker"
+                   Label="@Label"
+                   Date="_currentDate"
+                   DateChanged="HandleDateChanged"
+                   PickerVariant="@ResolvedPickerVariant"
+                   Variant="@Variant"
+                   Margin="@Margin"
+                   Class="@Class"
+                   Disabled="@Disabled"
+                   Required="@Required"
+                   Clearable="@Clearable"
+                   Editable="false"
+                   Modal="@ResolvedModal"
+                   AnchorOrigin="@AnchorOrigin"
+                   TransformOrigin="@TransformOrigin">
+
+        <PickerActions>
+            <MudButton OnClick="SetTodayAsync">
+                @L["Today"]
+            </MudButton>
+
+            <MudSpacer />
+
+            <MudButton OnClick="CancelAsync">
+                @L["Cancel"]
+            </MudButton>
+
+            <MudButton Color="Color.Primary"
+                       OnClick="SubmitAsync">
+                @L["OK"]
+            </MudButton>
+        </PickerActions>
+    </MudDatePicker>
+}
+else
+{
+    <MudDatePicker @ref="_picker"
+                   Label="@Label"
+                   Date="_currentDate"
+                   DateChanged="HandleDateChanged"
+                   PickerVariant="@ResolvedPickerVariant"
+                   Variant="@Variant"
+                   Margin="@Margin"
+                   Class="@Class"
+                   Disabled="@Disabled"
+                   Required="@Required"
+                   Clearable="@Clearable"
+                   Editable="false"
+                   Modal="@ResolvedModal"
+                   AnchorOrigin="@AnchorOrigin"
+                   TransformOrigin="@TransformOrigin" />
+}

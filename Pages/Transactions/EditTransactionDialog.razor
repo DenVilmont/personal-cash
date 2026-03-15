@@ -4,14 +4,14 @@
 @using Domain
 @using Domain.Enums
 @using Domain.Contracts
+@using PersonalCash.Shared.Components
 
 <MudDialog>
     <DialogContent>
         <MudGrid Class="mt-2">
             <MudItem xs="12" sm="6">
-                <MudDatePicker Label=@L["Date"]
-                               @bind-Date="OccurredOnPicker"
-                               Variant="Variant.Outlined" />
+                <PcDatePicker @bind-Date="OccurredOnPicker"/>
+
             </MudItem>
 
             <MudItem xs="12" sm="6">
@@ -38,12 +38,11 @@
                 </MudSelect>
             </MudItem>
             <MudItem xs="12" sm="6">
-                <MudTextField T="string"
-                              Label=@L["Amount"]
-                              @bind-Value="_amountText"
-                              Variant="Variant.Outlined"
-                              Adornment="Adornment.Start"
-                              AdornmentText="@_currency" />
+                <PcAmountField Value="_amount"
+                               ValueChanged="OnAmountChanged"
+                               Required="true"
+                               Adornment="Adornment.Start"
+                               AdornmentText="@_currency" />
             </MudItem>
 
             <MudItem xs="12" sm="6">

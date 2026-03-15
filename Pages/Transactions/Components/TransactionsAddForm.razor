@@ -1,6 +1,7 @@
 ﻿@using Domain.Contracts
 @using Domain.Enums
 @using PersonalCash.Presentation.Icons
+@using PersonalCash.Shared.Components
 
 <MudExpansionPanels Class="transactions-add-form-root transactions-mobile-panel-group" Elevation="2">
     <MudExpansionPanel Expanded="false" Class="transactions-add-form-panel transactions-mobile-compact-panel">
@@ -15,40 +16,12 @@
             <div class="transactions-mobile-panel-body">
                 <MudGrid Spacing="3" Class="align-stretch">
                     <MudItem xs="12" Class="d-flex d-sm-none">
-                        <MudDatePicker @ref="_mobileOccurredOnPicker"
-                                       Label="@L["Date"]"
-                                       PickerVariant="PickerVariant.Dialog"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense"
-                                       Class="w-100"
-                                       Date="OccurredOn"
-                                       DateChanged="OnOccurredOnChanged">
-
-                            <PickerActions>
-                                <MudButton OnClick="SetTodayAsync">
-                                    @L["Today"]
-                                </MudButton>
-
-                                <MudSpacer />
-
-                                <MudButton OnClick="CancelOccurredOnPickerAsync">
-                                    @L["Cancel"]
-                                </MudButton>
-
-                                <MudButton Color="Color.Primary"
-                                           OnClick="SubmitOccurredOnPickerAsync">
-                                    @L["OK"]
-                                </MudButton>
-                            </PickerActions>
-                        </MudDatePicker>
+                        <PcDatePicker Date="OccurredOn"
+                                      DateChanged="OnOccurredOnChanged" />
                     </MudItem>
                     <MudItem sm="12" md="6" Class="d-none d-sm-flex">
-                        <MudDatePicker Label="@L["Date"]"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense"
-                                       Class="w-100"
-                                       Date="OccurredOn"
-                                       DateChanged="OnOccurredOnChanged" />
+                        <PcDatePicker Date="OccurredOn"
+                                      DateChanged="OnOccurredOnChanged"/>
                     </MudItem>
 
 
@@ -106,19 +79,11 @@
                     </MudItem>
 
                     <MudItem xs="12" md="6">
-                        <MudNumericField T="decimal"
-                                         Label="@L["Amount"]"
-                                         Variant="Variant.Outlined"
-                                         InputMode="@(InputMode.@decimal)"
-                                         Pattern="[0-9,.]"
-                                         Margin="Margin.Dense"
-                                         Class="w-100"
-                                         HideSpinButtons="true"
-                                         Adornment="Adornment.Start"
-                                         AdornmentText="@Currency"
-                                         Value="Amount"
-                                         ValueChanged="OnAmountChanged" 
-                                         Placeholder="0.00" />
+                        <PcAmountField Value="Amount"
+                                       ValueChanged="OnAmountChanged"
+                                       Required="true"
+                                       Adornment="Adornment.Start"
+                                       AdornmentText="@Currency" />
                     </MudItem>
 
                     <MudItem xs="12" md="6">
