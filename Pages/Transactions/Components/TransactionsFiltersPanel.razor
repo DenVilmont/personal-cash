@@ -1,6 +1,5 @@
 ﻿@using Domain.Contracts
 @using Domain.Enums
-@using PersonalCash.Shared.Components
 
 @if (IsCollapsible)
 {
@@ -16,15 +15,26 @@
             <ChildContent>
                 <div class="transactions-mobile-panel-body">
                     <MudStack Spacing="2">
-                        <PcDatePicker Label="@L["Filter_Date_From"]"
-                                      Date="FromDate"
-                                      DateChanged="OnFromDateChanged"
-                                      Clearable="true"/>
 
-                        <PcDatePicker Label="@L["Filter_Date_To"]"
-                                      Date="ToDate"
-                                      DateChanged="OnToDateChanged"
-                                      Clearable="true" />
+                        <MudDatePicker Label="@L["Filter_Date_From"]"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="w-100"
+                                       Date="FromDate"
+                                       DateChanged="OnFromDateChanged"
+                                       Clearable="true"
+                                       AnchorOrigin="Origin.BottomRight"
+                                       TransformOrigin="Origin.TopRight" />
+
+                        <MudDatePicker Label="@L["Filter_Date_To"]"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="w-100"
+                                       Date="ToDate"
+                                       DateChanged="OnToDateChanged"
+                                       Clearable="true"
+                                       AnchorOrigin="Origin.BottomRight"
+                                       TransformOrigin="Origin.TopRight" />
 
                         <MudSelect T="DateOnly?" Label="@L["Filter_Month"]"
                                    Variant="Variant.Outlined"
@@ -114,14 +124,21 @@
                                       Clearable="true"
                                       OnClearButtonClick="OnFiltersChanged" />
 
-                        <PcAmountField Label="@L["Filter_AmountFrom"]" 
-                                       Value="MinAmount"
-                                       ValueChanged="OnMinAmountChanged"
-                                       Clearable="true" />
-                        <PcAmountField Label="@L["Filter_AmountTo"]"
-                                       Value="MaxAmount"
-                                       ValueChanged="OnMaxAmountChanged"
-                                       Clearable="true"/>
+                        <MudNumericField T="decimal?" Label="@L["Filter_AmountFrom"]"
+                                         Variant="Variant.Outlined"
+                                         Margin="Margin.Dense"
+                                         Class="w-100"
+                                         Value="MinAmount"
+                                         ValueChanged="OnMinAmountChanged"
+                                         Clearable="true" />
+
+                        <MudNumericField T="decimal?" Label="@L["Filter_AmountTo"]"
+                                         Variant="Variant.Outlined"
+                                         Margin="Margin.Dense"
+                                         Class="w-100"
+                                         Value="MaxAmount"
+                                         ValueChanged="OnMaxAmountChanged"
+                                         Clearable="true" />
 
                         <MudDivider Class="my-2" />
 
