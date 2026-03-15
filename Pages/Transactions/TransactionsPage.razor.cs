@@ -25,7 +25,7 @@ public partial class TransactionsPage : IDisposable
     [Inject] private AppPageTitleState PageTitleState { get; set; } = default!;
 
     protected DateOnly? _occurredOn = DateOnly.FromDateTime(DateTime.Today);
-    protected decimal _amount;
+    protected decimal? _amount;
     protected EntryType _entryType = EntryType.Outcome; // expense by default
     protected bool _isForPlanning = false;
     protected string _currency = "";
@@ -181,7 +181,7 @@ public partial class TransactionsPage : IDisposable
         _occurredOn = DateOnly.FromDateTime(DateTime.Today);
         _entryType = EntryType.Outcome;
         SelectedAccountId = _activeAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
-        _amount = 0m;
+        _amount = null;
         _categoryId = _categories.First().Id;
         _note = null;
         _isForPlanning = false;
@@ -195,7 +195,7 @@ public partial class TransactionsPage : IDisposable
             return;
         }
 
-        if (_amount <= 0)
+        if (_amount is null || _amount <= 0)
         {
             Snackbar.Add(L["Transaction_AmountMustBeValidPositiveNumber_ValidationError"], Severity.Warning);
             return;
@@ -230,7 +230,7 @@ public partial class TransactionsPage : IDisposable
             var item = new TransactionDto
             {
                 OccurredOn = _occurredOn.Value,
-                Amount = _amount,
+                Amount = _amount.Value,
                 EntryType = _entryType,
                 IsPlanned = _isForPlanning,
                 Currency = string.IsNullOrWhiteSpace(_currency) ? "EUR" : _currency.Trim().ToUpperInvariant(),
@@ -242,7 +242,7 @@ public partial class TransactionsPage : IDisposable
 
             await TxService.InsertTransactionAndUpdateBalances(item);
 
-            _amount = 0m;
+            _amount = null;
             _note = null;
             await LoadCoreAsync();
         }, successMessage: L["Added"]);
