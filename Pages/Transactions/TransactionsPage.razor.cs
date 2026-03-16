@@ -244,6 +244,7 @@ public partial class TransactionsPage : IDisposable
 
             _amount = null;
             _note = null;
+            _entryType = EntryType.Outcome;
             await LoadCoreAsync();
         }, successMessage: L["Added"]);
     }

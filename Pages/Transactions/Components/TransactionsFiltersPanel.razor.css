@@ -1,0 +1,75 @@
+﻿.transactions-filters-panel {
+    width: 100%;
+}
+
+    .transactions-filters-panel ::deep .transactions-filters-panel__mobile-panel,
+    .transactions-filters-panel ::deep .transactions-filters-panel__desktop-card {
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 255, 0.98) 100%);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.035), 0 18px 42px rgba(99, 102, 241, 0.045), inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    }
+
+        .transactions-filters-panel ::deep .transactions-filters-panel__mobile-panel .mud-expand-panel-header {
+            min-height: 56px;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.10);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.70) 0%, rgba(247, 249, 253, 0.90) 100%);
+        }
+
+        .transactions-filters-panel ::deep .transactions-filters-panel__desktop-card .mud-icon-root {
+            color: rgba(99, 102, 241, 0.72);
+        }
+
+        .transactions-filters-panel ::deep .transactions-filters-panel__desktop-card .mud-typography-h6 {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+    .transactions-filters-panel ::deep .mud-divider {
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+.transactions-filters-panel__actions {
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+    .transactions-filters-panel__actions ::deep .mud-button-root {
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    .transactions-filters-panel__actions ::deep .mud-button-outlined {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 252, 0.94) 100%);
+        border-color: rgba(203, 213, 225, 0.78);
+        color: rgba(30, 41, 59, 0.92);
+        box-shadow: 0 3px 8px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.84);
+    }
+
+    .transactions-filters-panel__actions ::deep .mud-button-text {
+        color: #4f46e5;
+    }
+
+    .transactions-filters-panel__actions ::deep .mud-button-filled-primary {
+        box-shadow: 0 8px 18px rgba(99, 102, 241, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+@media (max-width: 599.98px) {
+    .transactions-filters-panel__actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+        .transactions-filters-panel__actions ::deep .mud-button-root {
+            flex: 1 1 calc(50% - 4px);
+            min-width: 0;
+        }
+
+        .transactions-filters-panel__actions ::deep .mud-button-text {
+            flex-basis: 100%;
+        }
+}

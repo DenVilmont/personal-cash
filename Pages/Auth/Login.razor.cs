@@ -1,3 +1,4 @@
+using MudBlazor;
 using PersonalCash.Configuration;
 
 namespace PersonalCash.Pages.Auth;
@@ -23,6 +24,26 @@ public partial class Login
             await AuthService.Login(PublicDemoAccount.Email, PublicDemoAccount.Password);
             NavigationManager.NavigateTo("transactions");
         }, successMessage: L["Demo_login_successful"]);
+    }
+
+    bool isShow;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    void TogglePassword()
+    {
+        if(isShow)
+        {
+            isShow = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            isShow = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
     }
 }
 

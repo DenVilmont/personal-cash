@@ -8,85 +8,87 @@
 }
 else
 {
-    <!-- Mobile / tablet -->
-    <div class="d-block d-lg-none">
-        <MudExpansionPanels Class="transactions-mobile-panel-group" Elevation="2">
-            <MudExpansionPanel Expanded="false" Class="transactions-mobile-compact-panel">
-                <TitleContent>
-                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                        <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet" Class="mr-2 transactions-mobile-compact-panel__icon" />
-                        <MudText Typo="Typo.h6" Class="transactions-mobile-compact-panel__text">@L["Balances"]</MudText>
-                    </MudStack>
-                </TitleContent>
-
-                <ChildContent>
-                    <div class="transactions-mobile-panel-body">
-                        <MudStack Spacing="2">
-                            @foreach (var a in VisibleAccounts)
-                            {
-                                <div class="balance-row balance-row--mobile">
-                                    <div class="balance-left">
-                                        <div class="icon-option">
-                                            <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
-                                            <span>@a.Name</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="balance-right">
-                                        <div class="balance-actual">
-                                            <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
-                                                @a.BalanceActual.ToString("N2") @a.Currency
-                                            </MudTooltip>
-                                        </div>
-                                        <div class="balance-expected text-muted">
-                                            <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
-                                                @a.BalanceExpected.ToString("N2") @a.Currency
-                                            </MudTooltip>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
+    <div class="transactions-balances-panel">
+        <!-- Mobile / tablet -->
+        <div class="d-block d-lg-none">
+            <MudExpansionPanels Class="transactions-mobile-panel-group" Elevation="2">
+                <MudExpansionPanel Expanded="false" Class="transactions-mobile-compact-panel">
+                    <TitleContent>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet" Class="mr-2 transactions-mobile-compact-panel__icon" />
+                            <MudText Typo="Typo.h6" Class="transactions-mobile-compact-panel__text">@L["Balances"]</MudText>
                         </MudStack>
-                    </div>
-                </ChildContent>
-            </MudExpansionPanel>
-        </MudExpansionPanels>
-    </div>
+                    </TitleContent>
 
-    <!-- Desktop -->
-    <div class="d-none d-lg-block">
-        <MudPaper Class="pa-4 transactions-balances-panel__desktop-card">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet" class="mr-2" />
-                <MudText Typo="Typo.h5">@L["Balances"]</MudText>
-            </MudStack>
+                    <ChildContent>
+                        <div class="transactions-mobile-panel-body">
+                            <MudStack Spacing="2">
+                                @foreach (var a in VisibleAccounts)
+                                {
+                                    <div class="balance-row balance-row--mobile balance-row--surface">
+                                        <div class="balance-left">
+                                            <div class="icon-option">
+                                                <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                                <span>@a.Name</span>
+                                            </div>
+                                        </div>
 
-            <MudStack Spacing="2" Class="mt-3">
-                @foreach (var a in VisibleAccounts)
-                {
-                    <div class="balance-row">
-                        <div class="balance-left">
-                            <div class="icon-option">
-                                <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
-                                <span>@a.Name</span>
+                                        <div class="balance-right">
+                                            <div class="balance-actual">
+                                                <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                                    @a.BalanceActual.ToString("N2") @a.Currency
+                                                </MudTooltip>
+                                            </div>
+                                            <div class="balance-expected text-muted">
+                                                <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                                    @a.BalanceExpected.ToString("N2") @a.Currency
+                                                </MudTooltip>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </MudStack>
+                        </div>
+                    </ChildContent>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </div>
+
+        <!-- Desktop -->
+        <div class="d-none d-lg-block">
+            <MudPaper Class="pa-4 transactions-balances-panel__desktop-card">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet" class="mr-2" />
+                    <MudText Typo="Typo.h5">@L["Balances"]</MudText>
+                </MudStack>
+
+                <MudStack Spacing="2" Class="mt-3">
+                    @foreach (var a in VisibleAccounts)
+                    {
+                        <div class="balance-row balance-row--surface">
+                            <div class="balance-left">
+                                <div class="icon-option">
+                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                    <span>@a.Name</span>
+                                </div>
+                            </div>
+
+                            <div class="balance-right">
+                                <div class="balance-actual">
+                                    <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                        @a.BalanceActual.ToString("N2") @a.Currency
+                                    </MudTooltip>
+                                </div>
+                                <div class="balance-expected text-muted">
+                                    <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                        @a.BalanceExpected.ToString("N2") @a.Currency
+                                    </MudTooltip>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="balance-right">
-                            <div class="balance-actual">
-                                <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
-                                    @a.BalanceActual.ToString("N2") @a.Currency
-                                </MudTooltip>
-                            </div>
-                            <div class="balance-expected text-muted">
-                                <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
-                                    @a.BalanceExpected.ToString("N2") @a.Currency
-                                </MudTooltip>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </MudStack>
-        </MudPaper>
+                    }
+                </MudStack>
+            </MudPaper>
+        </div>
     </div>
 }

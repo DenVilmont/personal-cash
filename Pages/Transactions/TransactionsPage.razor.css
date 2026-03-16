@@ -50,6 +50,10 @@
     position: static;
 }
 
+::deep .transactions-mobile-panel-body {
+    margin-top: 8px;
+}
+
 @media (min-width: 960px) {
     .transactions-page {
         padding: 16px 24px 24px;
@@ -91,8 +95,10 @@
         top: 88px;
     }
 
+    .transactions-layout__balances,
     .transactions-layout__add {
         display: flex;
+        align-self: stretch;
     }
 
         .transactions-layout__add ::deep .transactions-add-form-root {
@@ -100,16 +106,10 @@
             margin-bottom: 0;
         }
 
+        .transactions-layout__balances ::deep .transactions-balances-panel__desktop-card,
         .transactions-layout__add ::deep .transactions-add-form-panel {
-            height: 100%;
-        }
-
-    .transactions-layout__balances {
-        align-self: start;
-    }
-
-        .transactions-layout__balances ::deep .transactions-balances-panel__desktop-card {
             width: 100%;
+            height: 100%;
         }
 }
 
@@ -146,6 +146,6 @@
     }
 
     ::deep .transactions-mobile-panel-body {
-        padding: 0 12px 12px;
+        padding: 10px 12px 12px;
     }
 }

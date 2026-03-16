@@ -1,4 +1,6 @@
-﻿namespace PersonalCash.Pages.Auth
+﻿using MudBlazor;
+
+namespace PersonalCash.Pages.Auth
 {
     public partial class Register
     {
@@ -17,6 +19,26 @@
                 await Auth.Register(email, password);
                 message = L["Account_created_Registration_message"];
             }, successMessage: L["Account_created_Registration_message"]);
+        }
+
+        bool isShow;
+        InputType PasswordInput = InputType.Password;
+        string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+        void TogglePassword()
+        {
+            if (isShow)
+            {
+                isShow = false;
+                PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+                PasswordInput = InputType.Password;
+            }
+            else
+            {
+                isShow = true;
+                PasswordInputIcon = Icons.Material.Filled.Visibility;
+                PasswordInput = InputType.Text;
+            }
         }
     }
 }

@@ -2,314 +2,316 @@
 @using Domain.Enums
 @using PersonalCash.Shared.Components
 
-@if (IsCollapsible)
-{
-    <MudExpansionPanels Class="transactions-mobile-panel-group" Elevation="2">
-        <MudExpansionPanel Expanded="false" KeepContentAlive="true" Class="transactions-mobile-compact-panel">
-            <TitleContent>
-                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                    <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-2 transactions-mobile-compact-panel__icon"></MudIcon>
-                    <MudText Typo="Typo.h6" Class="transactions-mobile-compact-panel__text">@L["Filters"]</MudText>
-                </MudStack>
-            </TitleContent>
-
-            <ChildContent>
-                <div class="transactions-mobile-panel-body">
-                    <MudStack Spacing="2">
-                        <PcDatePicker Label="@L["Filter_Date_From"]"
-                                      Date="FromDate"
-                                      DateChanged="OnFromDateChanged"
-                                      Clearable="true"/>
-
-                        <PcDatePicker Label="@L["Filter_Date_To"]"
-                                      Date="ToDate"
-                                      DateChanged="OnToDateChanged"
-                                      Clearable="true" />
-
-                        <MudSelect T="DateOnly?" Label="@L["Filter_Month"]"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense"
-                                   Class="w-100"
-                                   Value="Month"
-                                   ValueChanged="OnMonthChanged"
-                                   Placeholder="@L["Filter_Month_All"]"
-                                   Clearable="true"
-                                   OnClearButtonClick="OnMonthCleared">
-                            <MudSelectItem T="DateOnly?" Value="@((DateOnly?)null)" />
-                            @foreach (var m in MonthOptions)
-                            {
-                                <MudSelectItem T="DateOnly?" Value="@m">
-                                    @FormatMonth(m)
-                                </MudSelectItem>
-                            }
-                        </MudSelect>
-
-                        <MudSelect T="Guid" Label="@L["Filter_Account"]"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense"
-                                   Class="w-100"
-                                   MultiSelection="true"
-                                   SelectedValues="AccountIds"
-                                   SelectedValuesChanged="OnAccountIdsChanged"
-                                   Placeholder="@L["Filter_Account_All"]"
-                                   MultiSelectionTextFunc="GetAccountSelectionText"
-                                   Clearable="true"
-                                   OnClearButtonClick="OnFiltersChanged">
-                            @foreach (var a in Accounts)
-                            {
-                                <MudSelectItem T="Guid" Value="@a.Id">@a.Name</MudSelectItem>
-                            }
-                        </MudSelect>
-
-                        <MudSelect T="EntryType?" Label="@L["Filter_Type"]"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense"
-                                   Class="w-100"
-                                   Value="SelectedEntryType"
-                                   ValueChanged="OnEntryTypeChanged"
-                                   Clearable="true"
-                                   OnClearButtonClick="OnFiltersChanged">
-                            <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">@L["Filter_Type_All"]</MudSelectItem>
-                            <MudSelectItem T="EntryType?" Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
-                            <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
-                        </MudSelect>
-
-                        <MudSelect T="Guid" Label="@L["Filter_Category"]"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense"
-                                   Class="w-100"
-                                   MultiSelection="true"
-                                   SelectedValues="CategoryIds"
-                                   SelectedValuesChanged="OnCategoryIdsChanged"
-                                   Placeholder="@L["Filter_Category_All"]"
-                                   MultiSelectionTextFunc="GetCategorySelectionText"
-                                   Clearable="true"
-                                   OnClearButtonClick="OnFiltersChanged">
-                            @foreach (var c in Categories)
-                            {
-                                <MudSelectItem T="Guid" Value="@c.Id">@c.Name</MudSelectItem>
-                            }
-                        </MudSelect>
-
-                        <MudSelect T="bool?" Label="@L["Filter_Planned"]"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense"
-                                   Class="w-100"
-                                   Value="IsForPlanning"
-                                   ValueChanged="OnIsForPlanningChanged"
-                                   Clearable="true"
-                                   OnClearButtonClick="OnFiltersChanged">
-                            <MudSelectItem Value="@((bool?)null)">@L["Filter_Planned_All"]</MudSelectItem>
-                            <MudSelectItem Value="@((bool?)true)">@L["Filter_PlannedOnly"]</MudSelectItem>
-                            <MudSelectItem Value="@((bool?)false)">@L["Filter_ActualOnly"]</MudSelectItem>
-                        </MudSelect>
-
-                        <MudTextField T="string"
-                                      Label="@L["Filter_NoteContains"]"
-                                      Variant="Variant.Outlined"
-                                      Margin="Margin.Dense"
-                                      Class="w-100"
-                                      Value="Note"
-                                      ValueChanged="OnNoteChanged"
-                                      Clearable="true"
-                                      OnClearButtonClick="OnFiltersChanged" />
-
-                        <PcAmountField Label="@L["Filter_AmountFrom"]" 
-                                       Value="MinAmount"
-                                       ValueChanged="OnMinAmountChanged"
-                                       Clearable="true" />
-                        <PcAmountField Label="@L["Filter_AmountTo"]"
-                                       Value="MaxAmount"
-                                       ValueChanged="OnMaxAmountChanged"
-                                       Clearable="true"/>
-
-                        <MudDivider Class="my-2" />
-
-                        <MudStack Row="true" Wrap="Wrap.NoWrap" Justify="Justify.FlexEnd" Spacing="2">
-                            <MudButton Variant="Variant.Outlined"
-                                       Color="Color.Secondary"
-                                       Disabled="Busy"
-                                       OnClick="OnClearClicked">
-                                @L["Filter_Clear"]
-                            </MudButton>
-
-                            <MudButton Variant="Variant.Text"
-                                       Color="Color.Primary"
-                                       Disabled="Busy"
-                                       OnClick="OnResetClicked">
-                                @L["Filter_Reset"]
-                            </MudButton>
-                            <MudButton Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       Disabled="Busy"
-                                       OnClick="OnSaveClicked">
-                                @L["Filter_Save"]
-                            </MudButton>
-                        </MudStack>
+<div class="transactions-filters-panel">
+    @if (IsCollapsible)
+    {
+        <MudExpansionPanels Class="transactions-mobile-panel-group" Elevation="2">
+            <MudExpansionPanel Expanded="false" KeepContentAlive="true" Class="transactions-filters-panel__mobile-panel transactions-mobile-compact-panel">
+                <TitleContent>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-2 transactions-mobile-compact-panel__icon"></MudIcon>
+                        <MudText Typo="Typo.h6" Class="transactions-mobile-compact-panel__text">@L["Filters"]</MudText>
                     </MudStack>
-                </div>
-            </ChildContent>
-        </MudExpansionPanel>
-    </MudExpansionPanels>
-}
-else
-{
-    <MudPaper Class="pa-4" Elevation="2">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-4">
-            <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-3"></MudIcon>
-            <MudText Typo="Typo.h6">@L["Filters"]</MudText>
-        </MudStack>
+                </TitleContent>
 
-        <MudStack Spacing="2" Class="mt-2">
+                <ChildContent>
+                    <div class="transactions-mobile-panel-body">
+                        <MudStack Spacing="2">
+                            <PcDatePicker Label="@L["Filter_Date_From"]"
+                                          Date="FromDate"
+                                          DateChanged="OnFromDateChanged"
+                                          Clearable="true" />
 
-            <MudDatePicker Label="@L["Filter_Date_From"]"
-                           Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
-                           Class="w-100"
-                           Date="FromDate"
-                           DateChanged="OnFromDateChanged"
-                           Clearable="true"
-                           AnchorOrigin="Origin.BottomRight"
-                           TransformOrigin="Origin.TopRight" />
+                            <PcDatePicker Label="@L["Filter_Date_To"]"
+                                          Date="ToDate"
+                                          DateChanged="OnToDateChanged"
+                                          Clearable="true" />
 
-            <MudDatePicker Label="@L["Filter_Date_To"]"
-                           Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
-                           Class="w-100"
-                           Date="ToDate"
-                           DateChanged="OnToDateChanged"
-                           Clearable="true"
-                           AnchorOrigin="Origin.BottomRight"
-                           TransformOrigin="Origin.TopRight" />
+                            <MudSelect T="DateOnly?" Label="@L["Filter_Month"]"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="w-100"
+                                       Value="Month"
+                                       ValueChanged="OnMonthChanged"
+                                       Placeholder="@L["Filter_Month_All"]"
+                                       Clearable="true"
+                                       OnClearButtonClick="OnMonthCleared">
+                                <MudSelectItem T="DateOnly?" Value="@((DateOnly?)null)" />
+                                @foreach (var m in MonthOptions)
+                                {
+                                    <MudSelectItem T="DateOnly?" Value="@m">
+                                        @FormatMonth(m)
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
 
-            <MudSelect T="DateOnly?" Label="@L["Filter_Month"]"
-                       Variant="Variant.Outlined"
-                       Margin="Margin.Dense"
-                       Class="w-100"
-                       Value="Month"
-                       ValueChanged="OnMonthChanged"
-                       Placeholder="@L["Filter_Month_All"]"
-                       Clearable="true"
-                       OnClearButtonClick="OnMonthCleared">
-                <MudSelectItem T="DateOnly?" Value="@((DateOnly?)null)" />
+                            <MudSelect T="Guid" Label="@L["Filter_Account"]"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="w-100"
+                                       MultiSelection="true"
+                                       SelectedValues="AccountIds"
+                                       SelectedValuesChanged="OnAccountIdsChanged"
+                                       Placeholder="@L["Filter_Account_All"]"
+                                       MultiSelectionTextFunc="GetAccountSelectionText"
+                                       Clearable="true"
+                                       OnClearButtonClick="OnFiltersChanged">
+                                @foreach (var a in Accounts)
+                                {
+                                    <MudSelectItem T="Guid" Value="@a.Id">@a.Name</MudSelectItem>
+                                }
+                            </MudSelect>
 
-                @foreach (var m in MonthOptions)
-                {
-                    <MudSelectItem T="DateOnly?" Value="@m">
-                        @FormatMonth(m)
-                    </MudSelectItem>
-                }
-            </MudSelect>
+                            <MudSelect T="EntryType?" Label="@L["Filter_Type"]"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="w-100"
+                                       Value="SelectedEntryType"
+                                       ValueChanged="OnEntryTypeChanged"
+                                       Clearable="true"
+                                       OnClearButtonClick="OnFiltersChanged">
+                                <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">@L["Filter_Type_All"]</MudSelectItem>
+                                <MudSelectItem T="EntryType?" Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
+                                <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
+                            </MudSelect>
 
-            <MudSelect T="Guid" Label="@L["Filter_Account"]"
-                       Variant="Variant.Outlined"
-                       Margin="Margin.Dense"
-                       Class="w-100"
-                       MultiSelection="true"
-                       SelectedValues="AccountIds"
-                       SelectedValuesChanged="OnAccountIdsChanged"
-                       Placeholder="@L["Filter_Account_All"]"
-                       MultiSelectionTextFunc="GetAccountSelectionText"
-                       Clearable="true"
-                       OnClearButtonClick="OnFiltersChanged">
-                @foreach (var a in Accounts)
-                {
-                    <MudSelectItem T="Guid" Value="@a.Id">@a.Name</MudSelectItem>
-                }
-            </MudSelect>
+                            <MudSelect T="Guid" Label="@L["Filter_Category"]"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="w-100"
+                                       MultiSelection="true"
+                                       SelectedValues="CategoryIds"
+                                       SelectedValuesChanged="OnCategoryIdsChanged"
+                                       Placeholder="@L["Filter_Category_All"]"
+                                       MultiSelectionTextFunc="GetCategorySelectionText"
+                                       Clearable="true"
+                                       OnClearButtonClick="OnFiltersChanged">
+                                @foreach (var c in Categories)
+                                {
+                                    <MudSelectItem T="Guid" Value="@c.Id">@c.Name</MudSelectItem>
+                                }
+                            </MudSelect>
 
-            <MudSelect T="EntryType?" Label="@L["Filter_Type"]"
-                       Variant="Variant.Outlined"
-                       Margin="Margin.Dense"
-                       Class="w-100"
-                       Value="SelectedEntryType"
-                       ValueChanged="OnEntryTypeChanged"
-                       Clearable="true"
-                       OnClearButtonClick="OnFiltersChanged">
-                <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">@L["Filter_Type_All"]</MudSelectItem>
-                <MudSelectItem T="EntryType?" Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
-                <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
-            </MudSelect>
+                            <MudSelect T="bool?" Label="@L["Filter_Planned"]"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="w-100"
+                                       Value="IsForPlanning"
+                                       ValueChanged="OnIsForPlanningChanged"
+                                       Clearable="true"
+                                       OnClearButtonClick="OnFiltersChanged">
+                                <MudSelectItem Value="@((bool?)null)">@L["Filter_Planned_All"]</MudSelectItem>
+                                <MudSelectItem Value="@((bool?)true)">@L["Filter_PlannedOnly"]</MudSelectItem>
+                                <MudSelectItem Value="@((bool?)false)">@L["Filter_ActualOnly"]</MudSelectItem>
+                            </MudSelect>
 
-            <MudSelect T="Guid" Label="@L["Filter_Category"]"
-                       Variant="Variant.Outlined"
-                       Margin="Margin.Dense"
-                       Class="w-100"
-                       MultiSelection="true"
-                       SelectedValues="CategoryIds"
-                       SelectedValuesChanged="OnCategoryIdsChanged"
-                       Placeholder="@L["Filter_Category_All"]"
-                       MultiSelectionTextFunc="GetCategorySelectionText"
-                       Clearable="true"
-                       OnClearButtonClick="OnFiltersChanged">
-                @foreach (var c in Categories)
-                {
-                    <MudSelectItem T="Guid" Value="@c.Id">@c.Name</MudSelectItem>
-                }
-            </MudSelect>
+                            <MudTextField T="string"
+                                          Label="@L["Filter_NoteContains"]"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Class="w-100"
+                                          Value="Note"
+                                          ValueChanged="OnNoteChanged"
+                                          Clearable="true"
+                                          OnClearButtonClick="OnFiltersChanged" />
 
-            <MudSelect T="bool?" Label="@L["Filter_Planned"]"
-                       Variant="Variant.Outlined"
-                       Margin="Margin.Dense"
-                       Class="w-100"
-                       Value="IsForPlanning"
-                       ValueChanged="OnIsForPlanningChanged"
-                       Clearable="true"
-                       OnClearButtonClick="OnFiltersChanged">
-                <MudSelectItem Value="@((bool?)null)">@L["Filter_Planned_All"]</MudSelectItem>
-                <MudSelectItem Value="@((bool?)true)">@L["Filter_PlannedOnly"]</MudSelectItem>
-                <MudSelectItem Value="@((bool?)false)">@L["Filter_ActualOnly"]</MudSelectItem>
-            </MudSelect>
+                            <PcAmountField Label="@L["Filter_AmountFrom"]"
+                                           Value="MinAmount"
+                                           ValueChanged="OnMinAmountChanged"
+                                           Clearable="true" />
+                            <PcAmountField Label="@L["Filter_AmountTo"]"
+                                           Value="MaxAmount"
+                                           ValueChanged="OnMaxAmountChanged"
+                                           Clearable="true" />
 
-            <MudTextField T="string"
-                          Label="@L["Filter_NoteContains"]"
-                          Variant="Variant.Outlined"
-                          Margin="Margin.Dense"
-                          Class="w-100"
-                          Value="Note"
-                          ValueChanged="OnNoteChanged"
-                          Clearable="true"
-                          OnClearButtonClick="OnFiltersChanged" />
+                            <MudDivider Class="my-2" />
 
-            <MudNumericField T="decimal?" Label="@L["Filter_AmountFrom"]"
-                             Variant="Variant.Outlined"
-                             Margin="Margin.Dense"
-                             Class="w-100"
-                             Value="MinAmount"
-                             ValueChanged="OnMinAmountChanged"
-                             Clearable="true" />
+                            <MudStack Row="true" Wrap="Wrap.NoWrap" Justify="Justify.FlexEnd" Spacing="2" Class="transactions-filters-panel__actions">
+                                <MudButton Variant="Variant.Outlined"
+                                           Color="Color.Secondary"
+                                           Disabled="Busy"
+                                           OnClick="OnClearClicked">
+                                    @L["Filter_Clear"]
+                                </MudButton>
 
-            <MudNumericField T="decimal?" Label="@L["Filter_AmountTo"]"
-                             Variant="Variant.Outlined"
-                             Margin="Margin.Dense"
-                             Class="w-100"
-                             Value="MaxAmount"
-                             ValueChanged="OnMaxAmountChanged"
-                             Clearable="true" />
-
-            <MudDivider Class="my-2" />
-
-            <MudStack Row="true" Wrap="Wrap.NoWrap" Spacing="2">
-                <MudButton Variant="Variant.Outlined"
-                           Color="Color.Secondary"
-                           Disabled="Busy"
-                           OnClick="OnClearClicked">
-                    @L["Filter_Clear"]
-                </MudButton>
-
-                <MudButton Variant="Variant.Text"
-                           Color="Color.Primary"
-                           Disabled="Busy"
-                           OnClick="OnResetClicked">
-                    @L["Filter_Reset"]
-                </MudButton>
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Disabled="Busy"
-                           OnClick="OnSaveClicked">
-                    @L["Filter_Save"]
-                </MudButton>
+                                <MudButton Variant="Variant.Text"
+                                           Color="Color.Primary"
+                                           Disabled="Busy"
+                                           OnClick="OnResetClicked">
+                                    @L["Filter_Reset"]
+                                </MudButton>
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           Disabled="Busy"
+                                           OnClick="OnSaveClicked">
+                                    @L["Filter_Save"]
+                                </MudButton>
+                            </MudStack>
+                        </MudStack>
+                    </div>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    }
+    else
+    {
+        <MudPaper Class="pa-4 transactions-filters-panel__desktop-card" Elevation="2">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-4">
+                <MudIcon Icon="@Icons.Material.Filled.FilterAlt" class="mr-3"></MudIcon>
+                <MudText Typo="Typo.h6">@L["Filters"]</MudText>
             </MudStack>
-        </MudStack>
-    </MudPaper>
-}
+
+            <MudStack Spacing="2" Class="mt-2">
+
+                <MudDatePicker Label="@L["Filter_Date_From"]"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               Class="w-100"
+                               Date="FromDate"
+                               DateChanged="OnFromDateChanged"
+                               Clearable="true"
+                               AnchorOrigin="Origin.BottomRight"
+                               TransformOrigin="Origin.TopRight" />
+
+                <MudDatePicker Label="@L["Filter_Date_To"]"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               Class="w-100"
+                               Date="ToDate"
+                               DateChanged="OnToDateChanged"
+                               Clearable="true"
+                               AnchorOrigin="Origin.BottomRight"
+                               TransformOrigin="Origin.TopRight" />
+
+                <MudSelect T="DateOnly?" Label="@L["Filter_Month"]"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="w-100"
+                           Value="Month"
+                           ValueChanged="OnMonthChanged"
+                           Placeholder="@L["Filter_Month_All"]"
+                           Clearable="true"
+                           OnClearButtonClick="OnMonthCleared">
+                    <MudSelectItem T="DateOnly?" Value="@((DateOnly?)null)" />
+
+                    @foreach (var m in MonthOptions)
+                    {
+                        <MudSelectItem T="DateOnly?" Value="@m">
+                            @FormatMonth(m)
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudSelect T="Guid" Label="@L["Filter_Account"]"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="w-100"
+                           MultiSelection="true"
+                           SelectedValues="AccountIds"
+                           SelectedValuesChanged="OnAccountIdsChanged"
+                           Placeholder="@L["Filter_Account_All"]"
+                           MultiSelectionTextFunc="GetAccountSelectionText"
+                           Clearable="true"
+                           OnClearButtonClick="OnFiltersChanged">
+                    @foreach (var a in Accounts)
+                    {
+                        <MudSelectItem T="Guid" Value="@a.Id">@a.Name</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudSelect T="EntryType?" Label="@L["Filter_Type"]"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="w-100"
+                           Value="SelectedEntryType"
+                           ValueChanged="OnEntryTypeChanged"
+                           Clearable="true"
+                           OnClearButtonClick="OnFiltersChanged">
+                    <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">@L["Filter_Type_All"]</MudSelectItem>
+                    <MudSelectItem T="EntryType?" Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
+                    <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
+                </MudSelect>
+
+                <MudSelect T="Guid" Label="@L["Filter_Category"]"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="w-100"
+                           MultiSelection="true"
+                           SelectedValues="CategoryIds"
+                           SelectedValuesChanged="OnCategoryIdsChanged"
+                           Placeholder="@L["Filter_Category_All"]"
+                           MultiSelectionTextFunc="GetCategorySelectionText"
+                           Clearable="true"
+                           OnClearButtonClick="OnFiltersChanged">
+                    @foreach (var c in Categories)
+                    {
+                        <MudSelectItem T="Guid" Value="@c.Id">@c.Name</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudSelect T="bool?" Label="@L["Filter_Planned"]"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="w-100"
+                           Value="IsForPlanning"
+                           ValueChanged="OnIsForPlanningChanged"
+                           Clearable="true"
+                           OnClearButtonClick="OnFiltersChanged">
+                    <MudSelectItem Value="@((bool?)null)">@L["Filter_Planned_All"]</MudSelectItem>
+                    <MudSelectItem Value="@((bool?)true)">@L["Filter_PlannedOnly"]</MudSelectItem>
+                    <MudSelectItem Value="@((bool?)false)">@L["Filter_ActualOnly"]</MudSelectItem>
+                </MudSelect>
+
+                <MudTextField T="string"
+                              Label="@L["Filter_NoteContains"]"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Class="w-100"
+                              Value="Note"
+                              ValueChanged="OnNoteChanged"
+                              Clearable="true"
+                              OnClearButtonClick="OnFiltersChanged" />
+
+                <MudNumericField T="decimal?" Label="@L["Filter_AmountFrom"]"
+                                 Variant="Variant.Outlined"
+                                 Margin="Margin.Dense"
+                                 Class="w-100"
+                                 Value="MinAmount"
+                                 ValueChanged="OnMinAmountChanged"
+                                 Clearable="true" />
+
+                <MudNumericField T="decimal?" Label="@L["Filter_AmountTo"]"
+                                 Variant="Variant.Outlined"
+                                 Margin="Margin.Dense"
+                                 Class="w-100"
+                                 Value="MaxAmount"
+                                 ValueChanged="OnMaxAmountChanged"
+                                 Clearable="true" />
+
+                <MudDivider Class="my-2" />
+
+                <MudStack Row="true" Wrap="Wrap.NoWrap" Spacing="2" Class="transactions-filters-panel__actions">
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Secondary"
+                               Disabled="Busy"
+                               OnClick="OnClearClicked">
+                        @L["Filter_Clear"]
+                    </MudButton>
+
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Primary"
+                               Disabled="Busy"
+                               OnClick="OnResetClicked">
+                        @L["Filter_Reset"]
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Disabled="Busy"
+                               OnClick="OnSaveClicked">
+                        @L["Filter_Save"]
+                    </MudButton>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    }
+</div>
