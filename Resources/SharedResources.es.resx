@@ -636,4 +636,88 @@
   <data name="Today" xml:space="preserve">
     <value>Hoy</value>
   </data>
+  <data name="Home_Eyebrow" xml:space="preserve">
+    <value>Finanzas personales sin ruido</value>
+  </data>
+  <data name="Home_Title" xml:space="preserve">
+    <value>Controla tu dinero real, planifica gastos futuros y mantén los saldos claros.</value>
+  </data>
+  <data name="Home_Subtitle" xml:space="preserve">
+    <value>PersonalCash separa las transacciones ya realizadas de las planificadas para que veas lo que tienes ahora y lo que cambiará después.</value>
+  </data>
+  <data name="Home_Chip_Planned" xml:space="preserve">
+    <value>Transacciones planificadas</value>
+  </data>
+  <data name="Home_Chip_Actual" xml:space="preserve">
+    <value>Transacciones reales</value>
+  </data>
+  <data name="Home_Chip_MultiAccount" xml:space="preserve">
+    <value>Saldos claros</value>
+  </data>
+  <data name="Home_Demo_Eyebrow" xml:space="preserve">
+    <value>Ejemplo</value>
+  </data>
+  <data name="Home_Demo_Title" xml:space="preserve">
+    <value>Cómo se ve la lógica en la aplicación</value>
+  </data>
+  <data name="Home_BalanceActual_Label" xml:space="preserve">
+    <value>Saldo real</value>
+  </data>
+  <data name="Home_BalanceActual_Hint" xml:space="preserve">
+    <value>Solo operaciones ya realizadas</value>
+  </data>
+  <data name="Home_BalancePlanned_Label" xml:space="preserve">
+    <value>Saldo planificado</value>
+  </data>
+  <data name="Home_BalancePlanned_Hint" xml:space="preserve">
+    <value>Incluye operaciones futuras planificadas</value>
+  </data>
+  <data name="Home_Demo_Transaction1_Title" xml:space="preserve">
+    <value>Ingreso de salario</value>
+  </data>
+  <data name="Home_Demo_Transaction2_Title" xml:space="preserve">
+    <value>Pago del alquiler</value>
+  </data>
+  <data name="Home_Demo_Transaction3_Title" xml:space="preserve">
+    <value>Compra de comida</value>
+  </data>
+  <data name="Home_Demo_TagPlanned" xml:space="preserve">
+    <value>Planificada</value>
+  </data>
+  <data name="Home_Demo_TagActual" xml:space="preserve">
+    <value>Real</value>
+  </data>
+  <data name="Home_Guide_Eyebrow" xml:space="preserve">
+    <value>Cómo funciona</value>
+  </data>
+  <data name="Home_Guide_Title" xml:space="preserve">
+    <value>Una página sencilla, con lógica clara</value>
+  </data>
+  <data name="Home_Guide_HowToUse_Title" xml:space="preserve">
+    <value>Cómo usarla</value>
+  </data>
+  <data name="Home_Guide_HowToUse_Text" xml:space="preserve">
+    <value>Crea cuentas y categorías, añade ingresos y gastos, y revisa los saldos y el historial de movimientos en un solo lugar.</value>
+  </data>
+  <data name="Home_Guide_PlannedVsActual_Title" xml:space="preserve">
+    <value>Transacciones planificadas y reales</value>
+  </data>
+  <data name="Home_Guide_PlannedVsActual_Text" xml:space="preserve">
+    <value>Las transacciones planificadas son operaciones futuras. Las reales ya se han completado y afectan al saldo real.</value>
+  </data>
+  <data name="Home_Guide_Balances_Title" xml:space="preserve">
+    <value>Saldo planificado y saldo real</value>
+  </data>
+  <data name="Home_Guide_Balances_Text" xml:space="preserve">
+    <value>El saldo planificado muestra hacia dónde va la cuenta después de las operaciones futuras. El saldo real muestra el dinero que ya tienes disponible.</value>
+  </data>
+  <data name="Home_Demo_Transaction4_Title" xml:space="preserve">
+    <value>Suscripción a internet</value>
+  </data>
+  <data name="Home_Demo_Transaction5_Title" xml:space="preserve">
+    <value>Abono de transporte</value>
+  </data>
+  <data name="Reports_PageTitle" xml:space="preserve">
+    <value>Reportes</value>
+  </data>
 </root>

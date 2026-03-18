@@ -636,4 +636,88 @@
   <data name="Today" xml:space="preserve">
     <value>Сегодня</value>
   </data>
+  <data name="Home_Eyebrow" xml:space="preserve">
+    <value>Личный учёт денег без перегруза</value>
+  </data>
+  <data name="Home_Title" xml:space="preserve">
+    <value>Учитывайте реальные деньги, планируйте будущие расходы и держите балансы под контролем.</value>
+  </data>
+  <data name="Home_Subtitle" xml:space="preserve">
+    <value>PersonalCash разделяет уже совершённые и плановые транзакции, чтобы было видно, сколько денег есть сейчас и что изменится дальше.</value>
+  </data>
+  <data name="Home_Chip_Planned" xml:space="preserve">
+    <value>Плановые транзакции</value>
+  </data>
+  <data name="Home_Chip_Actual" xml:space="preserve">
+    <value>Реальные транзакции</value>
+  </data>
+  <data name="Home_Chip_MultiAccount" xml:space="preserve">
+    <value>Понятные балансы</value>
+  </data>
+  <data name="Home_Demo_Eyebrow" xml:space="preserve">
+    <value>Пример</value>
+  </data>
+  <data name="Home_Demo_Title" xml:space="preserve">
+    <value>Как это выглядит в приложении</value>
+  </data>
+  <data name="Home_BalanceActual_Label" xml:space="preserve">
+    <value>Реальный баланс</value>
+  </data>
+  <data name="Home_BalanceActual_Hint" xml:space="preserve">
+    <value>Только уже совершённые операции</value>
+  </data>
+  <data name="Home_BalancePlanned_Label" xml:space="preserve">
+    <value>Плановый баланс</value>
+  </data>
+  <data name="Home_BalancePlanned_Hint" xml:space="preserve">
+    <value>С учётом будущих плановых операций</value>
+  </data>
+  <data name="Home_Demo_Transaction1_Title" xml:space="preserve">
+    <value>Перевод зарплаты</value>
+  </data>
+  <data name="Home_Demo_Transaction2_Title" xml:space="preserve">
+    <value>Оплата аренды</value>
+  </data>
+  <data name="Home_Demo_Transaction3_Title" xml:space="preserve">
+    <value>Продукты</value>
+  </data>
+  <data name="Home_Demo_TagPlanned" xml:space="preserve">
+    <value>План</value>
+  </data>
+  <data name="Home_Demo_TagActual" xml:space="preserve">
+    <value>Факт</value>
+  </data>
+  <data name="Home_Guide_Eyebrow" xml:space="preserve">
+    <value>Как это работает</value>
+  </data>
+  <data name="Home_Guide_Title" xml:space="preserve">
+    <value>Простая страница, но с понятной логикой</value>
+  </data>
+  <data name="Home_Guide_HowToUse_Title" xml:space="preserve">
+    <value>Как пользоваться</value>
+  </data>
+  <data name="Home_Guide_HowToUse_Text" xml:space="preserve">
+    <value>Создайте счета и категории, добавляйте доходы и расходы, затем смотрите балансы и историю операций в одном месте.</value>
+  </data>
+  <data name="Home_Guide_PlannedVsActual_Title" xml:space="preserve">
+    <value>Плановые и реальные транзакции</value>
+  </data>
+  <data name="Home_Guide_PlannedVsActual_Text" xml:space="preserve">
+    <value>Плановые транзакции — это будущие операции. Реальные — уже совершённые и именно они влияют на реальный баланс.</value>
+  </data>
+  <data name="Home_Guide_Balances_Title" xml:space="preserve">
+    <value>Плановый и реальный баланс</value>
+  </data>
+  <data name="Home_Guide_Balances_Text" xml:space="preserve">
+    <value>Плановый баланс показывает, к чему придёт счёт после будущих операций. Реальный баланс показывает деньги, которые доступны уже сейчас.</value>
+  </data>
+  <data name="Home_Demo_Transaction4_Title" xml:space="preserve">
+    <value>Подписка на интернет</value>
+  </data>
+  <data name="Home_Demo_Transaction5_Title" xml:space="preserve">
+    <value>Транспортный проездной</value>
+  </data>
+  <data name="Reports_PageTitle" xml:space="preserve">
+    <value>Отчеты</value>
+  </data>
 </root>

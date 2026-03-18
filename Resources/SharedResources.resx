@@ -636,4 +636,88 @@
   <data name="Today" xml:space="preserve">
     <value>Today</value>
   </data>
+  <data name="Home_Eyebrow" xml:space="preserve">
+    <value>Personal finance without clutter</value>
+  </data>
+  <data name="Home_Title" xml:space="preserve">
+    <value>Track real money, plan future expenses, and keep balances clear.</value>
+  </data>
+  <data name="Home_Subtitle" xml:space="preserve">
+    <value>PersonalCash helps you separate completed transactions from planned ones so you always see what you have now and what is coming next.</value>
+  </data>
+  <data name="Home_Chip_Planned" xml:space="preserve">
+    <value>Planned transactions</value>
+  </data>
+  <data name="Home_Chip_Actual" xml:space="preserve">
+    <value>Real transactions</value>
+  </data>
+  <data name="Home_Chip_MultiAccount" xml:space="preserve">
+    <value>Clear balances</value>
+  </data>
+  <data name="Home_Demo_Eyebrow" xml:space="preserve">
+    <value>Example</value>
+  </data>
+  <data name="Home_Demo_Title" xml:space="preserve">
+    <value>What the app logic looks like</value>
+  </data>
+  <data name="Home_BalanceActual_Label" xml:space="preserve">
+    <value>Real balance</value>
+  </data>
+  <data name="Home_BalanceActual_Hint" xml:space="preserve">
+    <value>Includes only completed transactions</value>
+  </data>
+  <data name="Home_BalancePlanned_Label" xml:space="preserve">
+    <value>Planned balance</value>
+  </data>
+  <data name="Home_BalancePlanned_Hint" xml:space="preserve">
+    <value>Includes future planned transactions</value>
+  </data>
+  <data name="Home_Demo_Transaction1_Title" xml:space="preserve">
+    <value>Salary transfer</value>
+  </data>
+  <data name="Home_Demo_Transaction2_Title" xml:space="preserve">
+    <value>Rent payment</value>
+  </data>
+  <data name="Home_Demo_Transaction3_Title" xml:space="preserve">
+    <value>Groceries</value>
+  </data>
+  <data name="Home_Demo_TagPlanned" xml:space="preserve">
+    <value>Planned</value>
+  </data>
+  <data name="Home_Demo_TagActual" xml:space="preserve">
+    <value>Real</value>
+  </data>
+  <data name="Home_Guide_Eyebrow" xml:space="preserve">
+    <value>How it works</value>
+  </data>
+  <data name="Home_Guide_Title" xml:space="preserve">
+    <value>The page stays simple, but the logic is separated</value>
+  </data>
+  <data name="Home_Guide_HowToUse_Title" xml:space="preserve">
+    <value>How to use it</value>
+  </data>
+  <data name="Home_Guide_HowToUse_Text" xml:space="preserve">
+    <value>Create accounts and categories, add income and expenses, then review balances and transaction history in one place.</value>
+  </data>
+  <data name="Home_Guide_PlannedVsActual_Title" xml:space="preserve">
+    <value>Planned and real transactions</value>
+  </data>
+  <data name="Home_Guide_PlannedVsActual_Text" xml:space="preserve">
+    <value>Planned transactions are future operations. Real transactions are already completed and affect the real balance.</value>
+  </data>
+  <data name="Home_Guide_Balances_Title" xml:space="preserve">
+    <value>Planned and real balances</value>
+  </data>
+  <data name="Home_Guide_Balances_Text" xml:space="preserve">
+    <value>Planned balance shows where the account is heading after future operations. Real balance shows money that is already available.</value>
+  </data>
+  <data name="Home_Demo_Transaction4_Title" xml:space="preserve">
+    <value>Internet subscription</value>
+  </data>
+  <data name="Home_Demo_Transaction5_Title" xml:space="preserve">
+    <value>Transport pass</value>
+  </data>
+  <data name="Reports_PageTitle" xml:space="preserve">
+    <value>Reports</value>
+  </data>
 </root>

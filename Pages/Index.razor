@@ -2,29 +2,266 @@
 
 <PageTitle>PersonalCash</PageTitle>
 
-<MudContainer Class="pa-6" MaxWidth="MaxWidth.Medium">
-    <MudText Typo="Typo.h5">PersonalCash</MudText>
-    <MudText Typo="Typo.body1" Class="mt-2">
-        Personal transactions tracker.
-    </MudText>
+<div class="home-page">
+    <MudContainer MaxWidth="MaxWidth.Large">
+        <div class="home-layout">
 
-    <MudPaper Class="pa-4 mt-4" Elevation="2">
-        <AuthorizeView>
+            <section class="home-card home-card--hero">
+                <MudText Typo="Typo.overline" Class="home-card__eyebrow">
+                    @L["Home_Eyebrow"]
+                </MudText>
 
-            <Authorized>
-                <MudText Typo="Typo.subtitle1">You are signed in.</MudText>
-                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" Href="transactions">
-                    Open transactions
-                </MudButton>
-            </Authorized>
+                <MudText Typo="Typo.h3" Class="home-hero__title">
+                    @L["Home_Title"]
+                </MudText>
 
-            <NotAuthorized>
-                <MudText Typo="Typo.subtitle1">You are not signed in.</MudText>
-                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" Href="login">
-                    Login
-                </MudButton>
-            </NotAuthorized>
+                <MudText Typo="Typo.body1" Class="home-hero__subtitle">
+                    @L["Home_Subtitle"]
+                </MudText>
 
-        </AuthorizeView>
-    </MudPaper>
-</MudContainer>
+                <div class="home-hero__chips">
+                    <MudChip T="string"
+                             Variant="Variant.Outlined"
+                             Icon="@Icons.Material.Filled.Schedule">
+                        @L["Home_Chip_Planned"]
+                    </MudChip>
+
+                    <MudChip T="string"
+                             Variant="Variant.Outlined"
+                             Icon="@Icons.Material.Filled.DoneAll">
+                        @L["Home_Chip_Actual"]
+                    </MudChip>
+
+                    <MudChip T="string"
+                             Variant="Variant.Outlined"
+                             Icon="@Icons.Material.Filled.AccountBalanceWallet">
+                        @L["Home_Chip_MultiAccount"]
+                    </MudChip>
+                </div>
+
+                <AuthorizeView>
+                    <Authorized>
+                        <div class="home-hero__actions">
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Large"
+                                       Href="transactions">
+                                @L["Transactions_PageTitle"]
+                            </MudButton>
+
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Large"
+                                       Href="debts">
+                                @L["Debts_PageTitle"]
+                            </MudButton>
+
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Large"
+                                       Href="reports">
+                                @L["Debts_PageTitle"]
+                            </MudButton>
+                        </div>
+                    </Authorized>
+
+                    <NotAuthorized>
+                        <div class="home-hero__actions">
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Large"
+                                       Href="login">
+                                @L["Login"]
+                            </MudButton>
+
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       Size="Size.Large"
+                                       Href="register">
+                                @L["Create_account"]
+                            </MudButton>
+                        </div>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </section>
+
+            <section class="home-card home-card--demo">
+                <div class="home-demo__header">
+                    <div>
+                        <MudText Typo="Typo.overline" Class="home-card__eyebrow">
+                            @L["Home_Demo_Eyebrow"]
+                        </MudText>
+
+                        <MudText Typo="Typo.h6">
+                            @L["Home_Demo_Title"]
+                        </MudText>
+                    </div>
+                </div>
+
+                <div class="home-demo__balances">
+                    <div class="home-balance home-balance--actual">
+                        <span class="home-balance__label">@L["Home_BalanceActual_Label"]</span>
+                        <strong class="home-balance__amount">1,607.85 EUR</strong>
+                        <span class="home-balance__hint">@L["Home_BalanceActual_Hint"]</span>
+                    </div>
+
+                    <div class="home-balance home-balance--planned">
+                        <span class="home-balance__label">@L["Home_BalancePlanned_Label"]</span>
+                        <strong class="home-balance__amount">637.85 EUR</strong>
+                        <span class="home-balance__hint">@L["Home_BalancePlanned_Hint"]</span>
+                    </div>
+                </div>
+
+                <div class="home-demo__transactions">
+                    <div class="home-transaction">
+                        <div class="home-transaction__main">
+                            <span class="home-transaction__title">
+                                @L["Home_Demo_Transaction1_Title"]
+                            </span>
+
+                            <MudChip T="string"
+                                     Variant="Variant.Outlined"
+                                     Size="Size.Small"
+                                     Color="Color.Success">
+                                @L["Home_Demo_TagActual"]
+                            </MudChip>
+                            
+                        </div>
+
+                        <span class="home-transaction__amount home-transaction__amount--positive">
+                            +1,780.00 EUR
+                        </span>
+                    </div>
+
+                    <div class="home-transaction">
+                        <div class="home-transaction__main">
+                            <span class="home-transaction__title">
+                                @L["Home_Demo_Transaction2_Title"]
+                            </span>
+
+                            <MudChip T="string"
+                                     Variant="Variant.Filled"
+                                     Size="Size.Small"
+                                     Color="Color.Warning">
+                                @L["Home_Demo_TagPlanned"]
+                            </MudChip>
+                        </div>
+
+                        <span class="home-transaction__amount home-transaction__amount--negative">
+                            -850.00 EUR
+                        </span>
+                    </div>
+
+                    <div class="home-transaction">
+                        <div class="home-transaction__main">
+                            <span class="home-transaction__title">
+                                @L["Home_Demo_Transaction3_Title"]
+                            </span>
+
+                            <MudChip T="string"
+                                     Variant="Variant.Outlined"
+                                     Size="Size.Small"
+                                     Color="Color.Success">
+                                @L["Home_Demo_TagActual"]
+                            </MudChip>
+                        </div>
+
+                        <span class="home-transaction__amount home-transaction__amount--negative">
+                            -136,65 EUR
+                        </span>
+                    </div>
+
+                    <div class="home-transaction">
+                        <div class="home-transaction__main">
+                            <span class="home-transaction__title">
+                                @L["Home_Demo_Transaction4_Title"]
+                            </span>
+
+                            <MudChip T="string"
+                                     Variant="Variant.Filled"
+                                     Size="Size.Small"
+                                     Color="Color.Warning">
+                                @L["Home_Demo_TagPlanned"]
+                            </MudChip>
+                        </div>
+
+                        <span class="home-transaction__amount home-transaction__amount--negative">
+                            -120.00 EUR
+                        </span>
+                    </div>
+
+                    <div class="home-transaction">
+                        <div class="home-transaction__main">
+                            <span class="home-transaction__title">
+                                @L["Home_Demo_Transaction5_Title"]
+                            </span>
+
+                            <MudChip T="string"
+                                     Variant="Variant.Outlined"
+                                     Size="Size.Small"
+                                     Color="Color.Success">
+                                @L["Home_Demo_TagActual"]
+                            </MudChip>
+                        </div>
+
+                        <span class="home-transaction__amount home-transaction__amount--negative">
+                            -35.50 EUR
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="home-card home-card--guide">
+                <MudText Typo="Typo.overline" Class="home-card__eyebrow">
+                    @L["Home_Guide_Eyebrow"]
+                </MudText>
+
+                <MudText Typo="Typo.h5" Class="home-guide__title">
+                    @L["Home_Guide_Title"]
+                </MudText>
+
+                <div class="home-guide__grid">
+                    <div class="home-guide-item">
+                        <MudIcon Icon="@Icons.Material.Filled.PlayArrow"
+                                 Class="home-guide-item__icon" />
+
+                        <MudText Typo="Typo.subtitle1" Class="home-guide-item__title">
+                            @L["Home_Guide_HowToUse_Title"]
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Class="home-guide-item__text">
+                            @L["Home_Guide_HowToUse_Text"]
+                        </MudText>
+                    </div>
+
+                    <div class="home-guide-item">
+                        <MudIcon Icon="@Icons.Material.Filled.EventNote"
+                                 Class="home-guide-item__icon" />
+
+                        <MudText Typo="Typo.subtitle1" Class="home-guide-item__title">
+                            @L["Home_Guide_PlannedVsActual_Title"]
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Class="home-guide-item__text">
+                            @L["Home_Guide_PlannedVsActual_Text"]
+                        </MudText>
+                    </div>
+
+                    <div class="home-guide-item">
+                        <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet"
+                                 Class="home-guide-item__icon" />
+
+                        <MudText Typo="Typo.subtitle1" Class="home-guide-item__title">
+                            @L["Home_Guide_Balances_Title"]
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Class="home-guide-item__text">
+                            @L["Home_Guide_Balances_Text"]
+                        </MudText>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </MudContainer>
+</div>
