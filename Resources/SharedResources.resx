@@ -720,4 +720,7 @@
   <data name="Reports_PageTitle" xml:space="preserve">
     <value>Reports</value>
   </data>
+  <data name="Remember_me" xml:space="preserve">
+    <value>Remember me</value>
+  </data>
 </root>

@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Infrastructure.Auth;
 
-public class CustomAuthStateProvider(ILocalStorageService localStorage, Supabase.Client client) : AuthenticationStateProvider
+public class CustomAuthStateProvider(ILocalStorageService localStorage,BrowserSessionStorage sessionStorage,Supabase.Client client) : AuthenticationStateProvider
 {
     private readonly ILocalStorageService _localStorage = localStorage;
+    private readonly BrowserSessionStorage _sessionStorage = sessionStorage;
     private const string SessionKey = "supabase_session";
     private readonly Supabase.Client _client = client;
 
@@ -26,11 +27,13 @@ public class CustomAuthStateProvider(ILocalStorageService localStorage, Supabase
             if (session is null)
             {
                 await _localStorage.RemoveItemAsync(SessionKey);
+                await _sessionStorage.RemoveItemAsync(SessionKey);
             }
         }
         catch
         {
             await _localStorage.RemoveItemAsync(SessionKey);
+            await _sessionStorage.RemoveItemAsync(SessionKey);
             throw;
         }
 

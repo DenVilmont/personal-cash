@@ -30,6 +30,13 @@
                           Margin="Margin.Dense" 
                           Class="w-100" />
 
+            <MudCheckBox T="bool"
+                         @bind-Value="rememberMe"
+                         Label="@L["Remember_me"]"
+                         Color="Color.Primary"
+                         Dense="true"
+                         Class="mt-1 mb-1" />
+
             <MudButton Variant="Variant.Filled"
                        FullWidth="true"
                        Color="Color.Primary"

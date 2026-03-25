@@ -7,12 +7,13 @@ public partial class Login
 {
     protected string email {get; set;} = string.Empty;
     protected string password {get; set;} = string.Empty;
+    protected bool rememberMe { get; set; } = false;
 
     public async Task OnSubmitLogin()
     {
         await RunAsync(async () =>
         {
-            await AuthService.Login(email, password);
+            await AuthService.Login(email, password, rememberMe);
             NavigationManager.NavigateTo("transactions");
         }, successMessage: L["Login_successful"]);
     }
@@ -21,7 +22,7 @@ public partial class Login
     {
         await RunAsync(async () =>
         {
-            await AuthService.Login(PublicDemoAccount.Email, PublicDemoAccount.Password);
+            await AuthService.Login(PublicDemoAccount.Email, PublicDemoAccount.Password, false);
             NavigationManager.NavigateTo("transactions");
         }, successMessage: L["Demo_login_successful"]);
     }

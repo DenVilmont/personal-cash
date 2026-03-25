@@ -27,22 +27,22 @@ public partial class PcDatePicker
     [Parameter] public Origin AnchorOrigin { get; set; } = Origin.BottomRight;
     [Parameter] public Origin TransformOrigin { get; set; } = Origin.TopRight;
 
-    [Parameter] public bool DialogOnXsOnly { get; set; } = true;
-    [Parameter] public bool ShowActionsOnXsOnly { get; set; } = true;
-    [Parameter] public bool ModalOnXsOnly { get; set; } = true;
+    [Parameter] public bool IsDialog { get; set; } = true;
+    [Parameter] public bool IsShowActions { get; set; } = true;
+    [Parameter] public bool IsModal { get; set; } = true;
 
     private PickerVariant ResolvedPickerVariant =>
-        DialogOnXsOnly && _isXs
+        IsDialog && _isXs
             ? PickerVariant.Dialog
             : PickerVariant.Inline;
 
     private bool ResolvedModal =>
-        ModalOnXsOnly
+        IsModal
             ? _isXs
             : true;
 
     private bool ShowMobileActions =>
-        ShowActionsOnXsOnly && _isXs;
+        IsShowActions && _isXs;
 
     protected override void OnParametersSet()
     {

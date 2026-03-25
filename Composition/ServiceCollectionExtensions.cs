@@ -74,8 +74,10 @@ internal static class ServiceCollectionExtensions
                     AutoConnectRealtime = false,
                     SessionHandler = new CustomSupabaseSessionHandler(
                         sp.GetRequiredService<ISyncLocalStorageService>(),
+                        sp.GetRequiredService<BrowserSessionStorage>(),
+                        sp.GetRequiredService<AuthPersistenceModeStore>(),
                         sp.GetRequiredService<ILogger<CustomSupabaseSessionHandler>>()
-                    )
+)
                 }
             );
 
@@ -89,6 +91,8 @@ internal static class ServiceCollectionExtensions
     {
         services.AddScoped<AuthService>();
         services.AddScoped<DatabaseService>();
+        services.AddScoped<BrowserSessionStorage>();
+        services.AddScoped<AuthPersistenceModeStore>();
 
         services.AddScoped<IAccountsRepository, AccountsRepository>();
         services.AddScoped<ICategoriesRepository, CategoriesRepository>();
