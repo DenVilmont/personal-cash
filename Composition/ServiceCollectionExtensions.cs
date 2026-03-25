@@ -79,7 +79,6 @@ internal static class ServiceCollectionExtensions
                 }
             );
 
-            client.Auth.LoadSession();
             return client;
         });
 

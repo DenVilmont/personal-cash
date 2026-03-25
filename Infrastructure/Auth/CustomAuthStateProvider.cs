@@ -10,14 +10,37 @@ namespace Infrastructure.Auth;
 public class CustomAuthStateProvider(ILocalStorageService localStorage, Supabase.Client client) : AuthenticationStateProvider
 {
     private readonly ILocalStorageService _localStorage = localStorage;
+    private const string SessionKey = "supabase_session";
     private readonly Supabase.Client _client = client;
 
     private Task? _initializeTask;
 
+    private async Task InitializeClientAsync()
+    {
+        _client.Auth.LoadSession();
+
+        try
+        {
+            var session = await _client.Auth.RetrieveSessionAsync();
+
+            if (session is null)
+            {
+                await _localStorage.RemoveItemAsync(SessionKey);
+            }
+        }
+        catch
+        {
+            await _localStorage.RemoveItemAsync(SessionKey);
+            throw;
+        }
+
+        await _client.InitializeAsync();
+    }
+
     private async Task EnsureClientInitializedAsync()
     {
         if (_initializeTask is null)
-            _initializeTask = _client.InitializeAsync();
+            _initializeTask = InitializeClientAsync();
 
         try
         {
@@ -25,7 +48,6 @@ public class CustomAuthStateProvider(ILocalStorageService localStorage, Supabase
         }
         catch
         {
-            // Allow retry if initialization failed once
             _initializeTask = null;
             throw;
         }
