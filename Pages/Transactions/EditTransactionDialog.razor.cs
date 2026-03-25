@@ -2,7 +2,7 @@
 using Domain.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using PersonalCash.Shared.Extensions;
+using PersonalCash.Shared.Components;
 using System.Globalization;
 
 namespace PersonalCash.Pages.Transactions

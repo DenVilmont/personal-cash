@@ -12,8 +12,6 @@
     }
 
         .transactions-filters-panel ::deep .transactions-filters-panel__mobile-panel .mud-expand-panel-header {
-            min-height: 56px;
-            padding: 14px 16px;
             border-bottom: 1px solid rgba(148, 163, 184, 0.10);
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.70) 0%, rgba(247, 249, 253, 0.90) 100%);
         }

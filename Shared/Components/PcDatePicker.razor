@@ -1,6 +1,21 @@
 ﻿@using MudBlazor
 
-@if (ShowMobileActions)
+@if (UseStandaloneXsDialog)
+{
+    <MudTextField T="string"
+                  Label="@Label"
+                  Value="@DisplayText"
+                  Variant="@Variant"
+                  Margin="@Margin"
+                  Class="@Class"
+                  Disabled="@Disabled"
+                  Required="@Required"
+                  ReadOnly="true"
+                  Adornment="Adornment.End"
+                  AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                  OnAdornmentClick="@(_ => OpenStandaloneDialogAsync())" />
+}
+else if (ShowMobileActions)
 {
     <MudDatePicker @ref="_picker"
                    Label="@Label"

@@ -1,0 +1,29 @@
+﻿@inherits PersonalCash.Shared.UiComponentBase
+
+<MudDialog>
+    <DialogContent>
+        <MudItem Class="d-flex justify-center w-100">
+            <MudDatePicker Date="_currentDate"
+                           DateChanged="OnDateChanged"
+                           PickerVariant="PickerVariant.Static"
+                           Editable="false" />
+        </MudItem>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="SetToday">
+            @L["Today"]
+        </MudButton>
+
+        <MudSpacer />
+
+        <MudButton OnClick="Cancel">
+            @L["Cancel"]
+        </MudButton>
+
+        <MudButton Color="Color.Primary"
+                   OnClick="Submit">
+            @L["OK"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>

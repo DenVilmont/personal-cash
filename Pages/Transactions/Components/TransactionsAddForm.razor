@@ -16,13 +16,10 @@
             <ChildContent>
                 <div class="transactions-mobile-panel-body">
                     <MudGrid Spacing="3" Class="transactions-add-form__grid align-stretch">
-                        <MudItem xs="12" Class="d-flex d-sm-none">
+                        <MudItem xs="12" md="6">
                             <PcDatePicker Date="OccurredOn"
-                                          DateChanged="OnOccurredOnChanged" />
-                        </MudItem>
-                        <MudItem sm="12" md="6" Class="d-none d-sm-flex">
-                            <PcDatePicker Date="OccurredOn"
-                                          DateChanged="OnOccurredOnChanged" />
+                                          DateChanged="OnOccurredOnChanged"
+                                          Margin="Margin.Dense" />
                         </MudItem>
 
 

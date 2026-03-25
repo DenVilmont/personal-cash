@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Globalization;
 using MudBlazor;
 
 namespace PersonalCash.Shared.Components;
@@ -6,6 +7,7 @@ namespace PersonalCash.Shared.Components;
 public partial class PcDatePicker
 {
     [Inject] private IBrowserViewportService BrowserViewportService { get; set; } = default!;
+    [Inject] private IDialogService DialogService { get; set; } = default!;
 
     private MudDatePicker? _picker;
     private bool _isXs;
@@ -17,7 +19,7 @@ public partial class PcDatePicker
     [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
 
     [Parameter] public Variant Variant { get; set; } = Variant.Outlined;
-    [Parameter] public Margin Margin { get; set; } = Margin.Dense;
+    [Parameter] public Margin Margin { get; set; } = Margin.None;
     [Parameter] public string? Class { get; set; } = "w-100";
 
     [Parameter] public bool Disabled { get; set; }
@@ -27,27 +29,61 @@ public partial class PcDatePicker
     [Parameter] public Origin AnchorOrigin { get; set; } = Origin.BottomRight;
     [Parameter] public Origin TransformOrigin { get; set; } = Origin.TopRight;
 
-    [Parameter] public bool IsDialog { get; set; } = true;
-    [Parameter] public bool IsShowActions { get; set; } = true;
-    [Parameter] public bool IsModal { get; set; } = true;
+    [Parameter] public bool IsDialog { get; set; } = false;
+    [Parameter] public bool IsShowActions { get; set; } = false;
+    [Parameter] public bool IsModal { get; set; } = false;
+    [Parameter] public bool UseStandaloneDialogOnXs { get; set; } = true;
+
+    private string ResolvedLabel => Label ?? L["Date"];
+
+    private bool UseStandaloneXsDialog => UseStandaloneDialogOnXs && _isXs;
+
+    private string DisplayText =>
+        _currentDate?.ToString("d", CultureInfo.CurrentCulture) ?? string.Empty;
+
+    private async Task OpenStandaloneDialogAsync()
+    {
+        var parameters = new DialogParameters
+        {
+            ["Date"] = _currentDate
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraSmall,
+            FullWidth = true
+        };
+
+        var dialog = await DialogService.ShowAsync<PcDateSelectionDialog>(
+            ResolvedLabel,
+            parameters,
+            options);
+
+        var result = await dialog.Result;
+
+        if (result is null || result.Canceled)
+            return;
+
+        if (result.Data is DateTime date)
+        {
+            _currentDate = date;
+            await DateChanged.InvokeAsync(date);
+        }
+    }
 
     private PickerVariant ResolvedPickerVariant =>
-        IsDialog && _isXs
+        IsDialog || _isXs
             ? PickerVariant.Dialog
             : PickerVariant.Inline;
 
-    private bool ResolvedModal =>
-        IsModal
-            ? _isXs
-            : true;
+    private bool ResolvedModal => IsModal || _isXs;
 
     private bool ShowMobileActions =>
-        IsShowActions && _isXs;
+        _isXs || IsShowActions;
 
     protected override void OnParametersSet()
     {
         _currentDate = Date;
-        Label = Label ?? L["Date"];
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
