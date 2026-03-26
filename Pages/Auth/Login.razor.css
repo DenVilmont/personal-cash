@@ -13,4 +13,8 @@
             width: min(100%, 400px);
             border-radius: 16px;
         }
+
+        .login-page ::deep .mud-checkbox .mud-icon-root {
+            font-size: 2rem;
+        }
 }

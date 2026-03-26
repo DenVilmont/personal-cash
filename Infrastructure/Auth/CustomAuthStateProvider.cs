@@ -20,21 +20,30 @@ public class CustomAuthStateProvider(ILocalStorageService localStorage,BrowserSe
     {
         _client.Auth.LoadSession();
 
-        try
-        {
-            var session = await _client.Auth.RetrieveSessionAsync();
+        var persistedSession = _client.Auth.CurrentSession;
+        var accessToken = persistedSession?.AccessToken;
+        var refreshToken = persistedSession?.RefreshToken;
 
-            if (session is null)
+        if (!string.IsNullOrWhiteSpace(accessToken) &&
+            !string.IsNullOrWhiteSpace(refreshToken))
+        {
+            try
+            {
+                await _client.Auth.SetSession(
+                    accessToken,
+                    refreshToken,
+                    forceAccessTokenRefresh: true);
+            }
+            catch
             {
                 await _localStorage.RemoveItemAsync(SessionKey);
                 await _sessionStorage.RemoveItemAsync(SessionKey);
             }
         }
-        catch
+        else if (persistedSession is not null)
         {
             await _localStorage.RemoveItemAsync(SessionKey);
             await _sessionStorage.RemoveItemAsync(SessionKey);
-            throw;
         }
 
         await _client.InitializeAsync();
