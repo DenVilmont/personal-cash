@@ -51,7 +51,6 @@ public partial class TransactionsPage : IDisposable
     private decimal? _fMinAmount;
     private decimal? _fMaxAmount;
 
-    private List<TransactionDto> _allItems = new();
     protected List<TransactionDto> _items = new();
 
     protected override void OnParametersSet()
@@ -142,6 +141,13 @@ public partial class TransactionsPage : IDisposable
 
     protected decimal SignedAmount(TransactionDto t) => t.EntryType == EntryType.Outcome ? -t.Amount : t.Amount;
 
+    private async Task ReloadAccountsAsync()
+    {
+        _accounts = await AccountsService.GetSortedAsync();
+        _activeAccounts = _accounts.Where(x => !x.IsArchived).ToList();
+        _accountById = _accounts.ToDictionary(x => x.Id, x => x);
+    }
+
     protected async Task LoadCategoriesAsync()
     {
         _categories = await CategoriesService.GetSortedAsync();
@@ -154,27 +160,18 @@ public partial class TransactionsPage : IDisposable
         {
             _categoryId = Guid.Empty;
         }
-        
-
-        _accounts = await AccountsService.GetSortedAsync();
-        _activeAccounts = _accounts.Where(q => !q.IsArchived).ToList();
-
-        _accountById = _accounts.ToDictionary(x => x.Id, x => x);
-
-        SelectedAccountId = _activeAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
     }
 
     protected Task LoadAsync() => RunAsync(LoadCoreAsync);
 
     private async Task LoadCoreAsync()
     {
-        _allItems = await TxService.GetAllAsync();
+        await ReloadAccountsAsync();
+        if (_accountId == Guid.Empty)
+            SelectedAccountId = _activeAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
         RebuildMonthOptions();
-
-        _activeAccounts = await AccountsService.GetActiveAsync();
-
         await InitializeFiltersAsync();
-        ApplyFilters();
+        await ReloadFilteredItemsCoreAsync();
     }
     protected void RefreshAsync()
     {
@@ -182,7 +179,7 @@ public partial class TransactionsPage : IDisposable
         _entryType = EntryType.Outcome;
         SelectedAccountId = _activeAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
         _amount = null;
-        _categoryId = _categories.First().Id;
+        _categoryId = _categories.FirstOrDefault()?.Id ?? Guid.Empty;
         _note = null;
         _isForPlanning = false;
     }
@@ -245,7 +242,8 @@ public partial class TransactionsPage : IDisposable
             _amount = null;
             _note = null;
             _entryType = EntryType.Outcome;
-            await LoadCoreAsync();
+            await ReloadAccountsAsync();
+            await ReloadFilteredItemsCoreAsync();
         }, successMessage: L["Added"]);
     }
 
@@ -277,7 +275,8 @@ public partial class TransactionsPage : IDisposable
         => RunAsync(async () =>
         {
             await TxService.DeleteTransactionAndUpdateBalances(tx);
-            await LoadCoreAsync();
+            await ReloadAccountsAsync();
+            await ReloadFilteredItemsCoreAsync();
         }, successMessage: L["Deleted"]);
 
     protected async Task OpenEditAsync(TransactionDto tx)
@@ -322,7 +321,8 @@ public partial class TransactionsPage : IDisposable
         await RunAsync(async () =>
         {
             await TxService.UpdateTransactionAndUpdateBalances(tx, updated);
-            await LoadCoreAsync();
+            await ReloadAccountsAsync();
+            await ReloadFilteredItemsCoreAsync();
         }, successMessage: L["Updated"]);
     }
 
@@ -375,7 +375,8 @@ public partial class TransactionsPage : IDisposable
             {
                 await TxService.DeleteTransactionAndUpdateBalances(updated);
             }
-            await LoadCoreAsync();
+            await ReloadAccountsAsync();
+            await ReloadFilteredItemsCoreAsync();
         }, successMessage: L["Transactions_TransactionCompleted"]);
     }
 
@@ -384,19 +385,8 @@ public partial class TransactionsPage : IDisposable
         var today = DateOnly.FromDateTime(DateTime.Today);
         var currentMonth = new DateOnly(today.Year, today.Month, 1);
 
-        var startMonth = currentMonth.AddMonths(-11);
-
-        if (_allItems.Count > 0)
-        {
-            var minDate = _allItems.Min(x => x.OccurredOn);
-            var minMonth = new DateOnly(minDate.Year, minDate.Month, 1);
-            if (minMonth > startMonth)
-                startMonth = minMonth;
-        }
-
         _monthOptions.Clear();
-
-        for (var m = currentMonth; m >= startMonth; m = m.AddMonths(-1))
+        for (var m = currentMonth; m >= currentMonth.AddMonths(-23); m = m.AddMonths(-1))
             _monthOptions.Add(m);
     }
 
@@ -462,54 +452,13 @@ public partial class TransactionsPage : IDisposable
         _filtersInitDone = true;
     }
 
-    private void ApplyFilters()
+    private async Task ReloadFilteredItemsCoreAsync()
     {
-        IEnumerable<TransactionDto> q = _allItems;
-
-        DateOnly? effectiveFrom = _fFrom;
-        DateOnly? effectiveTo = _fTo;
-
-        if (_fMonth is not null)
-        {
-            effectiveFrom = new DateOnly(_fMonth.Value.Year, _fMonth.Value.Month, 1);
-            effectiveTo = effectiveFrom.Value.AddMonths(1).AddDays(-1);
-        }
-
-        if (effectiveFrom is not null)
-            q = q.Where(x => x.OccurredOn >= effectiveFrom.Value);
-
-        if (effectiveTo is not null)
-            q = q.Where(x => x.OccurredOn <= effectiveTo.Value);
-
-        if (_fEntryType is not null)
-            q = q.Where(x => x.EntryType == _fEntryType.Value);
-
-        if (_fCategoryIds.Count > 0)
-            q = q.Where(x => _fCategoryIds.Contains(x.CategoryId));
-
-        if (_fAccountIds.Count > 0)
-            q = q.Where(x => _fAccountIds.Contains(x.AccountId));
-
-        if (_fIsForPlanning is not null)
-            q = q.Where(x => x.IsPlanned == _fIsForPlanning.Value);
-
-        if (!string.IsNullOrWhiteSpace(_fNote))
-        {
-            var s = _fNote.Trim();
-            q = q.Where(x => !string.IsNullOrWhiteSpace(x.Note) &&
-                             x.Note.Contains(s, StringComparison.OrdinalIgnoreCase));
-        }
-
-        if (_fMinAmount is not null)
-            q = q.Where(x => x.Amount >= _fMinAmount.Value);
-
-        if (_fMaxAmount is not null)
-            q = q.Where(x => x.Amount <= _fMaxAmount.Value);
-
-        q = q.OrderByDescending(x => x.OccurredOn).ThenByDescending(x => x.CreatedAt);
-
-        _items = q.ToList();
+        var filter = BuildCurrentFilterState();
+        _items = await TxService.GetFilteredAsync(filter);
     }
+    private Task ApplyFiltersAsync()
+        => RunAsync(ReloadFilteredItemsCoreAsync);
 
     private void ApplyDefaultFilters()
     {
@@ -538,22 +487,12 @@ public partial class TransactionsPage : IDisposable
         }
     }
 
-    private void ClearFilters()
-    {
-        _fFrom = null;
-        _fTo = null;
-        _fMonth = null;
-        _fEntryType = null;
-        _fAccountIds = new HashSet<Guid>();
-        _fCategoryIds = new HashSet<Guid>();
-        _fIsForPlanning = null;
-        _fNote = null;
-        _fMinAmount = null;
-        _fMaxAmount = null;
-
-        ApplyFilters();
-        Snackbar.Add(L["Filter_Cleared_InfoMessage"], Severity.Info);
-    }
+    private Task ClearFilters()
+        => RunAsync(async () =>
+        {
+            ApplyDefaultFilters();
+            await ReloadFilteredItemsCoreAsync();
+        }, successMessage: L["Filter_Cleared_InfoMessage"], Severity.Info);
 
     private async Task SaveFiltersAsync()
     {
@@ -575,7 +514,7 @@ public partial class TransactionsPage : IDisposable
         {
             await PageStateService.DeleteAsync(PageStateKeys.Transactions);
             ApplyDefaultFilters();
-            ApplyFilters();
+            await ReloadFilteredItemsCoreAsync();
         }, successMessage: L["Filter_ResetCompleted_InfoMessage"], Severity.Info);
     }
 

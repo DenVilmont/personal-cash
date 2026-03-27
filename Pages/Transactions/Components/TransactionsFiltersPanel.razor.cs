@@ -48,6 +48,12 @@ public partial class TransactionsFiltersPanel
     [Parameter] public EventCallback OnReset { get; set; }
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public bool Busy { get; set; }
+    [Parameter] public EventCallback OnApply { get; set; }
+
+    private async Task ApplyClicked()
+    {
+        await OnApply.InvokeAsync();
+    }
 
     private static string FormatMonth(DateOnly? value)
     {
@@ -83,67 +89,56 @@ public partial class TransactionsFiltersPanel
     private async Task OnFromDateChanged(DateTime? value)
     {
         await FromDateChanged.InvokeAsync(value);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnToDateChanged(DateTime? value)
     {
         await ToDateChanged.InvokeAsync(value);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnMonthChanged(DateOnly? value)
     {
         await MonthChanged.InvokeAsync(value);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnMonthCleared()
     {
         await MonthChanged.InvokeAsync(null);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnAccountIdsChanged(IReadOnlyCollection<Guid> values)
     {
         await AccountIdsChanged.InvokeAsync(values);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnEntryTypeChanged(EntryType? value)
     {
         await SelectedEntryTypeChanged.InvokeAsync(value);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnCategoryIdsChanged(IReadOnlyCollection<Guid> values)
     {
         await CategoryIdsChanged.InvokeAsync(values);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnIsForPlanningChanged(bool? value)
     {
         await IsForPlanningChanged.InvokeAsync(value);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnNoteChanged(string? value)
     {
         await NoteChanged.InvokeAsync(value);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnMinAmountChanged(decimal? value)
     {
         await MinAmountChanged.InvokeAsync(value);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private async Task OnMaxAmountChanged(decimal? value)
     {
         await MaxAmountChanged.InvokeAsync(value);
-        await OnFiltersChanged.InvokeAsync();
     }
 
     private Task OnClearClicked() => OnClear.InvokeAsync();

@@ -2,6 +2,7 @@
 using Domain.Enums;
 using Domain.Ports;
 using Application.Common;
+using Domain.Contracts.FiltersState;
 
 namespace Application.Services
 {
@@ -10,6 +11,8 @@ namespace Application.Services
         private readonly ITransactionsRepository _txRepo = txRepo;
         private readonly IAccountsRepository _accountsRepo = accountsRepo;
 
+        public async Task<List<TransactionDto>> GetFilteredAsync(TransactionsFilterStateDto filter)
+            => (await _txRepo.ListAsync(filter)).ToList();
         public async Task<List<TransactionDto>> GetAllAsync()
             => (await _txRepo.ListAsync())
             .OrderByDescending(x => x.OccurredOn)

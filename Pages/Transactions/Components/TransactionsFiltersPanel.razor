@@ -126,26 +126,36 @@
 
                             <MudDivider Class="my-2" />
 
-                            <MudStack Row="true" Wrap="Wrap.NoWrap" Justify="Justify.FlexEnd" Spacing="2" Class="transactions-filters-panel__actions">
-                                <MudButton Variant="Variant.Outlined"
-                                           Color="Color.Secondary"
-                                           Disabled="Busy"
-                                           OnClick="OnClearClicked">
-                                    @L["Filter_Clear"]
-                                </MudButton>
-
-                                <MudButton Variant="Variant.Text"
-                                           Color="Color.Primary"
-                                           Disabled="Busy"
-                                           OnClick="OnResetClicked">
-                                    @L["Filter_Reset"]
-                                </MudButton>
-                                <MudButton Variant="Variant.Filled"
-                                           Color="Color.Primary"
-                                           Disabled="Busy"
-                                           OnClick="OnSaveClicked">
-                                    @L["Filter_Save"]
-                                </MudButton>
+                            <MudStack>
+                                <MudStack Row="true" Wrap="Wrap.NoWrap" Justify="Justify.SpaceBetween" Spacing="2" Class="transactions-filters-panel__actions">
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Secondary"
+                                               Disabled="Busy"
+                                               OnClick="OnClearClicked">
+                                        @L["Filter_Clear"]
+                                    </MudButton>
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               Disabled="Busy"
+                                               OnClick="ApplyClicked">
+                                        @L["Apply"]
+                                    </MudButton>
+                                </MudStack>
+                                <MudDivider />
+                                <MudStack Row="true" Wrap="Wrap.NoWrap" Justify="Justify.SpaceBetween" Spacing="2" Class="transactions-filters-panel__actions">
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Secondary"
+                                               Disabled="Busy"
+                                               OnClick="OnResetClicked">
+                                        @L["Filter_Reset"]
+                                    </MudButton>
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               Disabled="Busy"
+                                               OnClick="OnSaveClicked">
+                                        @L["Filter_Save"]
+                                    </MudButton>
+                                </MudStack>                                
                             </MudStack>
                         </MudStack>
                     </div>
@@ -290,26 +300,36 @@
 
                 <MudDivider Class="my-2" />
 
-                <MudStack Row="true" Wrap="Wrap.NoWrap" Spacing="2" Class="transactions-filters-panel__actions">
-                    <MudButton Variant="Variant.Outlined"
-                               Color="Color.Secondary"
-                               Disabled="Busy"
-                               OnClick="OnClearClicked">
-                        @L["Filter_Clear"]
-                    </MudButton>
-
-                    <MudButton Variant="Variant.Text"
-                               Color="Color.Primary"
-                               Disabled="Busy"
-                               OnClick="OnResetClicked">
-                        @L["Filter_Reset"]
-                    </MudButton>
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               Disabled="Busy"
-                               OnClick="OnSaveClicked">
-                        @L["Filter_Save"]
-                    </MudButton>
+                <MudStack>
+                    <MudStack Row="true" Wrap="Wrap.NoWrap" Justify="Justify.SpaceBetween" Spacing="2" Class="transactions-filters-panel__actions">
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Secondary"
+                                   Disabled="Busy"
+                                   OnClick="OnClearClicked">
+                            @L["Filter_Clear"]
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Disabled="Busy"
+                                   OnClick="ApplyClicked">
+                            @L["Apply"]
+                        </MudButton>
+                    </MudStack>
+                    <MudDivider />
+                    <MudStack Row="true" Wrap="Wrap.NoWrap" Justify="Justify.SpaceBetween" Spacing="2" Class="transactions-filters-panel__actions">
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Secondary"
+                                   Disabled="Busy"
+                                   OnClick="OnResetClicked">
+                            @L["Filter_Reset"]
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Disabled="Busy"
+                                   OnClick="OnSaveClicked">
+                            @L["Filter_Save"]
+                        </MudButton>
+                    </MudStack>
                 </MudStack>
             </MudStack>
         </MudPaper>

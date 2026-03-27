@@ -723,4 +723,7 @@
   <data name="Remember_me" xml:space="preserve">
     <value>Remember me</value>
   </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
 </root>
