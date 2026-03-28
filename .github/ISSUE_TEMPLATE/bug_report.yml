@@ -1,0 +1,66 @@
+name: Bug report
+description: Report a problem in PersonalCash
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug.
+
+        Please describe the issue as clearly as possible so it can be reproduced.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the problem.
+      placeholder: A clear and short description of the issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Tell exactly how to reproduce the problem.
+      placeholder: |
+        1. Go to ...
+        2. Click on ...
+        3. Enter ...
+        4. See error ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      placeholder: Describe the expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or videos
+      description: Add screenshots, recordings, or error messages if available.
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: e.g. Chrome 146, Firefox 145, Safari 18
+
+  - type: input
+    id: device
+    attributes:
+      label: Device / OS
+      placeholder: e.g. Windows 11, Android 15, iPhone 15, macOS
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Any extra context that may help.

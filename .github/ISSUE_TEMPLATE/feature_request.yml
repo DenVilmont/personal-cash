@@ -1,0 +1,46 @@
+name: Feature request
+description: Suggest an idea or improvement for PersonalCash
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement.
+
+        PersonalCash is intentionally focused on clarity, manual control, and low complexity.
+        Please describe the idea in that context.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the user problem behind the idea.
+      placeholder: I want to ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: Proposed solution
+      description: Describe the change you want to see.
+      placeholder: A clear description of the idea.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why does this fit PersonalCash?
+      description: Explain why this idea supports clarity, manual control, or simpler everyday planning.
+      placeholder: This fits because ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional. Describe other ideas or workarounds you considered.

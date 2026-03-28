@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Read the project overview
+    url: ../../README.md
+    about: Start with the README to understand the purpose and current scope of PersonalCash.
