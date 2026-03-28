@@ -637,28 +637,19 @@
     <value>Hoy</value>
   </data>
   <data name="Home_Eyebrow" xml:space="preserve">
-    <value>Finanzas personales sin ruido</value>
+    <value>Control manual y sencillo del dinero</value>
   </data>
   <data name="Home_Title" xml:space="preserve">
-    <value>Controla tu dinero real, planifica gastos futuros y mantén los saldos claros.</value>
+    <value>Tu dinero, sin ruido ni lógica ajena.</value>
   </data>
   <data name="Home_Subtitle" xml:space="preserve">
-    <value>PersonalCash separa las transacciones ya realizadas de las planificadas para que veas lo que tienes ahora y lo que cambiará después.</value>
-  </data>
-  <data name="Home_Chip_Planned" xml:space="preserve">
-    <value>Transacciones planificadas</value>
-  </data>
-  <data name="Home_Chip_Actual" xml:space="preserve">
-    <value>Transacciones reales</value>
-  </data>
-  <data name="Home_Chip_MultiAccount" xml:space="preserve">
-    <value>Saldos claros</value>
+    <value>PersonalCash está hecho para quienes encontraron Excel más claro que las aplicaciones financieras sobrecargadas. Todo sigue siendo manual y transparente: ingresos, gastos, operaciones planificadas, estadísticas mensuales y una sección separada de deudas.</value>
   </data>
   <data name="Home_Demo_Eyebrow" xml:space="preserve">
-    <value>Ejemplo</value>
+    <value>Basta con una mirada</value>
   </data>
   <data name="Home_Demo_Title" xml:space="preserve">
-    <value>Cómo se ve la lógica en la aplicación</value>
+    <value>Ves enseguida cuánto dinero tienes ahora y qué ya está planificado</value>
   </data>
   <data name="Home_BalanceActual_Label" xml:space="preserve">
     <value>Saldo real</value>
@@ -688,28 +679,10 @@
     <value>Real</value>
   </data>
   <data name="Home_Guide_Eyebrow" xml:space="preserve">
-    <value>Cómo funciona</value>
+    <value>Por qué se siente más simple</value>
   </data>
   <data name="Home_Guide_Title" xml:space="preserve">
-    <value>Una página sencilla, con lógica clara</value>
-  </data>
-  <data name="Home_Guide_HowToUse_Title" xml:space="preserve">
-    <value>Cómo usarla</value>
-  </data>
-  <data name="Home_Guide_HowToUse_Text" xml:space="preserve">
-    <value>Crea cuentas y categorías, añade ingresos y gastos, y revisa los saldos y el historial de movimientos en un solo lugar.</value>
-  </data>
-  <data name="Home_Guide_PlannedVsActual_Title" xml:space="preserve">
-    <value>Transacciones planificadas y reales</value>
-  </data>
-  <data name="Home_Guide_PlannedVsActual_Text" xml:space="preserve">
-    <value>Las transacciones planificadas son operaciones futuras. Las reales ya se han completado y afectan al saldo real.</value>
-  </data>
-  <data name="Home_Guide_Balances_Title" xml:space="preserve">
-    <value>Saldo planificado y saldo real</value>
-  </data>
-  <data name="Home_Guide_Balances_Text" xml:space="preserve">
-    <value>El saldo planificado muestra hacia dónde va la cuenta después de las operaciones futuras. El saldo real muestra el dinero que ya tienes disponible.</value>
+    <value>Menos sobrecarga. Más claridad en la vida diaria.</value>
   </data>
   <data name="Home_Demo_Transaction4_Title" xml:space="preserve">
     <value>Suscripción a internet</value>
@@ -725,5 +698,44 @@
   </data>
   <data name="Apply" xml:space="preserve">
     <value>Aplicar</value>
+  </data>
+  <data name="Home_Chip_Manual" xml:space="preserve">
+    <value>Control manual</value>
+  </data>
+  <data name="Home_Chip_PlannedActual" xml:space="preserve">
+    <value>Plan y realidad por separado</value>
+  </data>
+  <data name="Home_Chip_Devices" xml:space="preserve">
+    <value>Móvil y ordenador</value>
+  </data>
+  <data name="Home_Hero_Note" xml:space="preserve">
+    <value>Sin sincronización bancaria, sin automatización forzada y sin la sensación de que la aplicación decide por ti.</value>
+  </data>
+  <data name="Home_Demo_Note" xml:space="preserve">
+    <value>Las deudas están en una sección separada: siguen visibles, pero no se mezclan con los gastos del día a día.</value>
+  </data>
+  <data name="Home_Guide_Manual_Title" xml:space="preserve">
+    <value>Control manual</value>
+  </data>
+  <data name="Home_Guide_Manual_Text" xml:space="preserve">
+    <value>Tú añades las operaciones y entiendes siempre de dónde sale cada cifra. Sin importaciones ocultas y sin automatización innecesaria entre tú y tus datos.</value>
+  </data>
+  <data name="Home_Guide_PlannedActual_Title" xml:space="preserve">
+    <value>Plan y realidad por separado</value>
+  </data>
+  <data name="Home_Guide_PlannedActual_Text" xml:space="preserve">
+    <value>Las operaciones futuras no se mezclan con las ya completadas. El saldo real muestra lo disponible ahora, y el saldo planificado muestra hacia dónde va el mes.</value>
+  </data>
+  <data name="Home_Guide_Reports_Title" xml:space="preserve">
+    <value>Estadísticas sin ruido</value>
+  </data>
+  <data name="Home_Guide_Reports_Text" xml:space="preserve">
+    <value>Los informes por categorías y por meses te ayudan a entender tus gastos habituales y a planificar el siguiente mes con más calma, sin flujos complejos ni pantallas extra.</value>
+  </data>
+  <data name="Home_Guide_Debts_Title" xml:space="preserve">
+    <value>Deudas aparte</value>
+  </data>
+  <data name="Home_Guide_Debts_Text" xml:space="preserve">
+    <value>La sección de deudas está al lado del control principal. Es fácil mantenerlas visibles y actualizarlas cuando haga falta sin convertir el seguimiento diario en un sistema sobrecargado.</value>
   </data>
 </root>

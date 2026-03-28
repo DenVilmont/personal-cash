@@ -637,28 +637,19 @@
     <value>Today</value>
   </data>
   <data name="Home_Eyebrow" xml:space="preserve">
-    <value>Personal finance without clutter</value>
+    <value>Simple manual finance tracking</value>
   </data>
   <data name="Home_Title" xml:space="preserve">
-    <value>Track real money, plan future expenses, and keep balances clear.</value>
+    <value>Your money, without clutter or hidden logic.</value>
   </data>
   <data name="Home_Subtitle" xml:space="preserve">
-    <value>PersonalCash helps you separate completed transactions from planned ones so you always see what you have now and what is coming next.</value>
-  </data>
-  <data name="Home_Chip_Planned" xml:space="preserve">
-    <value>Planned transactions</value>
-  </data>
-  <data name="Home_Chip_Actual" xml:space="preserve">
-    <value>Real transactions</value>
-  </data>
-  <data name="Home_Chip_MultiAccount" xml:space="preserve">
-    <value>Clear balances</value>
+    <value>PersonalCash is built for people who found Excel easier than overloaded finance apps. Everything stays manual and transparent: income, expenses, planned transactions, monthly statistics, and a separate debts section.</value>
   </data>
   <data name="Home_Demo_Eyebrow" xml:space="preserve">
-    <value>Example</value>
+    <value>One glance is enough</value>
   </data>
   <data name="Home_Demo_Title" xml:space="preserve">
-    <value>What the app logic looks like</value>
+    <value>See what you have now and what is already planned next</value>
   </data>
   <data name="Home_BalanceActual_Label" xml:space="preserve">
     <value>Real balance</value>
@@ -685,31 +676,13 @@
     <value>Planned</value>
   </data>
   <data name="Home_Demo_TagActual" xml:space="preserve">
-    <value>Real</value>
+    <value>Actual</value>
   </data>
   <data name="Home_Guide_Eyebrow" xml:space="preserve">
-    <value>How it works</value>
+    <value>Why it feels simpler</value>
   </data>
   <data name="Home_Guide_Title" xml:space="preserve">
-    <value>The page stays simple, but the logic is separated</value>
-  </data>
-  <data name="Home_Guide_HowToUse_Title" xml:space="preserve">
-    <value>How to use it</value>
-  </data>
-  <data name="Home_Guide_HowToUse_Text" xml:space="preserve">
-    <value>Create accounts and categories, add income and expenses, then review balances and transaction history in one place.</value>
-  </data>
-  <data name="Home_Guide_PlannedVsActual_Title" xml:space="preserve">
-    <value>Planned and real transactions</value>
-  </data>
-  <data name="Home_Guide_PlannedVsActual_Text" xml:space="preserve">
-    <value>Planned transactions are future operations. Real transactions are already completed and affect the real balance.</value>
-  </data>
-  <data name="Home_Guide_Balances_Title" xml:space="preserve">
-    <value>Planned and real balances</value>
-  </data>
-  <data name="Home_Guide_Balances_Text" xml:space="preserve">
-    <value>Planned balance shows where the account is heading after future operations. Real balance shows money that is already available.</value>
+    <value>Less overload. More clarity in daily life.</value>
   </data>
   <data name="Home_Demo_Transaction4_Title" xml:space="preserve">
     <value>Internet subscription</value>
@@ -725,5 +698,44 @@
   </data>
   <data name="Apply" xml:space="preserve">
     <value>Apply</value>
+  </data>
+  <data name="Home_Chip_Manual" xml:space="preserve">
+    <value>Manual control</value>
+  </data>
+  <data name="Home_Chip_PlannedActual" xml:space="preserve">
+    <value>Planned and real separately</value>
+  </data>
+  <data name="Home_Chip_Devices" xml:space="preserve">
+    <value>Phone and desktop</value>
+  </data>
+  <data name="Home_Hero_Note" xml:space="preserve">
+    <value>No bank sync, no forced automation, and no feeling that the app is making decisions for you.</value>
+  </data>
+  <data name="Home_Demo_Note" xml:space="preserve">
+    <value>Debts stay in a separate section, so they remain visible without getting mixed into everyday spending.</value>
+  </data>
+  <data name="Home_Guide_Manual_Title" xml:space="preserve">
+    <value>Manual control</value>
+  </data>
+  <data name="Home_Guide_Manual_Text" xml:space="preserve">
+    <value>You add transactions yourself and always understand where every number comes from. No hidden imports and no extra automation between you and your data.</value>
+  </data>
+  <data name="Home_Guide_PlannedActual_Title" xml:space="preserve">
+    <value>Planned and real separately</value>
+  </data>
+  <data name="Home_Guide_PlannedActual_Text" xml:space="preserve">
+    <value>Future transactions do not get mixed with completed ones. Real balance shows what is available now, while planned balance shows where the month is heading.</value>
+  </data>
+  <data name="Home_Guide_Reports_Title" xml:space="preserve">
+    <value>Statistics without noise</value>
+  </data>
+  <data name="Home_Guide_Reports_Text" xml:space="preserve">
+    <value>Monthly and category reports help you understand your usual spending and plan the next month more calmly, without complex workflows and extra screens.</value>
+  </data>
+  <data name="Home_Guide_Debts_Title" xml:space="preserve">
+    <value>Debts separately</value>
+  </data>
+  <data name="Home_Guide_Debts_Text" xml:space="preserve">
+    <value>The debts section stays close to your main finance view. It is easy to keep debts visible and update them when needed without turning everyday tracking into an overloaded system.</value>
   </data>
 </root>

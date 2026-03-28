@@ -22,20 +22,20 @@
                 <div class="home-hero__chips">
                     <MudChip T="string"
                              Variant="Variant.Outlined"
-                             Icon="@Icons.Material.Filled.Schedule">
-                        @L["Home_Chip_Planned"]
+                             Icon="@Icons.Material.Filled.Edit">
+                        @L["Home_Chip_Manual"]
                     </MudChip>
 
                     <MudChip T="string"
                              Variant="Variant.Outlined"
-                             Icon="@Icons.Material.Filled.DoneAll">
-                        @L["Home_Chip_Actual"]
+                             Icon="@Icons.Material.Filled.EventNote">
+                        @L["Home_Chip_PlannedActual"]
                     </MudChip>
 
                     <MudChip T="string"
                              Variant="Variant.Outlined"
-                             Icon="@Icons.Material.Filled.AccountBalanceWallet">
-                        @L["Home_Chip_MultiAccount"]
+                             Icon="@Icons.Material.Filled.Devices">
+                        @L["Home_Chip_Devices"]
                     </MudChip>
                 </div>
 
@@ -52,15 +52,15 @@
                             <MudButton Variant="Variant.Filled"
                                        Color="Color.Primary"
                                        Size="Size.Large"
-                                       Href="debts">
-                                @L["Debts_PageTitle"]
-                            </MudButton>
-
-                            <MudButton Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       Size="Size.Large"
                                        Href="reports">
                                 @L["Reports_PageTitle"]
+                            </MudButton>
+
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       Size="Size.Large"
+                                       Href="debts">
+                                @L["Debts_PageTitle"]
                             </MudButton>
                         </div>
                     </Authorized>
@@ -83,6 +83,10 @@
                         </div>
                     </NotAuthorized>
                 </AuthorizeView>
+
+                <MudText Typo="Typo.body2" Class="home-hero__note">
+                    @L["Home_Hero_Note"]
+                </MudText>
             </section>
 
             <section class="home-card home-card--demo">
@@ -94,6 +98,10 @@
 
                         <MudText Typo="Typo.h6">
                             @L["Home_Demo_Title"]
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Class="home-demo__note">
+                            @L["Home_Demo_Note"]
                         </MudText>
                     </div>
                 </div>
@@ -125,7 +133,6 @@
                                      Color="Color.Success">
                                 @L["Home_Demo_TagActual"]
                             </MudChip>
-                            
                         </div>
 
                         <span class="home-transaction__amount home-transaction__amount--positive">
@@ -167,7 +174,7 @@
                         </div>
 
                         <span class="home-transaction__amount home-transaction__amount--negative">
-                            -136,65 EUR
+                            -136.65 EUR
                         </span>
                     </div>
 
@@ -222,15 +229,15 @@
 
                 <div class="home-guide__grid">
                     <div class="home-guide-item">
-                        <MudIcon Icon="@Icons.Material.Filled.PlayArrow"
+                        <MudIcon Icon="@Icons.Material.Filled.Edit"
                                  Class="home-guide-item__icon" />
 
                         <MudText Typo="Typo.subtitle1" Class="home-guide-item__title">
-                            @L["Home_Guide_HowToUse_Title"]
+                            @L["Home_Guide_Manual_Title"]
                         </MudText>
 
                         <MudText Typo="Typo.body2" Class="home-guide-item__text">
-                            @L["Home_Guide_HowToUse_Text"]
+                            @L["Home_Guide_Manual_Text"]
                         </MudText>
                     </div>
 
@@ -239,11 +246,24 @@
                                  Class="home-guide-item__icon" />
 
                         <MudText Typo="Typo.subtitle1" Class="home-guide-item__title">
-                            @L["Home_Guide_PlannedVsActual_Title"]
+                            @L["Home_Guide_PlannedActual_Title"]
                         </MudText>
 
                         <MudText Typo="Typo.body2" Class="home-guide-item__text">
-                            @L["Home_Guide_PlannedVsActual_Text"]
+                            @L["Home_Guide_PlannedActual_Text"]
+                        </MudText>
+                    </div>
+
+                    <div class="home-guide-item">
+                        <MudIcon Icon="@Icons.Material.Filled.BarChart"
+                                 Class="home-guide-item__icon" />
+
+                        <MudText Typo="Typo.subtitle1" Class="home-guide-item__title">
+                            @L["Home_Guide_Reports_Title"]
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Class="home-guide-item__text">
+                            @L["Home_Guide_Reports_Text"]
                         </MudText>
                     </div>
 
@@ -252,11 +272,11 @@
                                  Class="home-guide-item__icon" />
 
                         <MudText Typo="Typo.subtitle1" Class="home-guide-item__title">
-                            @L["Home_Guide_Balances_Title"]
+                            @L["Home_Guide_Debts_Title"]
                         </MudText>
 
                         <MudText Typo="Typo.body2" Class="home-guide-item__text">
-                            @L["Home_Guide_Balances_Text"]
+                            @L["Home_Guide_Debts_Text"]
                         </MudText>
                     </div>
                 </div>

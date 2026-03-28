@@ -637,28 +637,19 @@
     <value>Сегодня</value>
   </data>
   <data name="Home_Eyebrow" xml:space="preserve">
-    <value>Личный учёт денег без перегруза</value>
+    <value>Простой ручной учёт денег</value>
   </data>
   <data name="Home_Title" xml:space="preserve">
-    <value>Учитывайте реальные деньги, планируйте будущие расходы и держите балансы под контролем.</value>
+    <value>Ваши деньги — без перегруза и чужой логики.</value>
   </data>
   <data name="Home_Subtitle" xml:space="preserve">
-    <value>PersonalCash разделяет уже совершённые и плановые транзакции, чтобы было видно, сколько денег есть сейчас и что изменится дальше.</value>
-  </data>
-  <data name="Home_Chip_Planned" xml:space="preserve">
-    <value>Плановые транзакции</value>
-  </data>
-  <data name="Home_Chip_Actual" xml:space="preserve">
-    <value>Реальные транзакции</value>
-  </data>
-  <data name="Home_Chip_MultiAccount" xml:space="preserve">
-    <value>Понятные балансы</value>
+    <value>PersonalCash сделан для тех, кому Excel оказался понятнее перегруженных финансовых приложений. Здесь всё вручную и прозрачно: доходы, расходы, плановые операции, статистика по месяцам и отдельный раздел долгов.</value>
   </data>
   <data name="Home_Demo_Eyebrow" xml:space="preserve">
-    <value>Пример</value>
+    <value>Одного взгляда достаточно</value>
   </data>
   <data name="Home_Demo_Title" xml:space="preserve">
-    <value>Как это выглядит в приложении</value>
+    <value>Сразу видно, сколько денег есть сейчас и что уже запланировано дальше</value>
   </data>
   <data name="Home_BalanceActual_Label" xml:space="preserve">
     <value>Реальный баланс</value>
@@ -688,28 +679,10 @@
     <value>Факт</value>
   </data>
   <data name="Home_Guide_Eyebrow" xml:space="preserve">
-    <value>Как это работает</value>
+    <value>Почему это ощущается проще</value>
   </data>
   <data name="Home_Guide_Title" xml:space="preserve">
-    <value>Простая страница, но с понятной логикой</value>
-  </data>
-  <data name="Home_Guide_HowToUse_Title" xml:space="preserve">
-    <value>Как пользоваться</value>
-  </data>
-  <data name="Home_Guide_HowToUse_Text" xml:space="preserve">
-    <value>Создайте счета и категории, добавляйте доходы и расходы, затем смотрите балансы и историю операций в одном месте.</value>
-  </data>
-  <data name="Home_Guide_PlannedVsActual_Title" xml:space="preserve">
-    <value>Плановые и реальные транзакции</value>
-  </data>
-  <data name="Home_Guide_PlannedVsActual_Text" xml:space="preserve">
-    <value>Плановые транзакции — это будущие операции. Реальные — уже совершённые и именно они влияют на реальный баланс.</value>
-  </data>
-  <data name="Home_Guide_Balances_Title" xml:space="preserve">
-    <value>Плановый и реальный баланс</value>
-  </data>
-  <data name="Home_Guide_Balances_Text" xml:space="preserve">
-    <value>Плановый баланс показывает, к чему придёт счёт после будущих операций. Реальный баланс показывает деньги, которые доступны уже сейчас.</value>
+    <value>Меньше перегруза. Больше ясности в обычной жизни.</value>
   </data>
   <data name="Home_Demo_Transaction4_Title" xml:space="preserve">
     <value>Подписка на интернет</value>
@@ -725,5 +698,44 @@
   </data>
   <data name="Apply" xml:space="preserve">
     <value>Применить</value>
+  </data>
+  <data name="Home_Chip_Manual" xml:space="preserve">
+    <value>Ручной контроль</value>
+  </data>
+  <data name="Home_Chip_PlannedActual" xml:space="preserve">
+    <value>План и факт отдельно</value>
+  </data>
+  <data name="Home_Chip_Devices" xml:space="preserve">
+    <value>Телефон и компьютер</value>
+  </data>
+  <data name="Home_Hero_Note" xml:space="preserve">
+    <value>Без банковских синхронизаций, без навязчивой автоматизации, без ощущения, что приложение думает за вас.</value>
+  </data>
+  <data name="Home_Demo_Note" xml:space="preserve">
+    <value>Долги вынесены в отдельный раздел: они остаются на виду, но не смешиваются с повседневными расходами.</value>
+  </data>
+  <data name="Home_Guide_Manual_Title" xml:space="preserve">
+    <value>Ручной контроль</value>
+  </data>
+  <data name="Home_Guide_Manual_Text" xml:space="preserve">
+    <value>Вы сами добавляете операции и сами понимаете, откуда берётся каждая цифра. Никаких скрытых импортов и лишней автоматизации между вами и вашими данными.</value>
+  </data>
+  <data name="Home_Guide_PlannedActual_Title" xml:space="preserve">
+    <value>План и факт отдельно</value>
+  </data>
+  <data name="Home_Guide_PlannedActual_Text" xml:space="preserve">
+    <value>Будущие операции не смешиваются с уже совершёнными. Реальный баланс показывает, что доступно сейчас, а плановый — куда движется месяц.</value>
+  </data>
+  <data name="Home_Guide_Reports_Title" xml:space="preserve">
+    <value>Статистика без шума</value>
+  </data>
+  <data name="Home_Guide_Reports_Text" xml:space="preserve">
+    <value>Отчёты по категориям и месяцам помогают увидеть привычные траты и спокойнее планировать следующий месяц без сложных сценариев и лишних экранов.</value>
+  </data>
+  <data name="Home_Guide_Debts_Title" xml:space="preserve">
+    <value>Долги отдельно</value>
+  </data>
+  <data name="Home_Guide_Debts_Text" xml:space="preserve">
+    <value>Раздел долгов находится рядом с основным учётом. Их легко держать в поле зрения и обновлять по мере изменений, не превращая главный учёт в перегруженную систему.</value>
   </data>
 </root>
