@@ -55,30 +55,33 @@ else
                                         {
                                             foreach (var child in GetChildAccounts(a.Id))
                                             {
-                                                <div class="balance-row balance-row--mobile balance-row--surface balance-row--child">
-                                                    <div class="balance-left">
-                                                        <div class="icon-option">
-                                                            <MudIcon Icon="@AccountIconExtensions.FromDbKey(child.IconKey).GetIcon()" />
-                                                            <span>@child.Name</span>
+                                                if (GetBalanceActual(child) != 0 && GetBalanceExpected(child) != 0)
+                                                {
+                                                    <div class="balance-row balance-row--mobile balance-row--surface balance-row--child">
+                                                        <div class="balance-left">
+                                                            <div class="icon-option">
+                                                                <MudIcon Icon="@AccountIconExtensions.FromDbKey(child.IconKey).GetIcon()" />
+                                                                <span>@child.Name</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="balance-right">
-                                                        <div class="balance-actual">
-                                                            <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
-                                                                @child.BalanceActual.ToString("N2") @child.Currency
-                                                            </MudTooltip>
-                                                        </div>
-                                                        @if (GetBalanceActual(child) != GetBalanceExpected(child))
-                                                        {
-                                                            <div class="balance-expected text-muted">
-                                                                <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
-                                                                    @child.BalanceExpected.ToString("N2") @child.Currency
+                                                        <div class="balance-right">
+                                                            <div class="balance-actual">
+                                                                <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                                                    @child.BalanceActual.ToString("N2") @child.Currency
                                                                 </MudTooltip>
                                                             </div>
-                                                        }
+                                                            @if (GetBalanceActual(child) != GetBalanceExpected(child))
+                                                            {
+                                                                <div class="balance-expected text-muted">
+                                                                    <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                                                        @child.BalanceExpected.ToString("N2") @child.Currency
+                                                                    </MudTooltip>
+                                                                </div>
+                                                            }
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                }
                                             }
                                         }
                                     </div>
@@ -131,30 +134,33 @@ else
                             {
                                 foreach (var child in GetChildAccounts(a.Id))
                                 {
-                                    <div class="balance-row balance-row--surface balance-row--child">
-                                        <div class="balance-left">
-                                            <div class="icon-option">
-                                                <MudIcon Icon="@AccountIconExtensions.FromDbKey(child.IconKey).GetIcon()" />
-                                                <span>@child.Name</span>
+                                    if (GetBalanceActual(child) != 0 && GetBalanceExpected(child) != 0)
+                                    {
+                                        <div class="balance-row balance-row--surface balance-row--child">
+                                            <div class="balance-left">
+                                                <div class="icon-option">
+                                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(child.IconKey).GetIcon()" />
+                                                    <span>@child.Name</span>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="balance-right">
-                                            <div class="balance-actual">
-                                                <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
-                                                    @child.BalanceActual.ToString("N2") @child.Currency
-                                                </MudTooltip>
-                                            </div>
-                                            @if (GetBalanceActual(child) != GetBalanceExpected(child))
-                                            {
-                                                <div class="balance-expected text-muted">
-                                                    <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
-                                                        @child.BalanceExpected.ToString("N2") @child.Currency
+                                            <div class="balance-right">
+                                                <div class="balance-actual">
+                                                    <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                                        @child.BalanceActual.ToString("N2") @child.Currency
                                                     </MudTooltip>
                                                 </div>
-                                            }
+                                                @if (GetBalanceActual(child) != GetBalanceExpected(child))
+                                                {
+                                                    <div class="balance-expected text-muted">
+                                                        <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                                            @child.BalanceExpected.ToString("N2") @child.Currency
+                                                        </MudTooltip>
+                                                    </div>
+                                                }
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
                                 }
                             }
                         </div>
