@@ -31,6 +31,7 @@ public partial class TransactionsPage : IDisposable
     protected string _currency = "";
     protected List<AccountDto> _accounts = new();
     protected List<AccountDto> _activeAccounts = new();
+    protected List<AccountDto> _regularAccounts = new();
     protected Dictionary<Guid, AccountDto> _accountById = new();
     protected Guid _accountId;
     protected List<CategoryDto> _categories = new();
@@ -144,7 +145,15 @@ public partial class TransactionsPage : IDisposable
     private async Task ReloadAccountsAsync()
     {
         _accounts = await AccountsService.GetSortedAsync();
-        _activeAccounts = _accounts.Where(x => !x.IsArchived).ToList();
+
+        _activeAccounts = _accounts
+            .Where(x => !x.IsArchived)
+            .ToList();
+
+        _regularAccounts = _activeAccounts
+            .Where(x => x.AccountType == AccountType.Regular)
+            .ToList();
+
         _accountById = _accounts.ToDictionary(x => x.Id, x => x);
     }
 
@@ -167,8 +176,8 @@ public partial class TransactionsPage : IDisposable
     private async Task LoadCoreAsync()
     {
         await ReloadAccountsAsync();
-        if (_accountId == Guid.Empty)
-            SelectedAccountId = _activeAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
+        if (_accountId == Guid.Empty || !_regularAccounts.Any(x => x.Id == _accountId))
+            SelectedAccountId = _regularAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
         RebuildMonthOptions();
         await InitializeFiltersAsync();
         await ReloadFilteredItemsCoreAsync();
@@ -177,7 +186,7 @@ public partial class TransactionsPage : IDisposable
     {
         _occurredOn = DateOnly.FromDateTime(DateTime.Today);
         _entryType = EntryType.Outcome;
-        SelectedAccountId = _activeAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
+        SelectedAccountId = _regularAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
         _amount = null;
         _categoryId = _categories.FirstOrDefault()?.Id ?? Guid.Empty;
         _note = null;
@@ -199,6 +208,12 @@ public partial class TransactionsPage : IDisposable
         }
 
         if (_accountId == Guid.Empty)
+        {
+            Snackbar.Add(L["Transaction_AccountRequired_ValidationError"], Severity.Warning);
+            return;
+        }
+
+        if (!_regularAccounts.Any(x => x.Id == _accountId))
         {
             Snackbar.Add(L["Transaction_AccountRequired_ValidationError"], Severity.Warning);
             return;
@@ -416,8 +431,12 @@ public partial class TransactionsPage : IDisposable
             ? state.Month
             : null;
 
+        var regularAccountIds = _regularAccounts
+            .Select(x => x.Id)
+            .ToHashSet();
+
         _fAccountIds = (state.AccountIds ?? new List<Guid>())
-            .Where(id => _accountById.ContainsKey(id))
+            .Where(id => regularAccountIds.Contains(id))
             .ToHashSet();
 
         _fCategoryIds = (state.CategoryIds ?? new List<Guid>())

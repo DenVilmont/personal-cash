@@ -79,7 +79,7 @@
                                             @L["Filter_Account_All"]
                                         </MudSelectItem>
 
-                                        @foreach (var account in _accounts)
+                                        @foreach (var account in _reportAccountOptions)
                                         {
                                             <MudSelectItem Value="@((Guid?)account.Id)">
                                                 @account.Name

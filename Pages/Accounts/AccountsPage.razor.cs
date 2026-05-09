@@ -24,8 +24,19 @@ public partial class AccountsPage : IDisposable
     protected bool _showBalance = true;
     protected string _iconKey = AccountIcon.Wallet.ToString();
     protected int _sortOrder = 0;
+    protected AccountType _accountType = AccountType.Regular;
+    protected Guid? _parentAccountId;
 
     protected List<AccountDto> _items = new();
+
+    protected IReadOnlyList<AccountDto> AvailableParentAccounts =>
+        _items
+            .Where(x => x.AccountType == AccountType.Group)
+            .Where(x => !x.IsArchived)
+            .Where(x => string.Equals(x.Currency, _currency, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Name)
+            .ToList();
 
     protected override void OnParametersSet()
     {
@@ -36,6 +47,7 @@ public partial class AccountsPage : IDisposable
     {
         if (!CurrentUser.TryGetUserId(out _))
             return;
+
         _currency = UserSettingsStore.Current?.PreferredCurrency ?? "EUR";
         await LoadAsync();
     }
@@ -45,6 +57,17 @@ public partial class AccountsPage : IDisposable
     private async Task LoadCoreAsync()
     {
         _items = await AccountsService.GetSortedAsync();
+
+        if (_parentAccountId is not null && !AvailableParentAccounts.Any(x => x.Id == _parentAccountId.Value))
+            _parentAccountId = null;
+    }
+
+    protected void OnAccountTypeChanged(AccountType value)
+    {
+        _accountType = value;
+
+        if (_accountType == AccountType.Group)
+            _parentAccountId = null;
     }
 
     protected async Task AddAsync()
@@ -77,10 +100,15 @@ public partial class AccountsPage : IDisposable
                 currency: _currency,
                 showBalance: _showBalance,
                 iconKey: _iconKey,
-                sortOrder: _sortOrder);
+                sortOrder: _sortOrder,
+                accountType: _accountType,
+                parentAccountId: _accountType == AccountType.Regular ? _parentAccountId : null);
 
             _name = null;
             _sortOrder = 0;
+            _accountType = AccountType.Regular;
+            _parentAccountId = null;
+
             await LoadCoreAsync();
         }, successMessage: L["Added"]);
     }
@@ -96,6 +124,8 @@ public partial class AccountsPage : IDisposable
             ShowBalance = acc.ShowBalance,
             IconKey = acc.IconKey,
             SortOrder = acc.SortOrder,
+            AccountType = acc.AccountType,
+            ParentAccountId = acc.ParentAccountId,
             BalanceActual = acc.BalanceActual,
             BalanceExpected = acc.BalanceExpected,
             IsArchived = acc.IsArchived,
@@ -105,7 +135,8 @@ public partial class AccountsPage : IDisposable
 
         var parameters = new DialogParameters
         {
-            ["Account"] = copy
+            ["Account"] = copy,
+            ["AllAccounts"] = _items
         };
 
         var options = new DialogOptions
@@ -120,9 +151,9 @@ public partial class AccountsPage : IDisposable
 
         if (result is null || result.Canceled)
             return;
+
         if (result.Data is not AccountDto updated)
             return;
-
 
         await RunAsync(async () =>
         {
@@ -133,16 +164,31 @@ public partial class AccountsPage : IDisposable
 
     protected async Task ConfirmDeleteAsync(AccountDto acc)
     {
-        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+        if (acc.AccountType == AccountType.Group && await AccountsService.HasChildAccountsAsync(acc.Id))
+        {
+            var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
 
-        MarkupString msg = (MarkupString)(string.Format(L["Accounts_DeleteMessage"],acc.Name));
+            MarkupString msg = (MarkupString)L["Accounts_DeleteGroupHasChildren_Message"].Value;
+
+            await DialogService.ShowMessageBoxAsync(
+                L["Accounts_DeleteGroupHasChildren_Title"],
+                msg,
+                yesText: L["OK"],
+                options: options);
+
+            return;
+        }
+
+        var deleteOptions = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        MarkupString deleteMsg = (MarkupString)(string.Format(L["Accounts_DeleteMessage"], acc.Name));
 
         bool? confirmed = await DialogService.ShowMessageBoxAsync(
             L["Accounts_DeleteDialog_Title"],
-            msg,
+            deleteMsg,
             yesText: L["Delete"],
             cancelText: L["Cancel"],
-            options: options);
+            options: deleteOptions);
 
         if (confirmed != true)
             return;
@@ -186,6 +232,14 @@ public partial class AccountsPage : IDisposable
             await AccountsService.ArchiveAsync(acc);
             await LoadCoreAsync();
         }, successMessage: L["Accounts_Archived"]);
+
+    protected string GetParentAccountName(Guid? parentAccountId)
+    {
+        if (parentAccountId is null)
+            return "";
+
+        return _items.FirstOrDefault(x => x.Id == parentAccountId.Value)?.Name ?? "";
+    }
 
     public void Dispose()
     {

@@ -33,13 +33,19 @@ namespace Application.Services
             .ThenByDescending(x => x.CreatedAt)
             .ToList();
 
-        private static void ValidateTransactionForSave(TransactionDto tx)
+        private async Task ValidateTransactionForSaveAsync(TransactionDto tx)
         {
             if (tx.UserId == Guid.Empty)
                 throw new AppValidationException("Invalid user id");
 
             if (tx.AccountId == Guid.Empty)
                 throw new AppValidationException("Account is required");
+
+            var account = await _accountsRepo.GetByIdAsync(tx.AccountId)
+                ?? throw new AppValidationException("Account not found");
+
+            if (account.AccountType != AccountType.Regular)
+                throw new AppValidationException("Transactions can use only regular accounts");
 
             if (tx.CategoryId == Guid.Empty)
                 throw new AppValidationException("Category is required");
@@ -53,7 +59,7 @@ namespace Application.Services
 
         public async Task InsertTransactionAndUpdateBalances(TransactionDto tx)
         {
-            ValidateTransactionForSave(tx);
+            await ValidateTransactionForSaveAsync(tx);
 
             var inserted = await _txRepo.InsertReturningAsync(tx);
 
@@ -88,7 +94,7 @@ namespace Application.Services
 
         public async Task UpdateTransactionAndUpdateBalances(TransactionDto oldTx, TransactionDto newTx)
         {
-            ValidateTransactionForSave(newTx);
+            await ValidateTransactionForSaveAsync(newTx);
 
             await _txRepo.UpdateAsync(newTx);
 

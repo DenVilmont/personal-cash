@@ -1,6 +1,6 @@
 ﻿@using Domain.Enums
 
-@if (VisibleAccounts.Count == 0)
+@if (VisibleRootAccounts.Count == 0)
 {
     <div>
         <MudText Typo="Typo.body2" Class="mt-2">@L["No_accounts"]</MudText>
@@ -23,28 +23,64 @@ else
                     <ChildContent>
                         <div class="transactions-mobile-panel-body">
                             <MudStack Spacing="2">
-                                @foreach (var a in VisibleAccounts)
+                                @foreach (var a in VisibleRootAccounts)
                                 {
-                                    <div class="balance-row balance-row--mobile balance-row--surface">
-                                        <div class="balance-left">
-                                            <div class="icon-option">
-                                                <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
-                                                <span>@a.Name</span>
+                                    <div class="balance-group">
+                                        <div class="balance-row balance-row--mobile balance-row--surface @(a.AccountType == AccountType.Group ? "balance-row--group" : null)">
+                                            <div class="balance-left">
+                                                <div class="icon-option">
+                                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                                    <span>@a.Name</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="balance-right">
+                                                <div class="balance-actual">
+                                                    <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                                        @GetBalanceActual(a).ToString("N2") @a.Currency
+                                                    </MudTooltip>
+                                                </div>
+                                                @if (GetBalanceActual(a) != GetBalanceExpected(a))
+                                                {
+                                                    <div class="balance-expected text-muted">
+                                                        <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                                            @GetBalanceExpected(a).ToString("N2") @a.Currency
+                                                        </MudTooltip>
+                                                    </div>                            
+                                                }
                                             </div>
                                         </div>
 
-                                        <div class="balance-right">
-                                            <div class="balance-actual">
-                                                <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
-                                                    @a.BalanceActual.ToString("N2") @a.Currency
-                                                </MudTooltip>
-                                            </div>
-                                            <div class="balance-expected text-muted">
-                                                <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
-                                                    @a.BalanceExpected.ToString("N2") @a.Currency
-                                                </MudTooltip>
-                                            </div>
-                                        </div>
+                                        @if (a.AccountType == AccountType.Group)
+                                        {
+                                            foreach (var child in GetChildAccounts(a.Id))
+                                            {
+                                                <div class="balance-row balance-row--mobile balance-row--surface balance-row--child">
+                                                    <div class="balance-left">
+                                                        <div class="icon-option">
+                                                            <MudIcon Icon="@AccountIconExtensions.FromDbKey(child.IconKey).GetIcon()" />
+                                                            <span>@child.Name</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="balance-right">
+                                                        <div class="balance-actual">
+                                                            <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                                                @child.BalanceActual.ToString("N2") @child.Currency
+                                                            </MudTooltip>
+                                                        </div>
+                                                        @if (GetBalanceActual(child) != GetBalanceExpected(child))
+                                                        {
+                                                            <div class="balance-expected text-muted">
+                                                                <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                                                    @child.BalanceExpected.ToString("N2") @child.Currency
+                                                                </MudTooltip>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
                                     </div>
                                 }
                             </MudStack>
@@ -63,28 +99,64 @@ else
                 </MudStack>
 
                 <MudStack Spacing="2" Class="mt-3">
-                    @foreach (var a in VisibleAccounts)
+                    @foreach (var a in VisibleRootAccounts)
                     {
-                        <div class="balance-row balance-row--surface">
-                            <div class="balance-left">
-                                <div class="icon-option">
-                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
-                                    <span>@a.Name</span>
+                        <div class="balance-group">
+                            <div class="balance-row balance-row--surface @(a.AccountType == AccountType.Group ? "balance-row--group" : null)">
+                                <div class="balance-left">
+                                    <div class="icon-option">
+                                        <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                        <span>@a.Name</span>
+                                    </div>
+                                </div>
+
+                                <div class="balance-right">
+                                    <div class="balance-actual">
+                                        <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                            @GetBalanceActual(a).ToString("N2") @a.Currency
+                                        </MudTooltip>
+                                    </div>
+                                    @if (GetBalanceActual(a) != GetBalanceExpected(a))
+                                    {
+                                        <div class="balance-expected text-muted">
+                                            <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                                @GetBalanceExpected(a).ToString("N2") @a.Currency
+                                            </MudTooltip>
+                                        </div>
+                                    }
                                 </div>
                             </div>
 
-                            <div class="balance-right">
-                                <div class="balance-actual">
-                                    <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
-                                        @a.BalanceActual.ToString("N2") @a.Currency
-                                    </MudTooltip>
-                                </div>
-                                <div class="balance-expected text-muted">
-                                    <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
-                                        @a.BalanceExpected.ToString("N2") @a.Currency
-                                    </MudTooltip>
-                                </div>
-                            </div>
+                            @if (a.AccountType == AccountType.Group)
+                            {
+                                foreach (var child in GetChildAccounts(a.Id))
+                                {
+                                    <div class="balance-row balance-row--surface balance-row--child">
+                                        <div class="balance-left">
+                                            <div class="icon-option">
+                                                <MudIcon Icon="@AccountIconExtensions.FromDbKey(child.IconKey).GetIcon()" />
+                                                <span>@child.Name</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="balance-right">
+                                            <div class="balance-actual">
+                                                <MudTooltip Text="@L["Balance_Actual_Tooltip"]" Arrow="true">
+                                                    @child.BalanceActual.ToString("N2") @child.Currency
+                                                </MudTooltip>
+                                            </div>
+                                            @if (GetBalanceActual(child) != GetBalanceExpected(child))
+                                            {
+                                                <div class="balance-expected text-muted">
+                                                    <MudTooltip Text="@L["Balance_Expected_Tooltip"]" Arrow="true">
+                                                        @child.BalanceExpected.ToString("N2") @child.Currency
+                                                    </MudTooltip>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
                         </div>
                     }
                 </MudStack>

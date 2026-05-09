@@ -12,6 +12,7 @@ public partial class EditAccountDialog
     [CascadingParameter] public IMudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter] public AccountDto Account { get; set; } = default!;
+    [Parameter] public IReadOnlyList<AccountDto> AllAccounts { get; set; } = Array.Empty<AccountDto>();
 
     private string? _name;
     private string _currency = "EUR";
@@ -20,6 +21,18 @@ public partial class EditAccountDialog
     private string _balanceActualText = string.Empty;
     private AccountIcon _icon;
     private bool _isArchived;
+    private AccountType _accountType = AccountType.Regular;
+    private Guid? _parentAccountId;
+
+    private IReadOnlyList<AccountDto> ParentAccountOptions =>
+        AllAccounts
+            .Where(x => x.AccountType == AccountType.Group)
+            .Where(x => !x.IsArchived)
+            .Where(x => x.Id != Account.Id)
+            .Where(x => string.Equals(x.Currency, _currency, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Name)
+            .ToList();
 
     protected override void OnParametersSet()
     {
@@ -30,6 +43,8 @@ public partial class EditAccountDialog
         _balanceActualText = Account.BalanceActual.ToString("0.00", CultureInfo.CurrentCulture);
         _icon = AccountIconExtensions.FromDbKey(Account.IconKey);
         _isArchived = Account.IsArchived;
+        _accountType = Account.AccountType;
+        _parentAccountId = Account.ParentAccountId;
     }
 
     private void Cancel() => MudDialog.Cancel();
@@ -40,12 +55,6 @@ public partial class EditAccountDialog
             if (string.IsNullOrWhiteSpace(_name))
             {
                 Snackbar.Add(L["Accounts_NameRequired_ValidationError"], Severity.Warning);
-                return Task.CompletedTask;
-            }
-
-            if (!_balanceActualText.TryParseDecimal(out var parsedBalanceActual) || parsedBalanceActual < 0)
-            {
-                Snackbar.Add(L["Accounts_BalanceMustBeValidPositiveNumber_ValidationError"], Severity.Warning);
                 return Task.CompletedTask;
             }
 
@@ -61,12 +70,30 @@ public partial class EditAccountDialog
             Account.ShowBalance = _showBalance;
             Account.IconKey = _icon.ToDbKey();
             Account.IsArchived = _isArchived;
+            Account.AccountType = _accountType;
 
-            if (!Account.BalanceActual.Equals(parsedBalanceActual))
+            if (_accountType == AccountType.Group)
             {
-                var margin = parsedBalanceActual - Account.BalanceActual;
-                Account.BalanceActual += margin;
-                Account.BalanceExpected += margin;
+                Account.ParentAccountId = null;
+                Account.BalanceActual = 0m;
+                Account.BalanceExpected = 0m;
+            }
+            else
+            {
+                Account.ParentAccountId = _parentAccountId;
+
+                if (!_balanceActualText.TryParseDecimal(out var parsedBalanceActual) || parsedBalanceActual < 0)
+                {
+                    Snackbar.Add(L["Accounts_BalanceMustBeValidPositiveNumber_ValidationError"], Severity.Warning);
+                    return Task.CompletedTask;
+                }
+
+                if (!Account.BalanceActual.Equals(parsedBalanceActual))
+                {
+                    var margin = parsedBalanceActual - Account.BalanceActual;
+                    Account.BalanceActual += margin;
+                    Account.BalanceExpected += margin;
+                }
             }
 
             MudDialog.Close(DialogResult.Ok(Account));

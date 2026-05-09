@@ -20,6 +20,7 @@ public partial class ReportsPage : IDisposable
 
     private List<AccountDto> _accounts = new();
     private List<CategoryDto> _categories = new();
+    private List<AccountDto> _reportAccountOptions = new();
 
     private readonly Dictionary<Guid, AccountDto> _accountById = new();
     private readonly Dictionary<Guid, CategoryDto> _categoryById = new();
@@ -115,6 +116,8 @@ public partial class ReportsPage : IDisposable
         foreach (var account in _accounts)
             _accountById[account.Id] = account;
 
+        RebuildReportAccountOptions();
+
         _categoryById.Clear();
         foreach (var category in _categories)
             _categoryById[category.Id] = category;
@@ -195,32 +198,31 @@ public partial class ReportsPage : IDisposable
 
         _summaryIncome = currentMonthItems
             .Where(x => x.EntryType == EntryType.Income)
-            .GroupBy(x => x.AccountId)
+            .GroupBy(x => ResolveReportDisplayAccountId(x.AccountId))
             .Where(g => _accountById.ContainsKey(g.Key))
             .OrderBy(g => _accountById[g.Key].SortOrder)
             .ThenBy(g => _accountById[g.Key].Name)
             .ToDictionary(
                 g => _accountById[g.Key].Name,
-                g => $"{g.Sum(x => x.Amount)} {_accountById[g.Key].Currency}"
+                g => $"{g.Sum(x => x.Amount):N2} {_accountById[g.Key].Currency}"
             );
 
         _summaryExpenses = currentMonthItems
             .Where(x => x.EntryType == EntryType.Outcome)
-            .GroupBy(x => x.AccountId)
+            .GroupBy(x => ResolveReportDisplayAccountId(x.AccountId))
             .Where(g => _accountById.ContainsKey(g.Key))
             .OrderBy(g => _accountById[g.Key].SortOrder)
             .ThenBy(g => _accountById[g.Key].Name)
             .ToDictionary(
                 g => _accountById[g.Key].Name,
-                g => $"{g.Sum(x => x.Amount)} {_accountById[g.Key].Currency}"
+                g => $"{g.Sum(x => x.Amount):N2} {_accountById[g.Key].Currency}"
             );
 
-        _summaryBalance = _accounts
-            .Where(x => !x.IsArchived)
-            .Where (x => x.ShowBalance)
-            .OrderBy(x => x.SortOrder)
-            .ThenBy(x => x.Name)
-            .ToDictionary(x => x.Name, y => y.BalanceActual + " " + y.Currency);
+        _summaryBalance = _reportAccountOptions
+            .Where(x => x.ShowBalance)
+            .ToDictionary(
+                x => x.Name,
+                x => $"{GetReportBalanceActual(x):N2} {x.Currency}");
     }
 
     private void ClearPrimaryDates()
@@ -268,7 +270,10 @@ public partial class ReportsPage : IDisposable
             query = query.Where(x => x.OccurredOn <= _primaryTo.Value);
 
         if (_primaryAccountId is not null)
-            query = query.Where(x => x.AccountId == _primaryAccountId.Value);
+        {
+            var accountIds = ResolveReportAccountIds(_primaryAccountId.Value);
+            query = query.Where(x => accountIds.Contains(x.AccountId));
+        }
 
         return query;
     }
@@ -302,6 +307,56 @@ public partial class ReportsPage : IDisposable
                     : 0d,
                 Color: palette[index % palette.Length]))
             .ToList();
+    }
+
+    private void RebuildReportAccountOptions()
+    {
+        _reportAccountOptions = _accounts
+            .Where(x => !x.IsArchived)
+            .Where(x =>
+                x.AccountType == AccountType.Group ||
+                x is { AccountType: AccountType.Regular, ParentAccountId: null })
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Name)
+            .ToList();
+    }
+
+    private HashSet<Guid> ResolveReportAccountIds(Guid accountId)
+    {
+        if (!_accountById.TryGetValue(accountId, out var account))
+            return new HashSet<Guid>();
+
+        if (account.AccountType != AccountType.Group)
+            return new HashSet<Guid> { accountId };
+
+        return _accounts
+            .Where(x => x.AccountType == AccountType.Regular)
+            .Where(x => x.ParentAccountId == accountId)
+            .Select(x => x.Id)
+            .ToHashSet();
+    }
+
+    private Guid ResolveReportDisplayAccountId(Guid transactionAccountId)
+    {
+        if (!_accountById.TryGetValue(transactionAccountId, out var account))
+            return transactionAccountId;
+
+        if (account.AccountType == AccountType.Regular && account.ParentAccountId is not null)
+            return account.ParentAccountId.Value;
+
+        return transactionAccountId;
+    }
+
+    private decimal GetReportBalanceActual(AccountDto account)
+    {
+        if (account.AccountType != AccountType.Group)
+            return account.BalanceActual;
+
+        return _accounts
+            .Where(x => !x.IsArchived)
+            .Where(x => x.AccountType == AccountType.Regular)
+            .Where(x => x.ParentAccountId == account.Id)
+            .Sum(x => x.BalanceActual);
     }
 
     private void RebuildDonutChart()

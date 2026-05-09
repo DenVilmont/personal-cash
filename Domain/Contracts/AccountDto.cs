@@ -1,4 +1,6 @@
-﻿namespace Domain.Contracts;
+﻿using Domain.Enums;
+
+namespace Domain.Contracts;
 
 public sealed class AccountDto
 {
@@ -11,6 +13,10 @@ public sealed class AccountDto
     public string Currency { get; set; } = "EUR";
 
     public string IconKey { get; set; } = "Wallet";
+
+    public AccountType AccountType { get; set; } = AccountType.Regular;
+
+    public Guid? ParentAccountId { get; set; }
 
     public decimal BalanceActual { get; set; }
 

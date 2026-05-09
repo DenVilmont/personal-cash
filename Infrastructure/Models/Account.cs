@@ -12,6 +12,12 @@ public class Account : BaseModel
     [Column("user_id")]
     public Guid UserId { get; set; }
 
+    [Column("account_type")]
+    public string AccountType { get; set; } = "Regular";
+
+    [Column("parent_account_id")]
+    public Guid? ParentAccountId { get; set; }
+
     [Column("name")]
     public string Name { get; set; } = "";
 

@@ -738,4 +738,22 @@
   <data name="Home_Guide_Debts_Text" xml:space="preserve">
     <value>The debts section stays close to your main finance view. It is easy to keep debts visible and update them when needed without turning everyday tracking into an overloaded system.</value>
   </data>
+  <data name="Accounts_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Accounts_ParentAccount" xml:space="preserve">
+    <value>Parent account</value>
+  </data>
+  <data name="AccountType.Regular" xml:space="preserve">
+    <value>Regular</value>
+  </data>
+  <data name="AccountType.Group" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="Accounts_DeleteGroupHasChildren_Title" xml:space="preserve">
+    <value>Account group cannot be deleted</value>
+  </data>
+  <data name="Accounts_DeleteGroupHasChildren_Message" xml:space="preserve">
+    <value>This account group cannot be deleted because it has child accounts.</value>
+  </data>
 </root>

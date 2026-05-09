@@ -3,6 +3,7 @@
 
 @using Domain.Contracts
 @using Domain.Enums
+@using PersonalCash.Shared.Extensions
 
 <div class="mt-3 mb-5 mt-sm-4 mb-sm-8">
     <MudContainer MaxWidth="MaxWidth.False">
@@ -27,6 +28,44 @@
                                       @bind-Value="_currency"
                                       Disabled="true" />
                     </MudItem>
+
+                    <MudItem xs="12" sm="3" Class="d-flex">
+                        <MudSelect T="AccountType"
+                                   Label="@L["Accounts_Type"]"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   Class="w-100"
+                                   Value="_accountType"
+                                   ValueChanged="OnAccountTypeChanged">
+                            <MudSelectItem Value="AccountType.Regular">
+                                @AccountType.Regular.ToLocalizedString(L)
+                            </MudSelectItem>
+                            <MudSelectItem Value="AccountType.Group">
+                                @AccountType.Group.ToLocalizedString(L)
+                            </MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+
+                    @if (_accountType == AccountType.Regular)
+                    {
+                        <MudItem xs="12" sm="3" Class="d-flex">
+                            <MudSelect T="Guid?"
+                                       Label="@L["Accounts_ParentAccount"]"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="w-100"
+                                       Clearable="true"
+                                       Disabled="AvailableParentAccounts.Count == 0"
+                                       @bind-Value="_parentAccountId">
+                                @foreach (var parent in AvailableParentAccounts)
+                                {
+                                    <MudSelectItem T="Guid?" Value="@((Guid?)parent.Id)">
+                                        @parent.Name
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    }
 
                     <MudItem xs="6" sm="2" Class="d-flex">
                         <MudSelect T="string"
@@ -119,6 +158,19 @@
                             </div>
 
                             <div class="accounts-mobile-card__row">
+                                <span>@L["Accounts_Type"]</span>
+                                <span>@a.AccountType.ToLocalizedString(L)</span>
+                            </div>
+
+                            @if (a.ParentAccountId is not null)
+                            {
+                                <div class="accounts-mobile-card__row">
+                                    <span>@L["Accounts_ParentAccount"]</span>
+                                    <span>@GetParentAccountName(a.ParentAccountId)</span>
+                                </div>
+                            }
+
+                            <div class="accounts-mobile-card__row">
                                 <span>@L["Accounts_BalanceActual"]</span>
                                 <span>@(a.ShowBalance ? $"{a.BalanceActual:N2} {a.Currency}" : "****")</span>
                             </div>
@@ -159,6 +211,8 @@
                         <col />
                         <col style="width: 1%;" />
                         <col />
+                        <col style="width: 1%;" />
+                        <col />
                         <col />
                         <col />
                         <col style="width: 1%;" />
@@ -167,6 +221,8 @@
                         <MudTh></MudTh>
                         <MudTh></MudTh>
                         <MudTh>@L["Accounts_Name"]</MudTh>
+                        <MudTh>@L["Accounts_Type"]</MudTh>
+                        <MudTh>@L["Accounts_ParentAccount"]</MudTh>
                         <MudTh>@L["Accounts_Currency"]</MudTh>
                         <MudTh Class="pc-text-align-right  pc-text-nowrap">@L["Accounts_BalanceActual"]</MudTh>
                         <MudTh Class="pc-text-align-right  pc-text-nowrap">@L["Accounts_BalanceExpected"]</MudTh>
@@ -180,6 +236,8 @@
                             <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
                         </MudTd>
                         <MudTd>@a.Name</MudTd>
+                        <MudTd>@a.AccountType.ToLocalizedString(L)</MudTd>
+                        <MudTd>@GetParentAccountName(a.ParentAccountId)</MudTd>
                         <MudTd>@a.Currency</MudTd>
                         <MudTd Class="pc-text-align-right">@(a.ShowBalance ? $"{a.BalanceActual:N2} {a.Currency}" : "****")</MudTd>
                         <MudTd Class="pc-text-align-right">@(a.ShowBalance ? $"{a.BalanceExpected:N2} {a.Currency}" : "****")</MudTd>

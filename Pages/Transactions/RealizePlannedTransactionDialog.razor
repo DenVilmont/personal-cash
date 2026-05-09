@@ -25,7 +25,7 @@
                            @bind-Value="_accountId"
                            Variant="Variant.Outlined"
                            Disabled="true">
-                    @foreach (var a in Accounts)
+                    @foreach (var a in AccountOptions)
                     {
                         <MudSelectItem Value="@a.Id">
                             <div class="icon-option">

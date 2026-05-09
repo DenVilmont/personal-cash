@@ -3,17 +3,15 @@ using Domain.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using PersonalCash.Shared.Components;
-using System.Globalization;
 
 namespace PersonalCash.Pages.Transactions
 {
     public partial class EditTransactionDialog
     {
-
-        [CascadingParameter] 
+        [CascadingParameter]
         public IMudDialogInstance MudDialog { get; set; } = default!;
 
-        [Parameter] 
+        [Parameter]
         public TransactionDto Tx { get; set; } = default!;
 
         [Parameter]
@@ -31,9 +29,28 @@ namespace PersonalCash.Pages.Transactions
         private Guid _categoryId;
         private string? _note;
 
+        private IReadOnlyList<AccountDto> AccountOptions =>
+            Accounts
+                .Where(x => x.AccountType == AccountType.Regular)
+                .Where(x => !x.IsArchived || x.Id == _accountId)
+                .OrderBy(x => x.SortOrder)
+                .ThenBy(x => x.Name)
+                .ToList();
+
         private Task OnAmountChanged(decimal? value)
         {
             _amount = value;
+            return Task.CompletedTask;
+        }
+
+        private Task OnAccountIdChanged(Guid value)
+        {
+            _accountId = value;
+
+            var account = Accounts.FirstOrDefault(x => x.Id == value);
+            if (account is not null && !string.IsNullOrWhiteSpace(account.Currency))
+                _currency = account.Currency.Trim().ToUpperInvariant();
+
             return Task.CompletedTask;
         }
 
@@ -55,7 +72,7 @@ namespace PersonalCash.Pages.Transactions
             set => _occurredOn = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
         }
 
-        private Task SaveAsync() 
+        private Task SaveAsync()
             => RunAsync(() =>
             {
                 if (_occurredOn is null)
@@ -70,6 +87,18 @@ namespace PersonalCash.Pages.Transactions
                     return Task.CompletedTask;
                 }
 
+                if (_accountId == Guid.Empty || !AccountOptions.Any(x => x.Id == _accountId))
+                {
+                    Snackbar.Add(L["Transaction_AccountRequired_ValidationError"], Severity.Error);
+                    return Task.CompletedTask;
+                }
+
+                if (_categoryId == Guid.Empty)
+                {
+                    Snackbar.Add(L["Transaction_CategoryRequired_ValidationError"], Severity.Error);
+                    return Task.CompletedTask;
+                }
+
                 Tx.OccurredOn = _occurredOn.Value;
                 Tx.Amount = _amount.Value;
                 Tx.EntryType = _entryType;
@@ -78,7 +107,7 @@ namespace PersonalCash.Pages.Transactions
                 Tx.AccountId = _accountId;
                 Tx.CategoryId = _categoryId;
                 Tx.Note = _note;
-                
+
                 MudDialog.Close(DialogResult.Ok(Tx));
                 return Task.CompletedTask;
             });

@@ -738,4 +738,22 @@
   <data name="Home_Guide_Debts_Text" xml:space="preserve">
     <value>La sección de deudas está al lado del control principal. Es fácil mantenerlas visibles y actualizarlas cuando haga falta sin convertir el seguimiento diario en un sistema sobrecargado.</value>
   </data>
+  <data name="Accounts_Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="Accounts_ParentAccount" xml:space="preserve">
+    <value>Cuenta principal</value>
+  </data>
+  <data name="AccountType.Regular" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="AccountType.Group" xml:space="preserve">
+    <value>Grupo</value>
+  </data>
+  <data name="Accounts_DeleteGroupHasChildren_Title" xml:space="preserve">
+    <value>No se puede eliminar el grupo de cuentas</value>
+  </data>
+  <data name="Accounts_DeleteGroupHasChildren_Message" xml:space="preserve">
+    <value>No se puede eliminar este grupo de cuentas porque tiene cuentas vinculadas.</value>
+  </data>
 </root>

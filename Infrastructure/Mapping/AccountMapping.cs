@@ -1,4 +1,5 @@
 ﻿using Domain.Contracts;
+using Domain.Enums;
 using Infrastructure.Models;
 
 namespace Infrastructure.Mapping;
@@ -12,6 +13,10 @@ public static class AccountMapping
         Name = m.Name,
         Currency = m.Currency,
         IconKey = m.IconKey,
+        AccountType = Enum.TryParse<AccountType>(m.AccountType, ignoreCase: true, out var accountType)
+            ? accountType
+            : AccountType.Regular,
+        ParentAccountId = m.ParentAccountId,
         SortOrder = m.SortOrder,
         BalanceActual = m.BalanceActual,
         BalanceExpected = m.BalanceExpected,
@@ -30,6 +35,8 @@ public static class AccountMapping
             Name = d.Name,
             Currency = d.Currency,
             IconKey = d.IconKey,
+            AccountType = d.AccountType.ToString(),
+            ParentAccountId = d.ParentAccountId,
             SortOrder = d.SortOrder,
             BalanceActual = d.BalanceActual,
             BalanceExpected = d.BalanceExpected,

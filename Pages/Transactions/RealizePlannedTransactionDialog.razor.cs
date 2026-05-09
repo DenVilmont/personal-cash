@@ -3,8 +3,6 @@ using Domain.Contracts;
 using Domain.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using PersonalCash.Shared.Components;
-using System.Globalization;
 
 namespace PersonalCash.Pages.Transactions
 {
@@ -43,6 +41,14 @@ namespace PersonalCash.Pages.Transactions
             _note = Tx.Note;
         }
 
+        private IReadOnlyList<AccountDto> AccountOptions =>
+            Accounts
+            .Where(x => x.AccountType == AccountType.Regular)
+            .Where(x => !x.IsArchived || x.Id == _accountId)
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Name)
+
+        .ToList();
         private DateTime? OccurredOnPicker
         {
             get => _occurredOn?.ToDateTime(TimeOnly.MinValue);
@@ -60,6 +66,12 @@ namespace PersonalCash.Pages.Transactions
             if (_amount is null || _amount <= 0)
             {
                 Snackbar.Add(L["Transaction_AmountMustBeValidPositiveNumber_ValidationError"], Severity.Error);
+                return;
+            }
+
+            if (_accountId == Guid.Empty || !AccountOptions.Any(x => x.Id == _accountId))
+            {
+                Snackbar.Add(L["Transaction_AccountRequired_ValidationError"], Severity.Error);
                 return;
             }
 

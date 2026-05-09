@@ -115,3 +115,34 @@
         font-size: 0.78rem;
     }
 }
+
+.balance-group {
+    display: grid;
+    gap: 6px;
+}
+
+.balance-row--group {
+    border-color: rgba(99, 102, 241, 0.22);
+    background: linear-gradient(180deg, rgba(245, 247, 255, 0.96) 0%, rgba(239, 242, 255, 0.94) 100%);
+}
+
+.balance-row--child {
+    margin-left: 18px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.78) 0%, rgba(248, 250, 252, 0.86) 100%);
+}
+
+    .balance-row--child .balance-left ::deep .icon-option {
+        font-weight: 500;
+    }
+
+    .balance-row--child .balance-left ::deep .mud-icon-root {
+        color: rgba(99, 102, 241, 0.42);
+    }
+
+@media (max-width: 599.98px) {
+    .balance-row--child {
+        margin-left: 10px;
+    }
+}

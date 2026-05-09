@@ -23,9 +23,10 @@
             <MudItem xs="12" sm="6">
                 <MudSelect T="Guid"
                            Label=@L["Account"]
-                           @bind-Value="_accountId"
+                           Value="_accountId"
+                           ValueChanged="OnAccountIdChanged"
                            Variant="Variant.Outlined">
-                    @foreach (var a in Accounts)
+                    @foreach (var a in AccountOptions)
                     {
                         <MudSelectItem Value="@a.Id">
                             <div class="icon-option">
