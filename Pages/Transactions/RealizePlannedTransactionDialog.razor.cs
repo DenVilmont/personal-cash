@@ -97,7 +97,6 @@ namespace PersonalCash.Pages.Transactions
 
                     Tx.Amount -= _amount.Value;
                     Tx.IsPlanned = true;
-                    Tx.Note = _note;
 
                     MudDialog.Close(DialogResult.Ok(Tx));
                 });
