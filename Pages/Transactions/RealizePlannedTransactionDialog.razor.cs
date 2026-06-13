@@ -31,7 +31,7 @@ namespace PersonalCash.Pages.Transactions
 
         protected override void OnInitialized()
         {
-            _occurredOn = Tx.OccurredOn;
+            _occurredOn = DateOnly.FromDateTime(DateTime.Now);
             _entryType = Tx.EntryType;
             _isForPlanning = Tx.IsPlanned;
             _currency = Tx.Currency;
