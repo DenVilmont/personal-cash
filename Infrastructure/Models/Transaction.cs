@@ -16,6 +16,9 @@ namespace Infrastructure.Models
         [Column("account_id")]
         public Guid AccountId { get; set; }
 
+        [Column("destination_account_id")]
+        public Guid? DestinationAccountId { get; set; }
+
         [Column("occurred_on")]
         public DateOnly OccurredOn { get; set; } // DB type: date
 

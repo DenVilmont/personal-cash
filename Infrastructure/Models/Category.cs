@@ -15,6 +15,9 @@ public class Category : BaseModel
     [Column("name")]
     public string Name { get; set; } = "";
 
+    [Column("is_transfer_category")]
+    public bool IsTransferCategory { get; set; }
+
     [Column("created_at")]
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

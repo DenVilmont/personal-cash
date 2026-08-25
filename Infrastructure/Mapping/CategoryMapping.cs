@@ -10,6 +10,7 @@ namespace Infrastructure.Mapping
             Id = m.Id,
             UserId = m.UserId,
             Name = m.Name,
+            IsTransferCategory = m.IsTransferCategory,
             CreatedAt = m.CreatedAt
         };
 
@@ -19,7 +20,8 @@ namespace Infrastructure.Mapping
             {
                 Id = d.Id,
                 UserId = d.UserId,
-                Name = d.Name
+                Name = d.Name,
+                IsTransferCategory = d.IsTransferCategory
             };
             if (d.CreatedAt != default)
                 m.CreatedAt = d.CreatedAt;
