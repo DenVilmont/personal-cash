@@ -25,10 +25,14 @@ namespace PersonalCash.Pages.Categories
 
         protected override async Task OnInitializedAsync()
         {
-            if (!CurrentUser.TryGetUserId(out _))
+            if (!CurrentUser.TryGetUserId(out var userId))
                 return;
 
-            await LoadAsync();
+            await RunAsync(async () =>
+            {
+                await CategoriesService.EnsureTransferCategoryAsync(userId);
+                await LoadCoreAsync();
+            });
         }
 
         protected Task LoadAsync() => RunAsync(LoadCoreAsync);
@@ -98,6 +102,7 @@ namespace PersonalCash.Pages.Categories
                 Id = category.Id,
                 UserId = category.UserId,
                 Name = category.Name,
+                IsTransferCategory = category.IsTransferCategory,
                 CreatedAt = category.CreatedAt
             };
 

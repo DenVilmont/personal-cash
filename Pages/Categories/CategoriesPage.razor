@@ -80,13 +80,16 @@
                                 </div>
 
                                 <MudStack Row="true" Wrap="Wrap.NoWrap" Justify="Justify.SpaceBetween" Spacing="2" Class="mt-2">
-                                    <MudButton Variant="Variant.Outlined"
-                                               Size="Size.Small"
-                                               Color="Color.Error"
-                                               Disabled="_busy"
-                                               OnClick="@(async () => await ConfirmDeleteAsync(category))">
-                                        @L["Delete"]
-                                    </MudButton>
+                                    @if (!category.IsTransferCategory)
+                                    {
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Size="Size.Small"
+                                                   Color="Color.Error"
+                                                   Disabled="_busy"
+                                                   OnClick="@(async () => await ConfirmDeleteAsync(category))">
+                                            @L["Delete"]
+                                        </MudButton>
+                                    }
 
                                     <MudButton Variant="Variant.Outlined"
                                                Size="Size.Small"
@@ -126,10 +129,13 @@
                                                    Disabled="_busy"
                                                    OnClick="@(async () => await OpenEditAsync(category))" />
 
-                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                                   Color="Color.Error"
-                                                   Disabled="_busy"
-                                                   OnClick="@(async () => await ConfirmDeleteAsync(category))" />
+                                    @if (!category.IsTransferCategory)
+                                    {
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                       Color="Color.Error"
+                                                       Disabled="_busy"
+                                                       OnClick="@(async () => await ConfirmDeleteAsync(category))" />
+                                    }
                                 </div>
                             </MudTd>
                         </RowTemplate>

@@ -61,15 +61,24 @@ public partial class TransactionsPage : IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        if (!CurrentUser.TryGetUserId(out _))
+        if (!CurrentUser.TryGetUserId(out var userId))
             return;
 
         var userSettings = await UserSettingsStore.GetAsync();
-        if (userSettings is not null && !string.IsNullOrWhiteSpace(userSettings.PreferredCurrency))
-            _currency = userSettings.PreferredCurrency.Trim().ToUpperInvariant();
-        
-        await LoadCategoriesAsync();
-        await LoadAsync();
+        if (userSettings is not null &&
+            !string.IsNullOrWhiteSpace(userSettings.PreferredCurrency))
+        {
+            _currency = userSettings.PreferredCurrency
+                .Trim()
+                .ToUpperInvariant();
+        }
+
+        await RunAsync(async () =>
+        {
+            await CategoriesService.EnsureTransferCategoryAsync(userId);
+            await LoadCategoriesAsync();
+            await LoadCoreAsync();
+        });
     }
 
     protected Guid SelectedAccountId

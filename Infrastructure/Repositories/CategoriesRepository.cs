@@ -18,8 +18,10 @@ namespace Infrastructure.Repositories
         public async Task DeleteAsync(CategoryDto category, CancellationToken ct = default)
             => await _db.Delete(category.ToModel());
 
-        public async Task InsertAsync(CategoryDto category, CancellationToken ct = default)
-            => await _db.Insert(category.ToModel());
+        public async Task<CategoryDto> InsertAsync(CategoryDto category, CancellationToken ct = default)
+            => (await _db.Insert(category.ToModel()))
+            .Single()
+            .ToDto();
 
         public Task UpdateAsync(CategoryDto category, CancellationToken ct = default)
             => _db.Update(category.ToModel());
