@@ -15,6 +15,14 @@ namespace Infrastructure.Repositories
             .Select(x => x.ToDto())
             .ToList();
 
+        public async Task<CategoryDto?> GetByIdAsync(Guid categoryId, CancellationToken ct = default)
+        {
+            var model = await _db.Single<Category>(
+                q => q.Eq("id", categoryId));
+
+            return model?.ToDto();
+        }
+
         public async Task DeleteAsync(CategoryDto category, CancellationToken ct = default)
             => await _db.Delete(category.ToModel());
 
