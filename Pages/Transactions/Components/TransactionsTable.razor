@@ -32,7 +32,7 @@
             </MudTh>
 
             <MudTh>
-                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => GetAccountName(x.AccountId)))">
+                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => GetAccountDisplayName(x)))">
                     @L["Account"]
                 </MudTableSortLabel>
             </MudTh>
@@ -44,7 +44,7 @@
             </MudTh>
 
             <MudTh Class="transactions-table__amount-cell">
-                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => SignedAmount(x)))">
+                <MudTableSortLabel Class="d-flex justify-center" SortBy="@(new Func<TransactionDto, object>(x => DisplayAmount(x)))">
                     @L["Amount"]
                 </MudTableSortLabel>
             </MudTh>
@@ -72,7 +72,7 @@
             <MudTd Class="transactions-table__account-cell">
                 <div class="icon-option transactions-table__account">
                     <MudIcon Icon="@GetAccountIcon(tx.AccountId).GetIcon()" />
-                    @GetAccountName(tx.AccountId)
+                    @GetAccountDisplayName(tx)
                 </div>
             </MudTd>
 
@@ -84,7 +84,7 @@
 
             <MudTd Class="transactions-table__amount-cell">
                 <span class="tx-amount-pill">
-                    @($"{SignedAmount(tx):N2} {tx.Currency}")
+                    @($"{DisplayAmount(tx):N2} {tx.Currency}")
                 </span>
             </MudTd>
 

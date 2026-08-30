@@ -756,4 +756,25 @@
   <data name="Accounts_DeleteGroupHasChildren_Message" xml:space="preserve">
     <value>Группу счетов нельзя удалить, потому что у неё есть дочерние счета.</value>
   </data>
+  <data name="EntryType.Transfer" xml:space="preserve">
+    <value>Перевод</value>
+  </data>
+  <data name="Transaction_FromAccount" xml:space="preserve">
+    <value>Со счёта</value>
+  </data>
+  <data name="Transaction_ToAccount" xml:space="preserve">
+    <value>На счёт</value>
+  </data>
+  <data name="Transaction_DestinationAccountRequired_ValidationError" xml:space="preserve">
+    <value>Выберите счёт назначения</value>
+  </data>
+  <data name="Transaction_DestinationAccountInvalid_ValidationError" xml:space="preserve">
+    <value>Выберите допустимый счёт назначения</value>
+  </data>
+  <data name="Transaction_TransferAccountsMustDiffer_ValidationError" xml:space="preserve">
+    <value>Счета отправления и назначения должны отличаться</value>
+  </data>
+  <data name="Transaction_TransferCategoryRequired_ValidationError" xml:space="preserve">
+    <value>Требуется категория переводов</value>
+  </data>
 </root>

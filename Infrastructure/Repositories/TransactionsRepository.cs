@@ -5,6 +5,8 @@ using Infrastructure.Mapping;
 using Infrastructure.Models;
 using Infrastructure.Persistence;
 using System.Globalization;
+using Supabase.Postgrest;
+using Supabase.Postgrest.Interfaces;
 using static Supabase.Postgrest.Constants;
 
 namespace Infrastructure.Repositories
@@ -46,7 +48,24 @@ namespace Infrastructure.Repositories
                     dq = dq.Filter("is_planned", Operator.Equals, filter.IsForPlanning.Value.ToString().ToLower());
 
                 if (filter.AccountIds.Count > 0)
-                    dq = dq.Filter("account_id", Operator.In, filter.AccountIds.Select(x => x.ToString()).ToList());
+                {
+                    var accountIds = filter.AccountIds
+                        .Select(x => x.ToString())
+                        .ToList();
+
+                    dq = dq.Or(new List<IPostgrestQueryFilter>
+                    {
+                        new QueryFilter(
+                            "account_id",
+                            Operator.In,
+                            accountIds),
+
+                        new QueryFilter(
+                            "destination_account_id",
+                            Operator.In,
+                            accountIds)
+                    });
+                }
 
                 if (filter.CategoryIds.Count > 0)
                     dq = dq.Filter("category_id", Operator.In, filter.CategoryIds.Select(x => x.ToString()).ToList());

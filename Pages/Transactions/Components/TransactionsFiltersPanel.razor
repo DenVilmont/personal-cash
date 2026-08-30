@@ -87,6 +87,7 @@
                                 <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">@L["Filter_Type_All"]</MudSelectItem>
                                 <MudSelectItem T="EntryType?" Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
                                 <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
+                                <MudSelectItem T="EntryType?" Value="@EntryType.Transfer">@EntryType.Transfer.ToLocalizedString(L)</MudSelectItem>
                             </MudSelect>
 
                             <MudSelect T="Guid" Label="@L["Filter_Category"]"
@@ -252,6 +253,7 @@
                     <MudSelectItem T="EntryType?" Value="@((EntryType?)null)">@L["Filter_Type_All"]</MudSelectItem>
                     <MudSelectItem T="EntryType?" Value="@EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
                     <MudSelectItem T="EntryType?" Value="@EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
+                    <MudSelectItem T="EntryType?" Value="@EntryType.Transfer">@EntryType.Transfer.ToLocalizedString(L)</MudSelectItem>
                 </MudSelect>
 
                 <MudSelect T="Guid" Label="@L["Filter_Category"]"

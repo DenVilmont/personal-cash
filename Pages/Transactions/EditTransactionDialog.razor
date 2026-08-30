@@ -14,15 +14,20 @@
             </MudItem>
 
             <MudItem xs="12" sm="6">
-                <MudSelect T="EntryType" Label=@L["Type"] @bind-Value="_entryType" Variant="Variant.Outlined">
+                <MudSelect T="EntryType"
+                           Label="@L["Type"]"
+                           Value="_entryType"
+                           ValueChanged="OnEntryTypeChanged"
+                           Variant="Variant.Outlined">
                     <MudSelectItem Value="EntryType.Income">@EntryType.Income.ToLocalizedString(L)</MudSelectItem>
                     <MudSelectItem Value="EntryType.Outcome">@EntryType.Outcome.ToLocalizedString(L)</MudSelectItem>
+                    <MudSelectItem Value="EntryType.Transfer">@EntryType.Transfer.ToLocalizedString(L)</MudSelectItem>
                 </MudSelect>
             </MudItem>
 
             <MudItem xs="12" sm="6">
                 <MudSelect T="Guid"
-                           Label=@L["Account"]
+                           Label="@(_entryType == EntryType.Transfer ? L["Transaction_FromAccount"] : L["Account"])"
                            Value="_accountId"
                            ValueChanged="OnAccountIdChanged"
                            Variant="Variant.Outlined">
@@ -37,6 +42,27 @@
                     }
                 </MudSelect>
             </MudItem>
+            @if (_entryType == EntryType.Transfer)
+            {
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="Guid?"
+                               Label="@L["Transaction_ToAccount"]"
+                               Value="_destinationAccountId"
+                               ValueChanged="OnDestinationAccountIdChanged"
+                               Variant="Variant.Outlined"
+                               Clearable="true">
+                        @foreach (var a in DestinationAccountOptions)
+                        {
+                            <MudSelectItem T="Guid?" Value="@((Guid?)a.Id)">
+                                <div class="icon-option">
+                                    <MudIcon Icon="@AccountIconExtensions.FromDbKey(a.IconKey).GetIcon()" />
+                                    @a.Name (@a.Currency)
+                                </div>
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            }
             <MudItem xs="12" sm="6">
                 <PcAmountField Value="_amount"
                                ValueChanged="OnAmountChanged"
@@ -47,8 +73,12 @@
             </MudItem>
 
             <MudItem xs="12" sm="6">
-                <MudSelect T="Guid" Label=@L["Category"] @bind-Value="_categoryId" Variant="Variant.Outlined">
-                    @foreach (var c in Categories)
+                <MudSelect T="Guid"
+                           Label="@L["Category"]"
+                           @bind-Value="_categoryId"
+                           Variant="Variant.Outlined"
+                           Disabled="_entryType == EntryType.Transfer">
+                    @foreach (var c in CategoryOptions)
                     {
                         <MudSelectItem T="Guid" Value="@c.Id">@c.Name</MudSelectItem>
                     }

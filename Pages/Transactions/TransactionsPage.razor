@@ -19,10 +19,12 @@
                 <div class="transactions-layout__add">
                     <TransactionsAddForm @bind-OccurredOn="OccurredOnPicker"
                                          @bind-Amount="_amount"
-                                         @bind-EntryType="_entryType"
+                                         @bind-EntryType="SelectedEntryType"
                                          @bind-IsForPlanning="_isForPlanning"
                                          Accounts="_regularAccounts"
                                          @bind-AccountId="SelectedAccountId"
+                                         DestinationAccounts="TransferDestinationAccounts"
+                                         @bind-DestinationAccountId="SelectedDestinationAccountId"
                                          Currency="@_currency"
                                          Categories="_categories"
                                          @bind-CategoryId="_categoryId"

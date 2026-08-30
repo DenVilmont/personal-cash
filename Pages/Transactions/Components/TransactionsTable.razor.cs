@@ -21,11 +21,30 @@ public partial class TransactionsTable
     [Parameter] public EventCallback<TransactionDto> OnDelete { get; set; }
     [Parameter] public EventCallback<TransactionDto> OnRealizePlanned { get; set; }
 
-    private decimal SignedAmount(TransactionDto tx)
-        => tx.EntryType == EntryType.Outcome ? -tx.Amount : tx.Amount;
+    private decimal DisplayAmount(TransactionDto tx) =>
+        tx.EntryType switch
+        {
+            EntryType.Income => tx.Amount,
+            EntryType.Outcome => -tx.Amount,
+            EntryType.Transfer => tx.Amount,
+            _ => tx.Amount
+        };
 
     private string GetAccountName(Guid id)
         => AccountsById.TryGetValue(id, out var account) ? account.Name : string.Empty;
+
+    private string GetAccountDisplayName(TransactionDto tx)
+    {
+        var sourceName = GetAccountName(tx.AccountId);
+
+        if (tx.EntryType != EntryType.Transfer ||
+            tx.DestinationAccountId is not Guid destinationAccountId)
+        {
+            return sourceName;
+        }
+
+        return $"{sourceName} → {GetAccountName(destinationAccountId)}";
+    }
 
     private string GetCategoryName(Guid id)
         => CategoriesById.TryGetValue(id, out var name) ? name : string.Empty;
@@ -43,6 +62,7 @@ public partial class TransactionsTable
         {
             EntryType.Income => "tx-income",
             EntryType.Outcome => "tx-outcome",
+            EntryType.Transfer => string.Empty,
             _ => string.Empty
         };
     }

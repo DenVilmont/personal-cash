@@ -23,16 +23,21 @@ else
                                     <MudText Typo="Typo.subtitle2">
                                         @tx.OccurredOn.ToString("yyyy-MM-dd")
                                     </MudText>
-
+                                    @if (tx.EntryType == EntryType.Transfer)
+                                    {
+                                        <MudText Typo="Typo.caption">
+                                            @tx.EntryType.ToLocalizedString(L)
+                                        </MudText>
+                                    }
                                     <div class="tx-mobile-account">
                                         <MudIcon Icon="@GetAccountIcon(tx.AccountId).GetIcon()" Size="Size.Small" />
-                                        <MudText Typo="Typo.body2">@GetAccountName(tx.AccountId)</MudText>
+                                        <MudText Typo="Typo.body2">@GetAccountDisplayName(tx)</MudText>
                                     </div>
                                 </div>
 
                                 <div class="tx-mobile-right">
                                     <MudText Typo="Typo.h6" Align="Align.Right" Class="tx-mobile-amount">
-                                        @($"{SignedAmount(tx):N2} {tx.Currency}")
+                                        @($"{DisplayAmount(tx):N2} {tx.Currency}")
                                     </MudText>
 
                                     <MudText Typo="Typo.body2" Align="Align.Right">

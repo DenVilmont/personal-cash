@@ -24,6 +24,10 @@ public partial class TransactionsAddForm
     [Parameter] public Guid AccountId { get; set; }
     [Parameter] public EventCallback<Guid> AccountIdChanged { get; set; }
 
+    [Parameter] public IReadOnlyList<AccountDto> DestinationAccounts { get; set; } = Array.Empty<AccountDto>();
+    [Parameter] public Guid? DestinationAccountId { get; set; }
+    [Parameter] public EventCallback<Guid?> DestinationAccountIdChanged { get; set; }
+
     [Parameter] public IReadOnlyList<CategoryDto> Categories { get; set; } = Array.Empty<CategoryDto>();
     [Parameter] public Guid CategoryId { get; set; }
     [Parameter] public EventCallback<Guid> CategoryIdChanged { get; set; }
@@ -41,10 +45,28 @@ public partial class TransactionsAddForm
     private Task OnEntryTypeChanged(EntryType value) => EntryTypeChanged.InvokeAsync(value);
     private Task OnIsForPlanningChanged(bool value) => IsForPlanningChanged.InvokeAsync(value);
     private Task OnAccountIdChanged(Guid value) => AccountIdChanged.InvokeAsync(value);
+    private Task OnDestinationAccountIdChanged(Guid? value) => DestinationAccountIdChanged.InvokeAsync(value);
     private Task OnCategoryIdChanged(Guid value) => CategoryIdChanged.InvokeAsync(value);
     private Task OnNoteChanged(string? value) => NoteChanged.InvokeAsync(value);
 
     private Task OnAddClicked() => OnAdd.InvokeAsync();
     private Task OnRefreshClicked() => OnRefresh.InvokeAsync();
 
+
+    private IEnumerable<CategoryDto> CategoryOptions =>
+    EntryType == Domain.Enums.EntryType.Transfer
+        ? Categories.Where(x => x.IsTransferCategory)
+        : Categories.Where(x => !x.IsTransferCategory);
+
+    private bool TransferSubmitDisabled =>
+        EntryType == Domain.Enums.EntryType.Transfer &&
+        (
+            DestinationAccountId is null ||
+            DestinationAccountId.Value == Guid.Empty ||
+            !Amount.HasValue ||
+            Amount.Value <= 0 ||
+            !Categories.Any(x =>
+                x.IsTransferCategory &&
+                x.Id == CategoryId)
+        );
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using System.Net;
 using Domain.Constants;
 using Domain.Contracts;
 using Domain.Contracts.FiltersState;
@@ -34,9 +35,11 @@ public partial class TransactionsPage : IDisposable
     protected List<AccountDto> _regularAccounts = new();
     protected Dictionary<Guid, AccountDto> _accountById = new();
     protected Guid _accountId;
+    protected Guid? _destinationAccountId;
     protected List<CategoryDto> _categories = new();
     protected Dictionary<Guid, string> _categoryById = new();
     protected Guid _categoryId;
+    private Guid? _lastRegularCategoryId;
     protected string? _note;
 
     private DateOnly? _fFrom;
@@ -44,7 +47,7 @@ public partial class TransactionsPage : IDisposable
     private DateOnly? _fMonth;
     private bool _filtersInitDone;
     private List<DateOnly> _monthOptions = new();
-    private EntryType? _fEntryType;     // null = all, 0/1 = income/outcome
+    private EntryType? _fEntryType;     // null = all, 0/1/2 = income/outcome/transfer
     private HashSet<Guid> _fCategoryIds = new();     // null = all
     private HashSet<Guid> _fAccountIds = new();
     private bool? _fIsForPlanning;        // null = all, true/false
@@ -93,8 +96,109 @@ public partial class TransactionsPage : IDisposable
             {
                 _currency = acc.Currency.Trim().ToUpperInvariant();
             }
+
+            if (_entryType == EntryType.Transfer)
+                EnsureDestinationStillValid();
         }
     }
+
+    protected EntryType SelectedEntryType
+    {
+        get => _entryType;
+        set
+        {
+            if (_entryType == value)
+                return;
+
+            var wasTransfer = _entryType == EntryType.Transfer;
+            var becomesTransfer = value == EntryType.Transfer;
+
+            if (!wasTransfer && becomesTransfer)
+            {
+                RememberRegularCategory();
+
+                _entryType = EntryType.Transfer;
+                _destinationAccountId = null;
+                _categoryId = TransferCategory?.Id ?? Guid.Empty;
+                return;
+            }
+
+            _entryType = value;
+
+            if (wasTransfer && !becomesTransfer)
+            {
+                _destinationAccountId = null;
+                RestoreRegularCategory();
+            }
+        }
+    }
+
+    private void RememberRegularCategory()
+    {
+        if (_categoryId != Guid.Empty &&
+            _categories.Any(x =>
+                x.Id == _categoryId &&
+                !x.IsTransferCategory))
+        {
+            _lastRegularCategoryId = _categoryId;
+        }
+    }
+
+    private string GetAccountName(Guid accountId) =>
+    _accountById.TryGetValue(accountId, out var account)
+        ? account.Name
+        : string.Empty;
+
+    private void RestoreRegularCategory()
+    {
+        if (_lastRegularCategoryId is Guid previousCategoryId &&
+            _categories.Any(x =>
+                x.Id == previousCategoryId &&
+                !x.IsTransferCategory))
+        {
+            _categoryId = previousCategoryId;
+            return;
+        }
+
+        _categoryId = _categories
+            .FirstOrDefault(x => !x.IsTransferCategory)?
+            .Id ?? Guid.Empty;
+
+        _lastRegularCategoryId =
+            _categoryId == Guid.Empty
+                ? null
+                : _categoryId;
+    }
+
+    private void EnsureDestinationStillValid()
+    {
+        if (_destinationAccountId is null)
+            return;
+
+        if (!TransferDestinationAccounts.Any(
+                x => x.Id == _destinationAccountId.Value))
+        {
+            _destinationAccountId = null;
+        }
+    }
+
+    protected Guid? SelectedDestinationAccountId
+    {
+        get => _destinationAccountId;
+        set => _destinationAccountId = value;
+    }
+
+    private CategoryDto? TransferCategory =>
+        _categories.FirstOrDefault(x => x.IsTransferCategory);
+
+    protected IReadOnlyList<AccountDto> TransferDestinationAccounts =>
+        _regularAccounts
+            .Where(x => x.Id != _accountId)
+            .Where(x => string.Equals(
+                x.Currency,
+                _currency,
+                StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
     private DateTime? FilterFromDateTime
     {
@@ -149,7 +253,14 @@ public partial class TransactionsPage : IDisposable
         set => _occurredOn = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
     }
 
-    protected decimal SignedAmount(TransactionDto t) => t.EntryType == EntryType.Outcome ? -t.Amount : t.Amount;
+    protected decimal DisplayAmount(TransactionDto tx) =>
+    tx.EntryType switch
+    {
+        EntryType.Income => tx.Amount,
+        EntryType.Outcome => -tx.Amount,
+        EntryType.Transfer => tx.Amount,
+        _ => tx.Amount
+    };
 
     private async Task ReloadAccountsAsync()
     {
@@ -170,14 +281,21 @@ public partial class TransactionsPage : IDisposable
     {
         _categories = await CategoriesService.GetSortedAsync();
         _categoryById = _categories.ToDictionary(x => x.Id, x => x.Name);
-        if (_categories.Count > 0)
+
+        if (_entryType == EntryType.Transfer)
         {
-            _categoryId = _categories.First().Id;
+            _categoryId = TransferCategory?.Id ?? Guid.Empty;
+            return;
         }
-        else
-        {
-            _categoryId = Guid.Empty;
-        }
+
+        _categoryId = _categories
+            .FirstOrDefault(x => !x.IsTransferCategory)?
+            .Id ?? Guid.Empty;
+
+        _lastRegularCategoryId =
+            _categoryId == Guid.Empty
+                ? null
+                : _categoryId;
     }
 
     protected Task LoadAsync() => RunAsync(LoadCoreAsync);
@@ -195,9 +313,11 @@ public partial class TransactionsPage : IDisposable
     {
         _occurredOn = DateOnly.FromDateTime(DateTime.Today);
         _entryType = EntryType.Outcome;
+        _destinationAccountId = null;
         SelectedAccountId = _regularAccounts.FirstOrDefault()?.Id ?? Guid.Empty;
         _amount = null;
-        _categoryId = _categories.FirstOrDefault()?.Id ?? Guid.Empty;
+        _categoryId = _categories.FirstOrDefault(x => !x.IsTransferCategory)?.Id ?? Guid.Empty;
+        _lastRegularCategoryId = _categoryId == Guid.Empty ? null : _categoryId;
         _note = null;
         _isForPlanning = false;
     }
@@ -228,10 +348,57 @@ public partial class TransactionsPage : IDisposable
             return;
         }
 
-        if (_categoryId == Guid.Empty)
+        if (_entryType == EntryType.Transfer)
         {
-            Snackbar.Add(L["Transaction_CategoryRequired_ValidationError"], Severity.Warning);
-            return;
+            if (_destinationAccountId is null ||
+                _destinationAccountId.Value == Guid.Empty)
+            {
+                Snackbar.Add(
+                    L["Transaction_DestinationAccountRequired_ValidationError"],
+                    Severity.Warning);
+                return;
+            }
+
+            if (_destinationAccountId.Value == _accountId)
+            {
+                Snackbar.Add(
+                    L["Transaction_TransferAccountsMustDiffer_ValidationError"],
+                    Severity.Warning);
+                return;
+            }
+
+            if (!TransferDestinationAccounts.Any(
+                    x => x.Id == _destinationAccountId.Value))
+            {
+                Snackbar.Add(
+                    L["Transaction_DestinationAccountInvalid_ValidationError"],
+                    Severity.Warning);
+                return;
+            }
+
+            var transferCategory = TransferCategory;
+
+            if (transferCategory is null ||
+                _categoryId != transferCategory.Id)
+            {
+                Snackbar.Add(
+                    L["Transaction_TransferCategoryRequired_ValidationError"],
+                    Severity.Warning);
+                return;
+            }
+        }
+        else
+        {
+            if (_categoryId == Guid.Empty ||
+                !_categories.Any(x =>
+                    x.Id == _categoryId &&
+                    !x.IsTransferCategory))
+            {
+                Snackbar.Add(
+                    L["Transaction_CategoryRequired_ValidationError"],
+                    Severity.Warning);
+                return;
+            }
         }
 
         if (!CurrentUser.IsAuthenticated)
@@ -256,6 +423,7 @@ public partial class TransactionsPage : IDisposable
                 IsPlanned = _isForPlanning,
                 Currency = string.IsNullOrWhiteSpace(_currency) ? "EUR" : _currency.Trim().ToUpperInvariant(),
                 AccountId = _accountId,
+                DestinationAccountId = _entryType == EntryType.Transfer ? _destinationAccountId : null,
                 CategoryId = _categoryId,
                 Note = _note,
                 UserId = userId
@@ -266,6 +434,10 @@ public partial class TransactionsPage : IDisposable
             _amount = null;
             _note = null;
             _entryType = EntryType.Outcome;
+            _destinationAccountId = null;
+
+            RestoreRegularCategory();
+
             await ReloadAccountsAsync();
             await ReloadFilteredItemsCoreAsync();
         }, successMessage: L["Added"]);
@@ -280,8 +452,28 @@ public partial class TransactionsPage : IDisposable
             FullWidth = true
         };
 
+        string details;
+
+        if (tx.EntryType == EntryType.Transfer &&
+            tx.DestinationAccountId is Guid destinationAccountId)
+        {
+            var direction = WebUtility.HtmlEncode(
+                $"{GetAccountName(tx.AccountId)} → {GetAccountName(destinationAccountId)}");
+
+            details =
+                $"{tx.Amount:N2} {tx.Currency}<br/>" +
+                $"{direction}<br/>" +
+                $"{tx.OccurredOn:yyyy-MM-dd}";
+        }
+        else
+        {
+            details =
+                $"{DisplayAmount(tx):N2} {tx.Currency} " +
+                $"{tx.OccurredOn:yyyy-MM-dd}";
+        }
+
         MarkupString msg = (MarkupString)(
-            $"{SignedAmount(tx)} {tx.Currency}  {tx.OccurredOn:yyyy-MM-dd}<br/><br/>" +
+            $"{details}<br/><br/>" +
             $"{L["Transactions_DeleteDialog_Message"]}");
 
         bool? confirmed = await DialogService.ShowMessageBoxAsync(
@@ -314,6 +506,7 @@ public partial class TransactionsPage : IDisposable
             EntryType = tx.EntryType,
             IsPlanned = tx.IsPlanned,
             AccountId = tx.AccountId,
+            DestinationAccountId = tx.DestinationAccountId,
             CategoryId = tx.CategoryId,
             Currency = tx.Currency,
             Note = tx.Note,
@@ -361,6 +554,7 @@ public partial class TransactionsPage : IDisposable
             EntryType = tx.EntryType,
             IsPlanned = tx.IsPlanned,
             AccountId = tx.AccountId,
+            DestinationAccountId = tx.DestinationAccountId,
             CategoryId = tx.CategoryId,
             Currency = tx.Currency,
             Note = tx.Note,
