@@ -76,6 +76,7 @@
                 <MudSelect T="Guid"
                            Label="@L["Category"]"
                            @bind-Value="_categoryId"
+                           ToStringFunc="@GetCategoryName"
                            Variant="Variant.Outlined"
                            Disabled="_entryType == EntryType.Transfer">
                     @foreach (var c in CategoryOptions)

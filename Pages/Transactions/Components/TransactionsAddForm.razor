@@ -148,6 +148,7 @@
                                            Margin="Margin.Dense"
                                            Class="w-100"
                                            Value="CategoryId"
+                                           ToStringFunc="@GetCategoryName"
                                            ValueChanged="OnCategoryIdChanged">
                                     @foreach (var c in CategoryOptions)
                                     {

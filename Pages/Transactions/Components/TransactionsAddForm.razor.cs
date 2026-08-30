@@ -52,6 +52,8 @@ public partial class TransactionsAddForm
     private Task OnAddClicked() => OnAdd.InvokeAsync();
     private Task OnRefreshClicked() => OnRefresh.InvokeAsync();
 
+    private string GetCategoryName(Guid id) =>
+        Categories.FirstOrDefault(x => x.Id == id)?.Name ?? string.Empty;
 
     private IEnumerable<CategoryDto> CategoryOptions =>
     EntryType == Domain.Enums.EntryType.Transfer

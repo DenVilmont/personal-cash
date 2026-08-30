@@ -40,6 +40,9 @@ namespace PersonalCash.Pages.Transactions
                 .ThenBy(x => x.Name)
                 .ToList();
 
+        private string GetCategoryName(Guid id) =>
+            Categories.FirstOrDefault(x => x.Id == id)?.Name ?? string.Empty;
+
         private CategoryDto? TransferCategory =>
             Categories.FirstOrDefault(x => x.IsTransferCategory);
 
