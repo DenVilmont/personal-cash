@@ -103,19 +103,25 @@ namespace Application.Services
 
         public async Task DeleteAsync(CategoryDto category)
         {
-            if (category.IsTransferCategory)
+            var existing = await _categoriesRepo.ListAsync();
+
+            var storedCategory = existing.SingleOrDefault(c => c.Id == category.Id);
+            if (storedCategory is null)
+                throw new AppValidationException("Category not found");
+
+            if (storedCategory.IsTransferCategory)
             {
                 throw new AppValidationException(
                     "Transfer category can't be deleted.");
             }
 
-            if (await _txLookup.AnyForCategoryAsync(category.Id))
+            if (await _txLookup.AnyForCategoryAsync(storedCategory.Id))
             {
                 throw new AppValidationException(
                     "Category has transactions. It can't be deleted.");
             }
 
-            await _categoriesRepo.DeleteAsync(category);
+            await _categoriesRepo.DeleteAsync(storedCategory);
         }
     }
 }
