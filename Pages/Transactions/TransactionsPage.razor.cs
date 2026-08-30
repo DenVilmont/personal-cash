@@ -118,6 +118,7 @@ public partial class TransactionsPage : IDisposable
                 RememberRegularCategory();
 
                 _entryType = EntryType.Transfer;
+                _isForPlanning = false;
                 _destinationAccountId = null;
                 _categoryId = TransferCategory?.Id ?? Guid.Empty;
                 return;
@@ -420,7 +421,7 @@ public partial class TransactionsPage : IDisposable
                 OccurredOn = _occurredOn.Value,
                 Amount = _amount.Value,
                 EntryType = _entryType,
-                IsPlanned = _isForPlanning,
+                IsPlanned = _entryType == EntryType.Transfer ? false : _isForPlanning,
                 Currency = string.IsNullOrWhiteSpace(_currency) ? "EUR" : _currency.Trim().ToUpperInvariant(),
                 AccountId = _accountId,
                 DestinationAccountId = _entryType == EntryType.Transfer ? _destinationAccountId : null,

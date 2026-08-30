@@ -46,6 +46,7 @@ namespace Application.Services
 
         private async Task ValidateTransactionForSaveAsync(TransactionDto tx)
         {
+
             if (tx.UserId == Guid.Empty)
                 throw new AppValidationException("Invalid user id");
 
@@ -88,6 +89,12 @@ namespace Application.Services
 
                 case EntryType.Transfer:
                     {
+                        if (tx.IsPlanned)
+                        {
+                            throw new AppValidationException(
+                                "Transfer transactions cannot be planned");
+                        }
+
                         if (tx.DestinationAccountId is null ||
                             tx.DestinationAccountId == Guid.Empty)
                         {

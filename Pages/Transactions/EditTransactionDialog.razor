@@ -91,14 +91,17 @@
                               Variant="Variant.Outlined"
                               Lines="3" />
             </MudItem>
-            <MudItem xs="12" md="6" Class="d-flex align-center">
-                <MudStack direction="Row" AlignItems="AlignItems.Center" Class="w-100">
-                    <MudSwitch T="bool"
-                               Label=@L["Is_For_Planning"]
-                               @bind-Value="_isForPlanning"
-                               Color="Color.Primary" />
-                </MudStack>
-            </MudItem>
+            @if (_entryType != EntryType.Transfer)
+            {
+                <MudItem xs="12" md="6" Class="d-flex align-center">
+                    <MudStack direction="Row" AlignItems="AlignItems.Center" Class="w-100">
+                        <MudSwitch T="bool"
+                        Label=@L["Is_For_Planning"]
+                        @bind-Value="_isForPlanning"
+                        Color="Color.Primary" />
+                    </MudStack>
+                </MudItem>
+            }
         </MudGrid>
     </DialogContent>
 

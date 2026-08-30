@@ -113,6 +113,7 @@ namespace PersonalCash.Pages.Transactions
                 RememberRegularCategory();
 
                 _entryType = EntryType.Transfer;
+                _isForPlanning = false;
                 _destinationAccountId = null;
                 _categoryId = TransferCategory?.Id ?? Guid.Empty;
 
@@ -280,7 +281,7 @@ namespace PersonalCash.Pages.Transactions
             Tx.OccurredOn = _occurredOn.Value;
             Tx.Amount = _amount.Value;
             Tx.EntryType = _entryType;
-            Tx.IsPlanned = _isForPlanning;
+            Tx.IsPlanned = _entryType == EntryType.Transfer ? false : _isForPlanning;
             Tx.Currency = string.IsNullOrWhiteSpace(_currency)
                 ? "EUR"
                 : _currency.Trim().ToUpperInvariant();
