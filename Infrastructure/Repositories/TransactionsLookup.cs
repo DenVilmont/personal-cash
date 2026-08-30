@@ -10,18 +10,11 @@ public sealed class TransactionsLookup(DatabaseService db) : ITransactionsLookup
 
     public async Task<bool> AnyForAccountAsync(Guid accountId, CancellationToken ct = default)
     {
-        var sourceItems = await _db.From<Transaction>(q =>
+        var items = await _db.From<Transaction>(q =>
             q.Eq("account_id", accountId)
              .Limit(1));
 
-        if (sourceItems.Count > 0)
-            return true;
-
-        var destinationItems = await _db.From<Transaction>(q =>
-            q.Eq("destination_account_id", accountId)
-             .Limit(1));
-
-        return destinationItems.Count > 0;
+        return items.Count > 0;
     }
 
     public async Task<bool> AnyForCategoryAsync(Guid categoryId, CancellationToken ct = default)
